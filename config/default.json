@@ -1,5 +1,5 @@
 {
-    "mongoURI": "mongodb+srv://default:<password>@cluster0.b2se9.mongodb.net/<dbname>?retryWrites=true&w=majority",
-    "jwtSecret": "sutygon-bot^#@#$"
+    "mongoURI": "mongodb+srv://default:1UjteIsOAqktGWik@cluster0.b2se9.mongodb.net/main?retryWrites=true&w=majority",
+    "jwtSecret": "ssshh12&#%"
   }
   
