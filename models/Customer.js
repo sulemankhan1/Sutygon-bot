@@ -1,0 +1,30 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const CutomerSchema = new mongoose.Schema({
+    name: {
+        type: String,
+    },
+    contactNumber: {
+        type: String,
+    },
+    address: {
+        type: String,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    numberofOrders: {
+        type: String,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
+
+},
+);
+
+module.exports = Customer = mongoose.model("customer", CutomerSchema);

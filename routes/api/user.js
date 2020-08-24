@@ -2,11 +2,76 @@ const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const gravatar = require("gravatar");
+
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const auth = require("../../middleware/auth");
+const User = require("../../models/User");
 
 
+// @route   POST /api/users/add
+// @desc    Add new user
+// @access  Private
+router.post("/add",
+
+ [
+  check("username", "User Name is Required").not().isEmpty(),
+  check("fullname", "Full Name is Required").not().isEmpty(),
+  check("email", "Please Enter a Valid Email").isEmail(),
+   check("password", "Password is Required").not().isEmpty(),
+  check("contactnumber", "Please Enter Contact Number").not().isEmpty(),
+  check("gender", "Please select your Gender").not().isEmpty(),
+   check( "password", "Please Enter a password with 6 or more characters").isLength({ min: 6 }),
+],
+
+async (req, res) => {
+  // Finds the validation errors in this request and wraps them in an object with handy functions
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+  console.log("body", req.body)
+  const salt = await bcrypt.genSalt(10);
+
+ const password = await bcrypt.hash(req.body.password, salt);
+
+  try {
+    // check if there is any record with same email
+    const rec = User.find({ email: req.body.email });
+    const avatar = gravatar.url(req.body.email, {
+      s: "200",
+      r: "pg",
+      d: "mm",
+    });
+    // save user record
+    const userBody = {
+      userName: req.body.username,
+      fullName: req.body.fullname,
+      email: req.body.email,
+      password: password,
+      gender: req.body.gender,
+      contactNumber: req.body.contactnumber,
+      avatar: avatar,
+    };
+
+    let user = new User(userBody);
+    await user.save();
+
+    const record = {...userBody };
+
+    res.json({ ...record, msg: "User Added Successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server error");
+  }
+}
+
+
+
+
+);
 
 // @route   GET /api/users/id
 // @desc    Get User by Id
@@ -278,5 +343,13 @@ router.post(
     }
   }
 );
+
+router.post(
+  "/test",
+  async (req, res) => {
+      console.log(req.body);
+      res.json(req.body);
+  }
+)
 
 module.exports = router;
