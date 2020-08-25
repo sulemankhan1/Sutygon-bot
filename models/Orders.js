@@ -5,10 +5,14 @@ const OrderSchema = new mongoose.Schema({
     orderNumber: {
         type: String,
         required: true,
+        unique: true,
+
     },
     trackingNumber: {
         type: String,
         required: true,
+        unique: true,
+
     },
     orderDate: {
         type: Date,
@@ -30,7 +34,7 @@ const OrderSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "product",
     },
-    orderQuantity: {
+    orderedQuantity: {
         type: String,
         required: true,
     },
@@ -38,7 +42,6 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-
     dateRented: {
         type: Date,
         default: Date.now,
@@ -47,6 +50,11 @@ const OrderSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    status: {
+        type: String,
+        required: true,
+        default:"new"
+      }, 
   
 },
 );

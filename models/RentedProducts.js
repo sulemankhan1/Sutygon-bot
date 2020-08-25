@@ -4,9 +4,12 @@ const Schema = mongoose.Schema;
 const RentedProductSchema = new mongoose.Schema({
     orderNumber: {
         type: String,
+        unique: true,
+
     },
     trackingNumber: {
         type: String,
+        unique: true,
     },
     employee: {
         type: Schema.Types.ObjectId,
