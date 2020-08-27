@@ -23,7 +23,6 @@ router.post(
         check("status", "Status Required").not().isEmpty(),
 
     ],
-    auth,
         async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

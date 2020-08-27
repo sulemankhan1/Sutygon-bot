@@ -10,7 +10,8 @@ const Order = require("../../models/Orders");
 // @route  GET api/reports/searchbyDate/:start/:end
 // @desc   Get Report (Search for Report by custom date range )
 // @access Private
-router.get("/searchbyorderDate/:start/:end",auth,
+router.get("/searchbyorderDate/:start/:end",
+    auth,
     async (req, res) => {
         start = req.params.start;
         end = req.params.end;
@@ -48,7 +49,7 @@ router.get("/searchbyorderDate/:start/:end",auth,
 // @route  GET api/reports/searchOrder/:customer/:employee/:start/:end
 // @desc   Get Order (Search for Order by customer,employee,custom date)
 // @access Private
-router.get("/searchOrder/:customer/:employee/:start/:end",auth,
+router.get("/searchOrder/:customer/:employee/:start/:end", auth,
 
     async (req, res) => {
         try {

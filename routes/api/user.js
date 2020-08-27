@@ -202,7 +202,7 @@ router.post(
 
 // @route   POST /api/users/updatePassword/:id
 // @desc    Update Password
-// @access  Private
+// @access  Public
 
 router.post(
   "/updatepassword/:id",
@@ -260,7 +260,7 @@ router.post(
 // @route  DELETE api/users/:id 
 // @desc   Delete a user
 // @access Private
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",auth, async (req, res) => {
   try {
 
     // Delete user Document

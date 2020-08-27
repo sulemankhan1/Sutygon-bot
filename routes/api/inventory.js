@@ -13,6 +13,7 @@ router.post(
         check("product", "Product Name Required").not().isEmpty(),
         check("quantity", "Quantity Required").not().isEmpty(),
     ],
+    auth,
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -41,7 +42,7 @@ router.post(
 // @desc    Get all inventory
 // @access  Private
 router.get("/", 
-
+auth,
     async (req, res) => {
         try {
             const inventory = await Inventory.find();
@@ -59,7 +60,7 @@ router.get("/",
 // @route  GET  api/inventory/:id
 // @desc   Get Product by id
 // @access Private
-router.get("/:id", 
+router.get("/:id",auth, 
     async (req, res) => {
         try {
             const inventory = await Inventory.findById(req.params.id);
@@ -88,7 +89,7 @@ router.get("/:id",
 // @route  DELETE  api/inventory/:id
 // @desc   Delete a Product
 // @access Private
-router.delete("/:id",
+router.delete("/:id",auth,
     async (req, res) => {
         try {
             const inventory = await Inventory.findById(req.params.id);

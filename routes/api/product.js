@@ -20,6 +20,7 @@ router.post(
         check("rentedQuantity", "Rented Quantity Required").not().isEmpty(),
 
     ],
+    auth,
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -90,7 +91,7 @@ router.post(
 // @route   GET api/products
 // @desc    Get all products
 // @access  Private
-router.get("/", 
+router.get("/", auth,
 
     async (req, res) => {
         try {
@@ -109,7 +110,7 @@ router.get("/",
 // @route  GET api/products/:id
 // @desc   Get Product by id
 // @access Private
-router.get("/:id",
+router.get("/:id",auth,
     async (req, res) => {
         try {
             const product = await Product.findById(req.params.id);
