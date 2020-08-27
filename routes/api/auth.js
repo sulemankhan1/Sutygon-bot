@@ -43,10 +43,10 @@ router.post(
       // check for existing user
       let user = await User.findOne({ email });
 
-      if(user.accountStatus==="pending"){
+      if(user.accountStatus==="block"){
         return res
         .status(400)
-        .json({ errors: [{ msg: "InValid Account" }] });
+        .json({ errors: [{ msg: "Your account is blocked" }] });
       }
 
       if (!user) {

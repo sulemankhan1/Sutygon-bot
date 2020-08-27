@@ -10,10 +10,10 @@ const ProductSchema = new mongoose.Schema({
     required: true,
   },
   color: {
-    type: String,
+    type: Array,
   },
   size: {
-    type: String,
+    type: Array,
   },
   fabric: {
     type: String,

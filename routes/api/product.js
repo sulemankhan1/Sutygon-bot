@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const Product = require("../../models/Product");
 const { check, validationResult } = require("express-validator");
+const Inventory = require("../../models/Inventory");
 
 // @route   POST api/products/add
 // @desc    Add New Product
@@ -19,20 +20,23 @@ router.post(
         check("rentedQuantity", "Rented Quantity Required").not().isEmpty(),
 
     ],
-    auth,
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
+            return res
+                .status(422)
+                .json({ errors: errors.array() });
         }
 
         try {
             let product = new Product(req.body);
             await product.save();
-            res.json({ product, msg: "Product Added Successfully" });
+            res.json({ msg: "Product Added Successfully" });
         } catch (err) {
             console.log(err);
-            res.status(500).send("Server error");
+            res
+                .status(500)
+                .send("Server error");
         }
     }
 );
@@ -56,12 +60,10 @@ router.post(
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(422).json({ errors: errors.array() });
+                return res
+                    .status(422)
+                    .json({ errors: errors.array() });
             }
-            const product = await Product.findById(req.params.id);
-            console.log(req.body)
-
-            console.log(product)
             await Product.updateOne({ _id: req.params.id }, {
                 $set: {
                     name: req.body.name,
@@ -74,7 +76,8 @@ router.post(
 
                 }
             });
-            res.json({ msg: "Product Updated Successfully" });
+            res
+                .json({ msg: "Product Updated Successfully" });
         } catch (err) {
             console.error(err.message);
             res
@@ -87,36 +90,45 @@ router.post(
 // @route   GET api/products
 // @desc    Get all products
 // @access  Private
-router.get("/",auth,
+router.get("/", 
 
     async (req, res) => {
         try {
             const products = await Product.find();
-            res.json(products);
+            res
+                .status(200)
+                .json(products);
         } catch (err) {
             console.log(err);
-            res.statu(500).send("Server Error!");
+            res
+                .status(500)
+                .send("Server Error!");
         }
     });
 
 // @route  GET api/products/:id
 // @desc   Get Product by id
 // @access Private
-router.get("/:id",auth,
+router.get("/:id",
     async (req, res) => {
         try {
             const product = await Product.findById(req.params.id);
 
             if (!product) {
-                return status(404).json({ msg: "No Product found" });
+                return res
+                    .status(404)
+                    .json({ msg: "No Product found" });
             }
 
+            console.log(product.size[3])
             res.json(product);
         } catch (err) {
             console.error(err.message);
             // Check if id is not valid
             if (err.kind === "ObjectId") {
-                return res.status(404).json({ msg: "No Product found" });
+                return res
+                    .status(404)
+                    .json({ msg: "No Product found" });
             }
             res
                 .status(500)
@@ -130,7 +142,7 @@ router.get("/:id",auth,
 // @desc   Get Product (Search for product by color)
 // @access Private
 router.get("/search/:color",
-auth,
+    auth,
     async (req, res) => {
         try {
             const product = await Product.findOne({ color: { $eq: req.params.color } });
@@ -148,7 +160,9 @@ auth,
             console.error(err.message);
             // Check if id is not valid
             if (err.kind === "ObjectId") {
-                return res.status(404).json({ msg: "No Product found" });
+                return res
+                    .status(404)
+                    .json({ msg: "No Product found" });
             }
             res
                 .status(500)
@@ -160,7 +174,7 @@ auth,
 // @desc   Delete a Product
 // @access Private
 router.delete("/:id",
-auth,
+    
     async (req, res) => {
         try {
             const product = await Product.findById(req.params.id);

@@ -18,7 +18,7 @@ router.post(
         check("noOfOrders", "Quantity Required").not().isEmpty(),
 
     ],
-   
+    auth,
 
     async (req, res) => {
         const errors = validationResult(req);

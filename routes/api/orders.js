@@ -15,6 +15,7 @@ router.post(
         check("orderDate", "Order Date Required").not().isEmpty(),
         check("returnDate", "Return Date Required").not().isEmpty(),
         check("customer", "Customer Name Required").not().isEmpty(),
+        check("employee", "Employee Name Required").not().isEmpty(),
         check("product", "Product Name Required").not().isEmpty(),
         check("orderedQuantity", "Quantity Required").not().isEmpty(),
         check("orderedSize", "Size Required").not().isEmpty(),
@@ -23,7 +24,7 @@ router.post(
 
     ],
     auth,
-    async (req, res) => {
+        async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res
@@ -93,7 +94,6 @@ router.get("/:id",
     });
 
 
-
 // @route  GET api/orders/search/:product/:customer
 // @desc   Get Order (Search for Order by product)
 // @access Private
@@ -129,11 +129,42 @@ router.get("/search/:product/:customer/:employee",
         }
     });
 
+    // @route  GET api/orders/search/trackingNumber/:trackingNumber
+// @desc   Get Order (Search for Order by product)
+// @access Private
+router.get("/search/trackingNumber/:trackingNumber",
+auth,
+async (req, res) => {
+    try {
+        const order = await Order.findOne({
+            trackingNumber: { $eq: req.params.trackingNumber },
+                 });
+
+        if (!order) {
+            return res
+                .status(404)
+                .json({ msg: "No Order found" });
+        }
+
+        res.json(order);
+    } catch (err) {
+        console.error(err.message);
+        // Check if id is not valid
+        if (err.kind === "ObjectId") {
+            return res
+                .status(404)
+                .json({ msg: "No Order found" });
+        }
+        res
+            .status(500)
+            .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+    }
+});
+
 // @route  DELETE api/orders/:id
 // @desc   Delete a Order
 // @access Private
-router.delete("/:id",
-    auth,
+router.delete("/:id",auth,
 
     async (req, res) => {
         try {

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+var moment = require('moment');
 
 const OrderSchema = new mongoose.Schema({
     orderNumber: {
@@ -15,12 +16,14 @@ const OrderSchema = new mongoose.Schema({
 
     },
     orderDate: {
-        type: Date,
+        type: String,
         required: true,
+        set: date => moment(date.now).format('DD MMM YYYY')
     },
     returnDate: {
-        type: Date,
+        type: String,
         required: true,
+        set:date => moment(date).format('DD MMM YYYY')
     },
     employee: {
         type: Schema.Types.ObjectId,
@@ -42,13 +45,10 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    dateRented: {
-        type: Date,
-        default: Date.now,
-    },
     deliveryDate: {
-        type: Date,
+        type: String,
         required: true,
+        set: date => moment(date).format('DD MMM YYYY')
     },
     status: {
         type: String,

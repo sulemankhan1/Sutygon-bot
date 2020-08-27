@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+var moment = require('moment');
+
 
 const RentedProductSchema = new mongoose.Schema({
     orderNumber: {
@@ -21,12 +23,13 @@ const RentedProductSchema = new mongoose.Schema({
     },
     product: {
         type: Schema.Types.ObjectId,
-        ref: "product",    },
-    orderQuantity: {
+        ref: "product",
+    },
+    orderedQuantity: {
         type: String,
         required: true,
-        unique: true,
     },
+
     orderedSize: {
         type: String,
         required: true,
@@ -34,13 +37,19 @@ const RentedProductSchema = new mongoose.Schema({
 
     dateRented: {
         type: Date,
+        set: date => moment(date).format('DD MMM YYYY')
+
     },
     deliveryDate: {
         type: Date,
+        set: date => moment(date).format('DD MMM YYYY')
+
     },
     returnDate: {
         type: Date,
-    },
+        set: date => moment(date).format('DD MMM YYYY')
+
+    }
 },
 );
 
