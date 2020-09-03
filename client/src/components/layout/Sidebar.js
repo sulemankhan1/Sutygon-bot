@@ -45,9 +45,9 @@ class Sidebar extends Component {
               </div>
               {/* <span className="text align-middle"></span> */}
               </a>
-            <a id="sidebarToggle" href="javascript:;" className="nav-toggle d-none d-sm-none d-md-none d-lg-block">
+            <a id="sidebarToggle" href="#" className="nav-toggle d-none d-sm-none d-md-none d-lg-block">
               <i data-toggle="collapsed" className="toggle-icon ft-toggle-left"></i></a>
-            <a id="sidebarClose" href="javascript:;" className="nav-close d-block d-md-block d-lg-none d-xl-none">
+            <a id="sidebarClose" href="#" className="nav-close d-block d-md-block d-lg-none d-xl-none">
               <i className="ft-x"></i>
             </a>
           </div>
