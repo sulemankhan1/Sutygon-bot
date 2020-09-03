@@ -17,7 +17,7 @@ router.post("/add",
 
   [
     check("username", "User Name is Required").not().isEmpty(),
-    check("name", "Full Name is Required").not().isEmpty(),
+    check("fullname", "Full Name is Required").not().isEmpty(),
     check("email", "Please Enter a Valid Email").isEmail(),
     check("password", "Password is Required").not().isEmpty(),
     check("contactnumber", "Please Enter Contact Number").not().isEmpty(),
@@ -28,7 +28,6 @@ router.post("/add",
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
       return res
         .status(422)
@@ -48,23 +47,21 @@ router.post("/add",
       });
       // save user record
       const userBody = {
-        userName: req.body.username,
-        fullName: req.body.name,
+        username: req.body.username,
+        fullname: req.body.name,
         email: req.body.email,
         password: password,
         gender: req.body.gender,
-        contactNumber: req.body.contactnumber,
+        contactnumber: req.body.contactnumber,
         avatar: avatar,
       };
 
       let user = new User(userBody);
       await user.save();
 
-      const record = { ...userBody };
-
       res
         .status(200)
-        .json({ ...record, msg: "User Added Successfully" });
+        .json({user, msg: "User Added Successfully" });
     } catch (err) {
       console.log(err);
       res

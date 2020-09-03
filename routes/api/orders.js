@@ -12,7 +12,7 @@ router.post(
     [
         check("orderNumber", "Order Number Required").not().isEmpty(),
         check("trackingNumber", "Tracking Number Required").not().isEmpty(),
-        check("orderDate", "Order Date Required").not().isEmpty(),
+        // check("orderDate", "Order Date Required").not().isEmpty(),
         check("returnDate", "Return Date Required").not().isEmpty(),
         check("customer", "Customer Name Required").not().isEmpty(),
         check("employee", "Employee Name Required").not().isEmpty(),
@@ -23,6 +23,7 @@ router.post(
         check("status", "Status Required").not().isEmpty(),
 
     ],
+    auth,
         async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -52,7 +53,7 @@ router.post(
 router.get("/", auth,
     async (req, res) => {
         try {
-            const orders = await Order.find();
+            const orders = await Order.find().populate("customer").populate("product");
             res.json(orders);
         } catch (err) {
             console.log(err);

@@ -18,10 +18,10 @@ router.post(
         check("product", "Product Name Required").not().isEmpty(),
         check("orderedQuantity", "Quantity Required").not().isEmpty(),
         check("orderedSize", "Size Required").not().isEmpty(),
-        check("orderDate", "Order Date Required").not().isEmpty(),
+        // check("orderDate", "Order Date Required").not().isEmpty(),
         check("returnDate", "Return Date Required").not().isEmpty(),
         check("deliveryDate", "Delivery Date Required").not().isEmpty(),
-        check("dateRented", "Return Date Required").not().isEmpty(),
+        // check("dateRented", "Return Date Required").not().isEmpty(),
     ],
     auth,
     async (req, res) => {

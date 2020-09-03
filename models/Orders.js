@@ -17,7 +17,7 @@ const OrderSchema = new mongoose.Schema({
     },
     orderDate: {
         type: String,
-        required: true,
+        // required: true,
         set: date => moment(date.now).format('DD MMM YYYY')
     },
     returnDate: {

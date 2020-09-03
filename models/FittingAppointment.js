@@ -4,9 +4,11 @@ const Schema = mongoose.Schema;
 const FittingAppointmentSchema = new mongoose.Schema({
     appointmentNumber: {
         type: String,
+        unique: true,
     },
     trackingNumber: {
         type: String,
+        unique: true,
     },
     appointmentDate: {
         type: Date,

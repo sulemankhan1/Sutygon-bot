@@ -121,7 +121,6 @@ router.get("/:id",auth,
                     .json({ msg: "No Product found" });
             }
 
-            console.log(product.size[3])
             res.json(product);
         } catch (err) {
             console.error(err.message);

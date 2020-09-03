@@ -5,7 +5,7 @@ const CutomerSchema = new mongoose.Schema({
     name: {
         type: String,
     },
-    contactNumber: {
+    contactnumber: {
         type: String,
     },
     address: {
@@ -16,7 +16,7 @@ const CutomerSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    numberofOrders: {
+    noOfOrders: {
         type: String,
     },
     date: {
