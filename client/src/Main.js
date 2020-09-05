@@ -14,6 +14,7 @@ import AddAppointment from "./components/pages/appointment";
 import ViewCustomer from "./components/pages/customers/Viewcustomer";
 import ViewProduct from "./components/pages/products/Viewproduct";
 import RentProduct from "./components/pages/rentproduct";
+import Report from "./components/pages/report";
 
 // import Calender from "./components/pages/calender";
 
@@ -62,6 +63,10 @@ const Main = () => {
           <PrivateRoute exact path="/orders" component={Orders} />
 {/* appointment */}
 <PrivateRoute exact path="/appointments" component={AddAppointment} />
+
+{/* report */}
+<PrivateRoute exact path="/reports" component={Report} />
+
 
 
         </Switch>

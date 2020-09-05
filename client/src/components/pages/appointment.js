@@ -68,7 +68,7 @@ const {user} = this.props.auth;
           
         return (
             <React.Fragment>
-                <div className="wrapper nav-collapsed menu-collapsed">
+                <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
                     <Header>
@@ -97,7 +97,7 @@ const {user} = this.props.auth;
                                 className="form-control"
                                 onChange={(e) => this.handleChange(e)}
                               >
-                                <option value=""> -- select -- </option>
+                                <option value="DEFAULT"> -- select -- </option>
                                 {customers &&
                                   customers.map((record) => (
                                     <option
@@ -112,31 +112,6 @@ const {user} = this.props.auth;
                                   ))}
                               </select>
                             </div>
-                            <div className="form-group col-6 mb-2">
-                              <label htmlFor="issueinput5">Select Product</label>
-                              <select
-                                name="product"
-                                className="form-control"
-                                onChange={(e) => this.handleChange(e)}
-                                // onMouseOver={this.getavailableQuantity()}
-
-                              >
-                                <option value=""> -- select -- </option>
-                                {products &&
-                                  products.map((record) => (
-                                    <option
-                                      key={record._id}
-                                      value={record._id}
-                                      selected={record._id === product}
-                                    >
-                                      {record.name}
-                                    </option>
-                                  ))}
-                              </select>
-                            </div>
-                          </div>      
-                          
-                          <div className="row">
                             <div className="form-group col-md-6 mb-2">
                               <label
                                 htmlFor="issueinput3"
@@ -155,8 +130,9 @@ const {user} = this.props.auth;
                                 value={moment(this.state.appointmentDate).format("YYYY-MM-DD")}
                               />
                             </div>
-                         
-                          </div>          
+                          </div>      
+                          
+                                  
               <div className="form-actions top">
                          
                           {this.state.saving ? (

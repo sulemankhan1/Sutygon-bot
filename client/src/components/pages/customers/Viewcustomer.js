@@ -31,8 +31,8 @@ class ViewCustomer extends Component {
           </tr>
         );
       }
-      return customers.map((customer) => (
-        <tr>
+      return customers.map((customer,i) => (
+        <tr key={i}>
           
            <td className="text-center text-muted">{tbl_sno++}</td>
            <td className="text-center">{""}</td>
@@ -94,7 +94,7 @@ class ViewCustomer extends Component {
 
         return (
             <React.Fragment>
-                <div className="wrapper nav-collapsed menu-collapsed">
+                <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
                     <Header>
@@ -104,16 +104,16 @@ class ViewCustomer extends Component {
                         <div className="main-content">
                         <div className="content-wrapper">
                         <section id="extended">
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">View Customer</h4>
+  <div className="row">
+    <div className="col-sm-12">
+      <div className="card">
+        <div className="card-header">
+          <h4 className="card-title">View Customer</h4>
         </div>
-        <div class="card-content">
-          <div class="card-body table-responsive">
+        <div className="card-content">
+          <div className="card-body table-responsive">
             <Alert />
-            <table class="table text-center">
+            <table className="table text-center">
               <thead>
                 <tr>
                   <th>#</th>
@@ -160,7 +160,7 @@ ViewCustomer.propTypes = {
   auth: PropTypes.object,
   getAllCustomers: PropTypes.func.isRequired,
      deleteCustomer: PropTypes.func.isRequired,
-     customers: PropTypes.object,
+     customers: PropTypes.array,
   };
 const mapStateToProps = (state) => ({
   customers: state.customer.customers,

@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const FittingAppointmentSchema = new mongoose.Schema({
     appointmentNumber: {
-        type: String,
-        unique: true,
+        type: Number
     },
     trackingNumber: {
         type: String,
@@ -25,5 +25,5 @@ const FittingAppointmentSchema = new mongoose.Schema({
 
 },
 );
-
+FittingAppointmentSchema.plugin(AutoIncrement, {inc_field: 'appointmentNumber'});
 module.exports = FittingAppointment = mongoose.model("fittingappointment", FittingAppointmentSchema);

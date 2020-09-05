@@ -69,11 +69,11 @@ export const getAllProducts = () => async (dispatch) => {
 
 
 // Get User by ID
-export const getProduct = (id) => async (dispatch) => {
+export const getProduct = (name) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });
  
   try {
-    const res = await axios.get(`/api/products/${id}`);
+    const res = await axios.get(`/api/products/${name}`);
     dispatch({
       type: GET_PRODUCT,
       payload: res.data,
@@ -89,6 +89,7 @@ export const getProduct = (id) => async (dispatch) => {
 
 // Update User
 export const updateProduct = (product, id) => async (dispatch) => {
+
   dispatch({ type: PRODUCTS_LOADING });
   const config = {
     headers: {

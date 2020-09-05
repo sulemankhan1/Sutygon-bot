@@ -6,7 +6,7 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { deleteProduct, addNewRentProduct } from "../../actions/rentproduct";
-import { getAllProducts, getProduct } from "../../actions/product";
+import { getAllProducts, getProduct , updateProduct} from "../../actions/product";
 import { getAllCustomers } from "../../actions/customer";
 import moment from "moment"
 import { setAlert } from "../../actions/alert";
@@ -47,6 +47,15 @@ class RentProduct extends Component {
       }
     }
   }
+  getRentedQuantity = () => {
+    const { products } = this.props.products;
+    if (this.state.product) {
+      const result = products.filter(record => record._id === this.state.product)
+      if (result) {
+        return result[0].rentedQuantity
+      }
+    }
+  }
   onSubmit = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
@@ -67,11 +76,40 @@ class RentProduct extends Component {
       image: state.image
     };
     await this.props.addNewRentProduct(product);
-
+    this.getProductQTY(e);
 
     this.setState({ saving: false });
   };
 
+  getProductQTY = async (e) =>{
+    e.preventDefault();
+    if (this.state.product) {
+      const { products } = this.props.products;
+      let qty;
+      let result;
+      if (this.state.product) {
+        result = products.filter(record => record._id === this.state.product)
+        console.log(result)
+        if (result) {
+          qty = result[0].availableQuantity - this.state.orderedQuantity;
+        }
+      }
+         const productQTY = {
+       availableQuantity:qty,
+       rentedQuantity:this.state.orderedQuantity
+
+      };
+      console.log(productQTY)
+this.setState({ saving: true });
+
+     await this.props.updateProduct(productQTY,result[0]._id);
+
+     this.setState({ saving: false });
+     
+      }
+    }
+
+  
   render() {
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
@@ -87,7 +125,7 @@ class RentProduct extends Component {
     const { products } = this.props.products;
     return (
       <React.Fragment>
-        <div className="wrapper nav-collapsed menu-collapsed">
+        <div className="wrapper menu-collapsed">
           <Sidebar location={this.props.location} >
           </Sidebar>
           <Header>
@@ -113,7 +151,7 @@ class RentProduct extends Component {
                                 className="form-control"
                                 onChange={(e) => this.handleChange(e)}
                               >
-                                <option value=""> -- select -- </option>
+                                <option value="DEFAULT"> -- select -- </option>
                                 {customers &&
                                   customers.map((record) => (
                                     <option
@@ -137,7 +175,7 @@ class RentProduct extends Component {
                                 // onMouseOver={this.getavailableQuantity()}
 
                               >
-                                <option value=""> -- select -- </option>
+                                <option value="DEFAULT"> -- select -- </option>
                                 {products &&
                                   products.map((record) => (
                                     <option
@@ -159,21 +197,22 @@ class RentProduct extends Component {
                                 className="form-control"
                                 placeholder="Available Quantity"
                                 name="availableQuantity"
-                                value={this.getavailableQuantity() >= 0 ?  this.getavailableQuantity(): `Not available`}
+                                value={this.getavailableQuantity() >= 0 ?  this.getavailableQuantity(): `Available Quantity`}
                                 onChange={(e) => this.handleChange(e)}
                                 readOnly
                               />
                             </div>
                             <div className="form-group col-md-6 mb-2">
                               <label htmlFor="projectinput4">Rented Quantity</label>
-                    <input type="number"
+                    <input type="text"
                      id="projectinput4"
                       className="form-control"
                        placeholder="Rented Quantity" 
                        name="orderedQuantity"
-                       value={this.state.orderedQuantity}
-                      
+                       value={this.getRentedQuantity() >= 0 ?  this.getRentedQuantity(): `Rented Quantity`}
                        onChange={(e) => this.handleChange(e)}
+                       readOnly
+
                        />
                             </div>
                           </div>
@@ -184,7 +223,7 @@ class RentProduct extends Component {
                               <input type="text"
                                 id="projectinput4"
                                 className="form-control"
-                                placeholder="Available Quantity"
+                                placeholder="Size"
                                 name="orderedSize"
                                 value={this.state.orderedSize}
                                 onChange={(e) => this.handleChange(e)}
@@ -196,7 +235,7 @@ class RentProduct extends Component {
                               <input type="text"
                                 id="projectinput4"
                                 className="form-control"
-                                placeholder="Available Quantity"
+                                placeholder="Quantity"
                                 name="orderedQuantity"
                                 value={this.state.orderedQuantity}
                                 onChange={(e) => this.handleChange(e)}
@@ -299,12 +338,16 @@ RentProduct.propTypes = {
   getAllCustomers: PropTypes.func.isRequired,
   getAllProducts: PropTypes.func.isRequired,
   getProduct: PropTypes.func.isRequired,
+  updateProduct:PropTypes.func.isRequired,
   auth: PropTypes.object,
   products: PropTypes.object,
   customers: PropTypes.object,
+  product: PropTypes.object,
+
 };
 
 const mapStateToProps = (state) => ({
+  product:state.product.product,
   saved: state.rentproduct.saved,
   auth: state.auth,
   products: state.product,
@@ -315,6 +358,7 @@ export default connect(mapStateToProps, {
   getAllProducts,
   addNewRentProduct,
   deleteProduct,
-  getProduct
+  getProduct,
+  updateProduct
 })(RentProduct);
 

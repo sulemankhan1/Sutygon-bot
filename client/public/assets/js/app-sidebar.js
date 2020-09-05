@@ -70,11 +70,11 @@ $(document).ready(function () {
         return false;
       }
       // If menu accordion then close all except clicked once
-      else {
-        openListItems = listItem.siblings('.open');
-        collapse(openListItems);
-        listItem.siblings('.open').find('li.open').removeClass('open');
-      }
+      // else {
+      //   openListItems = listItem.siblings('.open');
+      //   collapse(openListItems);
+      //   listItem.siblings('.open').find('li.open').removeClass('open');
+      // }
     }
   });
 
@@ -165,33 +165,34 @@ $(document).ready(function () {
     }
   });
 
-  $sidebar.on('mouseenter', function () {
-    if ($wrapper.hasClass('nav-collapsed')) {
-      $wrapper.removeClass('menu-collapsed');
-      var $listItem = $('.navigation li.nav-collapsed-open'),
-        $subList = $listItem.children('ul');
+  // $sidebar.on('mouseenter', function () {
+  //   if ($wrapper.hasClass('nav-collapsed')) {
+  //     $wrapper.removeClass('menu-collapsed');
+  //     var $listItem = $('.navigation li.nav-collapsed-open'),
+  //       $subList = $listItem.children('ul');
 
-      $subList.hide().slideDown(300, function () {
-        $(this).css('display', '');
-      });
+  //     $subList.hide().slideDown(300, function () {
+  //       $(this).css('display', '');
+  //     });
 
-      $sidebar_content.find('li.active').parents('li').addClass('open');
-      $listItem.addClass('open').removeClass('nav-collapsed-open');
-    }
-  }).on('mouseleave', function (event) {
-    if ($wrapper.hasClass('nav-collapsed')) {
-      $wrapper.addClass('menu-collapsed');
-      var $listItem = $('.navigation li.open'),
-        $subList = $listItem.children('ul');
-      $listItem.addClass('nav-collapsed-open');
+  //     $sidebar_content.find('li.active').parents('li').addClass('open');
+  //     $listItem.addClass('open').removeClass('nav-collapsed-open');
+  //   }
+  // })
+  // .on('mouseleave', function (event) {
+  //   if ($wrapper.hasClass('nav-collapsed')) {
+  //     $wrapper.addClass('menu-collapsed');
+  //     var $listItem = $('.navigation li.open'),
+  //       $subList = $listItem.children('ul');
+  //     $listItem.addClass('nav-collapsed-open');
 
-      $subList.show().slideUp(300, function () {
-        $(this).css('display', '');
-      });
+  //     $subList.show().slideUp(300, function () {
+  //       $(this).css('display', '');
+  //     });
 
-      $listItem.removeClass('open');
-    }
-  });
+  //     $listItem.removeClass('open');
+  //   }
+  // });
 
   if ($(window).width() < 992) {
     $sidebar.addClass('hide-sidebar');

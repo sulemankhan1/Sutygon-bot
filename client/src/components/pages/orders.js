@@ -17,9 +17,7 @@ class Orders extends Component {
    
  getTAble = () => {
     const { orders } = this.props;
-    
-
-    let tbl_sno=1;
+        let tbl_sno=1;
     if (orders) {
       if (orders.length === 0) {
         return (
@@ -30,8 +28,8 @@ class Orders extends Component {
           </tr>
         );
       }
-      return orders.map((order) => (
-        <tr>
+      return orders.map((order,i) => (
+        <tr key={i}>
            
            <td className="text-center text-muted">{tbl_sno++}</td>
            <td className="text-center">{""}</td>
@@ -96,7 +94,7 @@ class Orders extends Component {
 
         return (
             <React.Fragment>
-                <div className="wrapper nav-collapsed menu-collapsed">
+                <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
                     <Header>
@@ -160,7 +158,7 @@ Orders.propTypes = {
   auth: PropTypes.object,
   getAllOrders: PropTypes.func.isRequired,
   deleteOrder: PropTypes.func.isRequired,
-     orders: PropTypes.object,
+     orders: PropTypes.array,
   };
 
 const mapStateToProps = (state) => ({

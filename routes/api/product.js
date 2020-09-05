@@ -48,13 +48,7 @@ router.post(
 router.post(
     "/:id",
     [
-        check("name", "Product Name Required").not().isEmpty(),
-        check("image", "Product Image Required").not().isEmpty(),
-        check("color", "Product Color Required").not().isEmpty(),
-        check("size", "Product Size Required").not().isEmpty(),
-        check("fabric", "Product fabric Required").not().isEmpty(),
         check("availableQuantity", "Available Quantity Required").not().isEmpty(),
-        check("rentedQuantity", "Rented Quantity Required").not().isEmpty(),
     ],
     auth,
     async (req, res) => {
@@ -67,12 +61,7 @@ router.post(
             }
             await Product.updateOne({ _id: req.params.id }, {
                 $set: {
-                    name: req.body.name,
-                    image: req.body.image,
-                    color: req.body.color,
-                    size: req.body.size,
-                    fabric: req.body.fabric,
-                    availableQuantity: req.body.availableQuantity,
+                                    availableQuantity: req.body.availableQuantity,
                     rentedQuantity: req.body.rentedQuantity,
 
                 }
@@ -138,14 +127,14 @@ router.get("/:id",auth,
 
 
 
-// @route  GET api/products/search/:color
-// @desc   Get Product (Search for product by color)
+// @route  GET api/products/:name
+// @desc   Get Product (Search for product by name)
 // @access Private
-router.get("/search/:color",
+router.get("/:name",
     auth,
     async (req, res) => {
         try {
-            const product = await Product.findOne({ color: { $eq: req.params.color } });
+            const product = await Product.findOne({ name: { $eq: req.params.name } });
 
             if (!product) {
                 return res

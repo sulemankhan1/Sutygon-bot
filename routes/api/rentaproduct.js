@@ -36,7 +36,7 @@ router.post(
             await order.save();
             await rentedProduct.save();
 
-            res.json({ msg: "Product Added Successfully" });
+            res.json({ msg: "Order Added Successfully" });
         } catch (err) {
             console.log(err);
             res.status(500).send("Server error");

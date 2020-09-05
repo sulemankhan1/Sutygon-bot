@@ -36,7 +36,7 @@ class Login extends Component {
     }
 
     return (
-      <div className="wrapper nav-collapsed menu-collapsed">
+      <div className="wrapper menu-collapsed">
         <div className="main-panel">
           <div className="main-content">
             <div className="content-wrapper">

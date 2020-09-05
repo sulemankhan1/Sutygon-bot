@@ -39,17 +39,13 @@ class Sidebar extends Component {
 
         <div className="sidebar-header">
           <div className="logo clearfix">
-            <a href="index.html" className="logo-text float-left">
-              <div className="logo-img text align-middle">
-                <img src="assets/img/logo.png" height={70} width={170}/>
+          <Link
+                      to="/dashboard" className="logo-text float-left">
+              <div className="logo-img text-center align-middle mt-n3 mb-2">
+                <img src="assets/img/logo.png" height={70} width={70}/>
               </div>
               {/* <span className="text align-middle"></span> */}
-              </a>
-            <a id="sidebarToggle" href="#" className="nav-toggle d-none d-sm-none d-md-none d-lg-block">
-              <i data-toggle="collapsed" className="toggle-icon ft-toggle-left"></i></a>
-            <a id="sidebarClose" href="#" className="nav-close d-block d-md-block d-lg-none d-xl-none">
-              <i className="ft-x"></i>
-            </a>
+</Link>            
           </div>
         </div>
         <div className="sidebar-content">
@@ -160,9 +156,9 @@ class Sidebar extends Component {
               </li>
               <li className=" nav-item">
               <Link
-                      to="/appointment"
-                      onClick={() => this.handleClick("appointment")}
-                      className={this.getClassName("appointment")}
+                      to="/appointments"
+                      onClick={() => this.handleClick("appointments")}
+                      className={this.getClassName("appointments")}
                     >
                       <i className="ft-activity" />  Add Fitting Appointment
                 </Link>
@@ -178,9 +174,9 @@ class Sidebar extends Component {
               </li>
               <li className=" nav-item">
               <Link
-                      to="/report"
-                      onClick={() => this.handleClick("report")}
-                      className={this.getClassName("report")}
+                      to="/reports"
+                      onClick={() => this.handleClick("reports")}
+                      className={this.getClassName("reports")}
                     >
                       <i className="ft-clipboard" />  Report
                 </Link>

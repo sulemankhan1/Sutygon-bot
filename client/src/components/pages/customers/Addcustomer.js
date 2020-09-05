@@ -63,7 +63,7 @@ class AddCustomer extends Component {
 
         return (
             <React.Fragment>
-                <div className="wrapper nav-collapsed menu-collapsed">
+                <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
                     <Header>
