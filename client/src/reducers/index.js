@@ -9,6 +9,7 @@ import customer from "./customer";
 import rentproduct from "./rentproduct";
 import order from "./order";
 import appointment from "./appointment";
+import report from "./report";
 
 
 export default combineReducers({
@@ -20,6 +21,7 @@ export default combineReducers({
   customer,
   rentproduct,
   order,
-  appointment
+  appointment,
+  report
 
 });

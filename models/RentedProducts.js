@@ -34,23 +34,26 @@ const RentedProductSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-
     dateRented: {
         type: Date,
-        set: date => moment(date).format('DD MMM YYYY')
+        // set: date => moment(date).format('DD MMM YYYY')
 
     },
     deliveryDate: {
         type: Date,
-        set: date => moment(date).format('DD MMM YYYY')
+        // set: date => moment(date).format('DD MMM YYYY')
 
     },
     returnDate: {
         type: Date,
-        set: date => moment(date).format('DD MMM YYYY')
+        // set: date => moment(date).format('DD MMM YYYY')
 
     }
+
 },
+    {
+        timestamps: true
+    }
 );
 
 module.exports = RentedProduct = mongoose.model("rentedproduct", RentedProductSchema);

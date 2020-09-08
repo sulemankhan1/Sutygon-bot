@@ -15,19 +15,18 @@ import Alert from "../layout/Alert";
 class RentProduct extends Component {
   state = {
     id: "",
-    orderNumber: `${"RP"} ${Date.now()}`,
+    orderNumber: `${"RP"}${Date.now()}`,
     trackingNumber: "",
     customer: "",
     product: "",
     orderedQuantity: "",
     orderedSize: "",
     emoloyee: "",
-    deliveryDate: new Date().toString(),
-    returnDate: new Date().toString(),
+    deliveryDate:"",
+    returnDate:"",
     image: "",
     saving: false,
   };
-
 
   async componentDidMount() {
     this.props.getAllProducts();
@@ -73,6 +72,7 @@ class RentProduct extends Component {
       orderedQuantity:state.orderedQuantity,
       deliveryDate: state.deliveryDate,
       returnDate: state.returnDate,
+
       image: state.image
     };
     await this.props.addNewRentProduct(product);
@@ -111,6 +111,7 @@ this.setState({ saving: true });
 
   
   render() {
+    console.log(this.state)
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
@@ -261,7 +262,7 @@ this.setState({ saving: true });
                                 data-placement="top"
                                 data-title="Date Opened"
                                 onChange={(e) => this.handleChange(e)}
-                                value={moment(this.state.deliveryDate).format("YYYY-MM-DD")}
+                                value={this.state.deliveryDate}
                               />
                             </div>
                             <div className="form-group col-md-6 mb-2">
@@ -280,7 +281,7 @@ this.setState({ saving: true });
                                 data-placement="top"
                                 data-title="Date Opened"
                                 onChange={(e) => this.handleChange(e)}
-                                value={moment(this.state.returnDate).format("YYYY-MM-DD")}
+                                value={this.state.returnDate}
                               />
                             </div>
                           </div>

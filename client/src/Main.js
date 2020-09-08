@@ -14,7 +14,9 @@ import AddAppointment from "./components/pages/appointment";
 import ViewCustomer from "./components/pages/customers/Viewcustomer";
 import ViewProduct from "./components/pages/products/Viewproduct";
 import RentProduct from "./components/pages/rentproduct";
-import Report from "./components/pages/report";
+import Report from "./components/pages/report/report";
+import ReportOrder from "./components/pages/report/reportOrder";
+
 
 // import Calender from "./components/pages/calender";
 
@@ -32,6 +34,7 @@ if (localStorage.token) {
   setAuthToken(localStorage.token);
 }
 const Main = () => {
+
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);
@@ -66,6 +69,7 @@ const Main = () => {
 
 {/* report */}
 <PrivateRoute exact path="/reports" component={Report} />
+<PrivateRoute exact path="/report" component={ReportOrder} />
 
 
 

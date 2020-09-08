@@ -17,7 +17,7 @@ class AddAppointment extends Component {
         id: "",
         appointmentNumber: 3,
         trackingNumber:`${"A"}${Date.now()}`,
-        appointmentDate:new Date().toString(),
+        appointmentDate: moment().format('DD-MM-YYYY'),
         customer: "",
         employee:"",
         saving: false,
@@ -127,7 +127,7 @@ const {user} = this.props.auth;
                                 data-placement="top"
                                 data-title="Date Opened"
                                 onChange={(e) => this.handleChange(e)}
-                                value={moment(this.state.appointmentDate).format("YYYY-MM-DD")}
+                                value={this.state.appointmentDate}
                               />
                             </div>
                           </div>      
