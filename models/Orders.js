@@ -15,15 +15,11 @@ const OrderSchema = new mongoose.Schema({
         unique: true,
 
     },
-    orderDate: {
-        type: String,
-        // required: true,
-        set: date => moment(date.now).format('DD MMM YYYY')
-    },
+
     returnDate: {
         type: String,
         required: true,
-        set:date => moment(date).format('DD MMM YYYY')
+        // set:date => moment(date).format('DD MM YYYY')
     },
     employee: {
         type: Schema.Types.ObjectId,
@@ -48,15 +44,18 @@ const OrderSchema = new mongoose.Schema({
     deliveryDate: {
         type: String,
         required: true,
-        set: date => moment(date).format('DD MMM YYYY')
+        // set: date => moment(date).format('DD MM YYYY')
     },
     status: {
         type: String,
         required: true,
-        default:"new"
-      }, 
-  
+        default: "new"
+    },
+
 },
+    {
+        timestamps: true
+    }
 );
 
 module.exports = Order = mongoose.model("order", OrderSchema);

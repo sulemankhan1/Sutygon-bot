@@ -8,6 +8,8 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const auth = require("../../middleware/auth");
 const User = require("../../models/User");
+const upload = require("../../middleware/upload");
+
 
 
 // @route   POST /api/users/add
@@ -24,9 +26,13 @@ router.post("/add",
     check("gender", "Please select your Gender").not().isEmpty(),
     check("password", "Please Enter a password with 6 or more characters").isLength({ min: 6 }),
   ],
-  auth,
+  auth,     
+
   async (req, res) => {
+    const url = `${req.protocol}:${req.get('host')}`
+    console.log(req.body)
     // Finds the validation errors in this request and wraps them in an object with handy functions
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
@@ -40,12 +46,13 @@ router.post("/add",
     try {
       // check if there is any record with same email
       const rec = User.find({ email: req.body.email });
-      const avatar = gravatar.url(req.body.email, {
-        s: "200",
-        r: "pg",
-        d: "mm",
-      });
+      // const avatar = gravatar.url(req.body.email, {
+      //   s: "200",
+      //   r: "pg",
+      //   d: "mm",
+      // });
       // save user record
+      // const { avatar } = req.file.path;
       const userBody = {
         username: req.body.username,
         fullname: req.body.name,
@@ -53,9 +60,9 @@ router.post("/add",
         password: password,
         gender: req.body.gender,
         contactnumber: req.body.contactnumber,
-        avatar: avatar,
+avatar:`${url}/client/src/uploads/${req.body.avatar}`,
       };
-
+      console.log("userbody",userBody)
       let user = new User(userBody);
       await user.save();
 
@@ -68,8 +75,10 @@ router.post("/add",
         .status(500)
         .send("Server error");
     }
-  }
-);
+  
+},
+)
+
 
 
 // @route   GET api/users

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
-import { addNewUser,updateUser,getUser } from "../../../actions/user";
+import { addNewUser, updateUser, getUser } from "../../../actions/user";
 
 import { Link } from "react-router-dom";
 
@@ -19,31 +19,39 @@ class AddUser extends Component {
         contactnumber: "",
         password: "",
         gender: "",
-        image: "default",
+        avatar: "",
         saving: false,
     };
 
     async componentDidMount() {
         // check form is to Add or Edit
         if (this.props.match.params.id) {
-          const id = this.props.match.params.id;
-          let res = await this.props.getUser(id);
-          const { user } = this.props;
-          if (user) {
-            this.setState({
-              id: id,
-              fullname: user.fullname,
-              username: user.username,
-              email: user.email,
-              contactnumber: user.contactnumber,
-              password:user.password
-            });
-          }
-        }
-      }
+            const id = this.props.match.params.id;
+            let res = await this.props.getUser(id);
+            const { user } = this.props;
+            if (user) {
+                this.setState({
+                    id: id,
+                    fullname: user.fullname,
+                    username: user.username,
+                    avatar: user.avatar,
+                    email: user.email,
+                    contactnumber: user.contactnumber,
+                    password: user.password
 
+                });
+            }
+        }
+    }
+
+
+    _onChange = (e, id = "") => {
+        console.log("123 working", this.state)
+        this.setState({ [e.target.name]: e.target.files[0] });
+    }
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
+
     };
 
     onSubmit = async (e) => {
@@ -59,15 +67,16 @@ class AddUser extends Component {
             password: state.password,
             contactnumber: state.contactnumber,
             gender: state.gender,
-            image: state.image
+            avatar: state.avatar.name
         };
+        console.log(this.state)
         if (state.id === "") {
             await this.props.addNewUser(user);
 
-        
-    } else {
-        await this.props.updateUser(user, state.id);
-      }
+
+        } else {
+            await this.props.updateUser(user, state.id);
+        }
         this.setState({ saving: false });
     }
     render() {
@@ -77,7 +86,7 @@ class AddUser extends Component {
         }
         if (this.props.saved) {
             return <Redirect to="/dashboard" />;
-          }
+        }
 
         return (
             <React.Fragment>
@@ -94,24 +103,37 @@ class AddUser extends Component {
                                     <div className="card">
                                         <div className="card-header">
                                             <h4 className="form-section"><i className="ft-user"></i>
-                                               {this.state.id === ""
-                          ? "Add New User"
-                          : "Update User"}
-                          </h4>
+                                                {this.state.id === ""
+                                                    ? "Add New User"
+                                                    : "Update User"}
+                                            </h4>
                                         </div>
                                         <Alert />
 
                                         <div className="card-body">
-                                            <form onSubmit={(e) => this.onSubmit(e)}>
+                                            <form
+                                                encType="multipart/form-data"
+                                                action="/upload"
+                                                method="POST"
+                                                onSubmit={(e) => this.onSubmit(e)}>
 
                                                 <div className="row">
                                                     <div className="form-group col-12 mb-2">
                                                         <label>Select Profile Image</label>
                                                         <input
+                                                            name="avatar"
+
                                                             type="file"
                                                             className="form-control-file"
                                                             id="projectinput8"
-                                                        />
+                                                            accept='image/*,.pdf,.jpg'
+
+                                                            // accept='file_extension|image/*|media_type'
+                                                            // value={this.state.avatar}
+                                                            onChange={(e) => this._onChange(e)} />
+
+
+
                                                     </div>
                                                 </div>
                                                 <div className="row">
@@ -162,24 +184,24 @@ class AddUser extends Component {
                                                         />
                                                     </div>
                                                 </div>
- <div className="row">
- {this.state.id === ""
-                          ? 
-                          <>
-                          <div className="form-group col-6 mb-2">
-                              <label htmlFor="projectinput5">Password</label>
-                              <input type="password"
-                                  id="projectinput5"
-                                  className="form-control"
-                                  placeholder="Password"
-                                  name="password"
-                                  onChange={(e) => this.handleChange(e)}
-                                  value={this.state.password}
-                              />
-                          </div>
-                          </>
-                          : ""}
-                                               
+                                                <div className="row">
+                                                    {this.state.id === ""
+                                                        ?
+                                                        <>
+                                                            <div className="form-group col-6 mb-2">
+                                                                <label htmlFor="projectinput5">Password</label>
+                                                                <input type="password"
+                                                                    id="projectinput5"
+                                                                    className="form-control"
+                                                                    placeholder="Password"
+                                                                    name="password"
+                                                                    onChange={(e) => this.handleChange(e)}
+                                                                    value={this.state.password}
+                                                                />
+                                                            </div>
+                                                        </>
+                                                        : ""}
+
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput6">Gender</label><br></br>
                                                         <label className="radio-inline">
@@ -216,28 +238,28 @@ class AddUser extends Component {
                                                 </div>
 
                                                 <div className="form-actions top">
-                                                {this.state.saving ? (
-                            <button
-                              type="button"
-                              className="mb-2 mr-2 btn btn-raised btn-primary"
-                            >
-                              <div
-                                className="spinner-grow spinner-grow-sm "
-                                role="status"
-                              ></div>
+                                                    {this.state.saving ? (
+                                                        <button
+                                                            type="button"
+                                                            className="mb-2 mr-2 btn btn-raised btn-primary"
+                                                        >
+                                                            <div
+                                                                className="spinner-grow spinner-grow-sm "
+                                                                role="status"
+                                                            ></div>
                                 &nbsp; Saving
-                            </button>
-                          ) : (
-                              <button
-                                type="submit"
-                                className="mb-2 mr-2 btn btn-raised btn-primary"
-                              >
-                                <i className="fa fa-check" /> Add User
-                              </button>
-                            )}
-             
+                                                        </button>
+                                                    ) : (
+                                                            <button
+                                                                type="submit"
+                                                                className="mb-2 mr-2 btn btn-raised btn-primary"
+                                                            >
+                                                                <i className="fa fa-check" /> Add User
+                                                            </button>
+                                                        )}
+
                                                 </div>
-                                                
+
                                             </form>
                                         </div>
                                     </div>
@@ -261,7 +283,7 @@ class AddUser extends Component {
 }
 
 AddUser.propTypes = {
-     saved: PropTypes.bool,
+    saved: PropTypes.bool,
     addNewUser: PropTypes.func.isRequired,
     getUser: PropTypes.func.isRequired,
 
@@ -278,6 +300,6 @@ const mapStateToProps = (state) => ({
 
 });
 export default connect(mapStateToProps, {
-    addNewUser,updateUser,getUser
+    addNewUser, updateUser, getUser
 })(AddUser);
 

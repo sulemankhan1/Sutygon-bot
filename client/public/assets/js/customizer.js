@@ -51,7 +51,7 @@ $(document).ready(function() {
     $("#ll-switch").on("click", function() {
       $(".sidebar-background").css(
         "background-image",
-        "app-assets/img/sidebar-bg/01.jpg"
+        "assets/img/sidebar-bg/01.jpg"
       );
     });
   }
@@ -67,7 +67,16 @@ $(document).ready(function() {
       .removeClass("selected");
     $this.addClass("selected");
 
-   
+    $(".app-sidebar").attr("data-background-color", bgColor);
+    if (bgColor == "white") {
+      $(".logo-img img").attr("src", "assets/img/logo-dark.png");
+    } else {
+      if (
+        $(".logo-img img").attr("src") == "assets/img/logo-dark.png"
+      ) {
+        $(".logo-img img").attr("src", "assets/img/logo.png");
+      }
+    }
   });
 
   // Change Background Image
@@ -163,7 +172,7 @@ $(document).ready(function() {
       $("body").addClass("layout-dark");
       $(".sidebar-background").css(
         "background-image",
-        "url(app-assets/img/sidebar-bg/01.jpg)"
+        "url(assets/img/sidebar-bg/01.jpg)"
       );
       $(".app-sidebar").attr("data-background-color", "black");
     } else {
@@ -171,7 +180,7 @@ $(document).ready(function() {
       $(".sb-color-options span.selected").removeClass("selected");
       $(".sb-color-options .bg-black").addClass("selected");
       $(".app-sidebar").attr("data-background-color", "black");
-      $(".logo-img img").attr("src", "app-assets/img/logo.png");
+      $(".logo-img img").attr("src", "assets/img/logo.png");
     }
   });
 

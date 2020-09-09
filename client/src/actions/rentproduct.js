@@ -49,7 +49,7 @@ export const addNewRentProduct = (product) => async (dispatch) => {
 // Get User by ID
 export const getProduct = (id) => async (dispatch) => {
   dispatch({ type: RENTPRODUCTS_LOADING });
- 
+console.log(id) 
   try {
     const res = await axios.get(`/api/rentedproducts/${id}`);
     dispatch({

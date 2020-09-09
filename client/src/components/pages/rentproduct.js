@@ -15,19 +15,18 @@ import Alert from "../layout/Alert";
 class RentProduct extends Component {
   state = {
     id: "",
-    orderNumber: `${"RP"} ${Date.now()}`,
+    orderNumber: `${"RP"}${Date.now()}`,
     trackingNumber: "",
     customer: "",
     product: "",
     orderedQuantity: "",
     orderedSize: "",
     emoloyee: "",
-    deliveryDate: new Date().toString(),
-    returnDate: new Date().toString(),
+    deliveryDate:"",
+    returnDate:"",
     image: "",
     saving: false,
   };
-
 
   async componentDidMount() {
     this.props.getAllProducts();
@@ -73,6 +72,7 @@ class RentProduct extends Component {
       orderedQuantity:state.orderedQuantity,
       deliveryDate: state.deliveryDate,
       returnDate: state.returnDate,
+
       image: state.image
     };
     await this.props.addNewRentProduct(product);
@@ -89,7 +89,6 @@ class RentProduct extends Component {
       let result;
       if (this.state.product) {
         result = products.filter(record => record._id === this.state.product)
-        console.log(result)
         if (result) {
           qty = result[0].availableQuantity - this.state.orderedQuantity;
         }
@@ -99,7 +98,7 @@ class RentProduct extends Component {
        rentedQuantity:this.state.orderedQuantity
 
       };
-      console.log(productQTY)
+
 this.setState({ saving: true });
 
      await this.props.updateProduct(productQTY,result[0]._id);
@@ -111,6 +110,7 @@ this.setState({ saving: true });
 
   
   render() {
+    console.log(this.state)
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
@@ -261,7 +261,7 @@ this.setState({ saving: true });
                                 data-placement="top"
                                 data-title="Date Opened"
                                 onChange={(e) => this.handleChange(e)}
-                                value={moment(this.state.deliveryDate).format("YYYY-MM-DD")}
+                                value={this.state.deliveryDate}
                               />
                             </div>
                             <div className="form-group col-md-6 mb-2">
@@ -280,7 +280,7 @@ this.setState({ saving: true });
                                 data-placement="top"
                                 data-title="Date Opened"
                                 onChange={(e) => this.handleChange(e)}
-                                value={moment(this.state.returnDate).format("YYYY-MM-DD")}
+                                value={this.state.returnDate}
                               />
                             </div>
                           </div>

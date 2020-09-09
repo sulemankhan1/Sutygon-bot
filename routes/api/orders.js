@@ -12,18 +12,18 @@ router.post(
     [
         check("orderNumber", "Order Number Required").not().isEmpty(),
         check("trackingNumber", "Tracking Number Required").not().isEmpty(),
-        // check("orderDate", "Order Date Required").not().isEmpty(),
-        check("returnDate", "Return Date Required").not().isEmpty(),
         check("customer", "Customer Name Required").not().isEmpty(),
         check("employee", "Employee Name Required").not().isEmpty(),
         check("product", "Product Name Required").not().isEmpty(),
         check("orderedQuantity", "Quantity Required").not().isEmpty(),
         check("orderedSize", "Size Required").not().isEmpty(),
         check("deliveryDate", "Delivery Date Required").not().isEmpty(),
+        check("returnDate", "Return Date Required").not().isEmpty(),
+        // check("createdOn", "Created Date Required").not().isEmpty(),
         check("status", "Status Required").not().isEmpty(),
 
     ],
-    auth,
+    // auth,
         async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -50,7 +50,8 @@ router.post(
 // @route   GET api/orders
 // @desc    Get all orders
 // @access  Private
-router.get("/", auth,
+router.get("/",
+//  auth,
     async (req, res) => {
         try {
             const orders = await Order.find().populate("customer").populate("product");

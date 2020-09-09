@@ -30901,7 +30901,7 @@ figure.effect-zoe p.description {
   font-size: 90%;
   opacity: 0;
   transition: opacity 0.35s;
-  -webkit-backface-visibility: hidden; }
+ }
 
 /*---------------*/
 /***** Chico *****/
@@ -39288,53 +39288,6 @@ th.fc-widget-header, .fc-basic-view td.fc-day-number, .fc-basic-view td.fc-week-
 /* --------------------------------
 Horizontal Timeline
 -------------------------------- */
-@-webkit-keyframes 'cd-enter-right' {
-  0% {
-    opacity: 0;
-    -webkit-transform: translateX(100%); }
-  100% {
-    opacity: 1;
-    -webkit-transform: translateX(0%); } }
-
-@-moz-keyframes 'cd-enter-right' {
-  0% {
-    opacity: 0;
-    -moz-transform: translateX(100%); }
-  100% {
-    opacity: 1;
-    -moz-transform: translateX(0%); } }
-
-@keyframes 'cd-enter-right' {
-  0% {
-    opacity: 0;
-    transform: translateX(100%); }
-  100% {
-    opacity: 1;
-    transform: translateX(0%); } }
-
-@-webkit-keyframes 'cd-enter-left' {
-  0% {
-    opacity: 0;
-    -webkit-transform: translateX(-100%); }
-  100% {
-    opacity: 1;
-    -webkit-transform: translateX(0%); } }
-
-@-moz-keyframes 'cd-enter-left' {
-  0% {
-    opacity: 0;
-    -moz-transform: translateX(-100%); }
-  100% {
-    opacity: 1;
-    -moz-transform: translateX(0%); } }
-
-@keyframes 'cd-enter-left' {
-  0% {
-    opacity: 0;
-    transform: translateX(-100%); }
-  100% {
-    opacity: 1;
-    transform: translateX(0%); } }
 
 .cd-horizontal-timeline {
   opacity: 0;

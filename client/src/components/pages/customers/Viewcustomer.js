@@ -43,7 +43,7 @@ class ViewCustomer extends Component {
           <td className="text-center">{customer.address}</td>
           <td className="text-center">{customer.noOfOrders}</td>
           <td className="text-center">
-            {/* <Link to="/viewcustomer/view"
+            {/* <Link to="/customer/viewcustomer/view"
               className="info p-0">
               <i className="ft-user font-medium-3 mr-2"></i>
             </Link> */}
@@ -52,7 +52,7 @@ class ViewCustomer extends Component {
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2"></i>
             </Link> */}
-            <Link to="/viewcustomer"
+            <Link to="/customer/viewcustomer"
               onClick={() => this.onDelete(customer._id)}
               className="danger p-0">
               <i className="ft-x font-medium-3 mr-2"></i>
