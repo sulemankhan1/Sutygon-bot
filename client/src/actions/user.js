@@ -21,15 +21,21 @@ import setAuthToken from "../utils/setAuthToken";
 export const addNewUser = (user) => async (dispatch) => {
     dispatch({ type: USER_LOADING });
   
+  
+   
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data; boundary=---WebKitFormBoundary7MA4YWxkTrZu0gW',
       },
     };
+    // const formData = new FormData();
+    // formData.append('anotherdata', JSON.stringify(user));
+
   
     const body = JSON.stringify(user);
     try {
-      const res = await axios.post("/api/users/add", body, config);
+      const res = await axios.post("/api/users/test",body);
   
       dispatch({
         type: USER_SAVED,
