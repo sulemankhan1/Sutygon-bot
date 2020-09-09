@@ -8,15 +8,35 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const auth = require("../../middleware/auth");
 const User = require("../../models/User");
-const upload = require("../../middleware/upload");
+var multer  = require('multer')
+var upload = multer({ dest: 'client/src/uploads' })
 
+const FILE_PATH = 'client/src/uploads';
 
-
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, FILE_PATH)
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.fieldname + '-' + uniqueSuffix)
+    }
+  })
+  
+  var upload = multer({ storage: storage })
+  
+router.post('/test', upload.single('avatar'), function (req, res, next) {
+  console.log(req.file)
+  console.log(req.body)
+  // req.file is the `avatar` file
+  // req.body will hold the text fields, if there were any
+})
 // @route   POST /api/users/add
 // @desc    Add new user
 // @access  Private
-router.post("/add",
 
+
+router.post("/add",
   [
     check("username", "User Name is Required").not().isEmpty(),
     check("fullname", "Full Name is Required").not().isEmpty(),
@@ -26,10 +46,11 @@ router.post("/add",
     check("gender", "Please select your Gender").not().isEmpty(),
     check("password", "Please Enter a password with 6 or more characters").isLength({ min: 6 }),
   ],
-  auth,     
-
-  async (req, res) => {
+  auth,    
+  upload.single('avatar'), 
+    async (req, res) => {
     const url = `${req.protocol}:${req.get('host')}`
+    const file = req.file;
     console.log(req.body)
     // Finds the validation errors in this request and wraps them in an object with handy functions
     
@@ -46,11 +67,6 @@ router.post("/add",
     try {
       // check if there is any record with same email
       const rec = User.find({ email: req.body.email });
-      // const avatar = gravatar.url(req.body.email, {
-      //   s: "200",
-      //   r: "pg",
-      //   d: "mm",
-      // });
       // save user record
       // const { avatar } = req.file.path;
       const userBody = {
@@ -60,7 +76,7 @@ router.post("/add",
         password: password,
         gender: req.body.gender,
         contactnumber: req.body.contactnumber,
-avatar:`${url}/client/src/uploads/${req.body.avatar}`,
+avatar:`${url}/client/src/uploads/${req.file.name}`,
       };
       console.log("userbody",userBody)
       let user = new User(userBody);

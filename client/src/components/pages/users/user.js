@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import { addNewUser, updateUser, getUser } from "../../../actions/user";
-import axios, { post } from 'axios';
+
 import { Link } from "react-router-dom";
 
 import Alert from "../../layout/Alert";
@@ -48,7 +48,6 @@ class AddUser extends Component {
     _onChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.files[0] });
     }
-    
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
 
@@ -56,27 +55,26 @@ class AddUser extends Component {
 
     onSubmit = async (e) => {
         e.preventDefault();
-        // this.setState({ saving: true });
-        const formData = new FormData();
-        formData.append('avatar',this.state.avatar)
-        formData.append('username',this.state.username)
-        formData.append('fullname',this.state.fullname)
-        formData.append('email',this.state.email)
-        formData.append('password',this.state.password)
-        formData.append('gender',this.state.gender)
-        
-        // const config = {
-        //     headers: {
-        //         'content-type': 'multipart/form-data'
-        //     }
-        // }
-        // console.log('avatar:',this.state.avatar);
-        // return  post('/api/users/test', formData,config)
+        this.setState({ saving: true });
 
-        if (this.state.id === "") {
-            await this.props.addNewUser(formData);
+        const state = { ...this.state };
+
+        const user = {
+            username: state.username,
+            fullname: state.fullname,
+            email: state.email,
+            password: state.password,
+            contactnumber: state.contactnumber,
+            gender: state.gender,
+            avatar: state.avatar
+        };
+        console.log(this.state)
+        if (state.id === "") {
+            await this.props.addNewUser(user);
+
+
         } else {
-            await this.props.updateUser(formData, this.state.id);
+            await this.props.updateUser(user, state.id);
         }
         this.setState({ saving: false });
     }
@@ -138,21 +136,22 @@ class AddUser extends Component {
                                                     </div>
 
                                                     <div className="form-group col-12 mb-2">
-                                                        {/* <button
+                                                        <label>Select Profile Image</label>
+                                                        <button
                                                             name=""
-                                                            value="submit"
+value="submit"
                                                             type="submit"
                                                             
                                                             // accept='file_extension|image/*|media_type'
                                                             // value={this.state.avatar}
-                                                        > Submit
-                                                            </button> */}
+                                                        >
+                                                            </button>
 
 
 
                                                     </div>
                                                 </div>
-{/* </form> */}
+</form>
                                                 <div className="row">
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput1">User Name</label>
@@ -276,7 +275,7 @@ class AddUser extends Component {
                                                         )}
 
                                                 </div>
-                                                </form>
+                                                {/* </form> */}
 
                                         </div>
                                     </div>
