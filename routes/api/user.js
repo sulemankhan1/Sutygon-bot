@@ -22,9 +22,9 @@ const FILE_PATH = 'client/src/uploads';
       cb(null, file.fieldname + '-' + uniqueSuffix)
     }
   })
-  
+
   var upload = multer({ storage: storage })
-  
+
 router.post('/test', upload.single('avatar'), function (req, res, next) {
   console.log(req.file)
   console.log(req.body)
@@ -46,14 +46,14 @@ router.post("/add",
     check("gender", "Please select your Gender").not().isEmpty(),
     check("password", "Please Enter a password with 6 or more characters").isLength({ min: 6 }),
   ],
-  auth,    
-  upload.single('avatar'), 
+  auth,
+  upload.single('avatar'),
     async (req, res) => {
     const url = `${req.protocol}:${req.get('host')}`
     const file = req.file;
     console.log(req.body)
     // Finds the validation errors in this request and wraps them in an object with handy functions
-    
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
@@ -91,7 +91,7 @@ avatar:`${url}/client/src/uploads/${req.file.name}`,
         .status(500)
         .send("Server error");
     }
-  
+
 },
 )
 
@@ -279,7 +279,7 @@ router.post(
 );
 
 
-// @route  DELETE api/users/:id 
+// @route  DELETE api/users/:id
 // @desc   Delete a user
 // @access Private
 router.delete("/:id",auth, async (req, res) => {
