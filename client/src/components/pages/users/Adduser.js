@@ -9,8 +9,6 @@ import Alert from "../../layout/Alert";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import ImageUploader from 'react-images-upload';
-
 
 class AddUser extends Component {
     state = {
@@ -21,7 +19,7 @@ class AddUser extends Component {
         contactnumber: "",
         password: "",
         gender: "",
-        avatar: [],
+        avatar: "",
         saving: false,
     };
 
@@ -47,8 +45,8 @@ class AddUser extends Component {
     }
 
 
-    _onChange = (avatar) => {
-        this.setState({ avatar: this.state.avatar.concat(avatar) });
+    _onChange = (e, id = "") => {
+        this.setState({ [e.target.name]: e.target.files[0] });
     }
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
@@ -70,7 +68,13 @@ class AddUser extends Component {
             gender: state.gender,
             avatar: state.avatar
         };
-        console.log(this.state)
+        // const avatar = state.avatar;
+        var formData = new FormData();
+console.log("user",user)
+
+for (var key of formData.entries()) {
+    console.log(key[0] + ', ' + key[1])
+}
         if (state.id === "") {
             await this.props.addNewUser(user);
 
@@ -88,6 +92,7 @@ class AddUser extends Component {
         if (this.props.saved) {
             return <Redirect to="/dashboard" />;
         }
+               
 
         return (
             <React.Fragment>
@@ -121,157 +126,162 @@ class AddUser extends Component {
                                                 <div className="row">
                                                     <div className="form-group col-12 mb-2">
                                                         <label>Select Profile Image</label>
-                                                        <ImageUploader
-                                                        name="avatar"
-                                                            withIcon={true}
-                                                            buttonText='Choose images'
-                                                            onChange={this._onChange}
-                                                            imgExtension={['.jpg', '.gif', '.png', '.gif']}
-                                                            maxFileSize={5242880}
-                                                        />
+                                                        <input
+                                                            name="avatar"
+                                                            type="file"
+                                                            className="form-control-file"
+                                                            id="projectinput8"
+                                                            accept='image/*,.pdf,.jpg'
+
+                                                            // accept='file_extension|image/*|media_type'
+                                                            // value={this.state.avatar}
+                                                            onChange={(e) => this._onChange(e)} />
+
+
+
                                                     </div>
 
-                                                    <div className="form-group col-12 mb-2">
+                                                    {/* <div className="form-group col-12 mb-2">
                                                         <label>Select Profile Image</label>
                                                         <button
                                                             name=""
-                                                            value="submit"
+value="submit"
                                                             type="submit"
-
-                                                        // accept='file_extension|image/*|media_type'
-                                                        // value={this.state.avatar}
+                                                            
+                                                            // accept='file_extension|image/*|media_type'
+                                                            // value={this.state.avatar}
                                                         >
-                                                        </button>
+                                                            </button>
 
 
 
+                                                   
+                                                </div> */}
+                                                 </div>
+                                                <div className="row">
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput1">User Name</label>
+                                                        <input type="text"
+                                                            id="projectinput1"
+                                                            className="form-control"
+                                                            placeholder="User Name"
+                                                            name="username"
+                                                            onChange={(e) => this.handleChange(e)}
+                                                            value={this.state.username}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput2">Full Name</label>
+                                                        <input type="text"
+                                                            id="projectinput2"
+                                                            className="form-control"
+                                                            placeholder="Full Name"
+                                                            name="fullname"
+                                                            onChange={(e) => this.handleChange(e)}
+                                                            value={this.state.fullname}
+                                                        />
                                                     </div>
                                                 </div>
-                                            </form>
-                                            <div className="row">
-                                                <div className="form-group col-md-6 mb-2">
-                                                    <label htmlFor="projectinput1">User Name</label>
-                                                    <input type="text"
-                                                        id="projectinput1"
-                                                        className="form-control"
-                                                        placeholder="User Name"
-                                                        name="username"
-                                                        onChange={(e) => this.handleChange(e)}
-                                                        value={this.state.username}
-                                                    />
+                                                <div className="row">
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput3">E-mail</label>
+                                                        <input type="text"
+                                                            id="projectinput3"
+                                                            className="form-control"
+                                                            placeholder="E-mail"
+                                                            name="email"
+                                                            onChange={(e) => this.handleChange(e)}
+                                                            value={this.state.email}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput4">Contact Number</label>
+                                                        <input type="text"
+                                                            id="projectinput4"
+                                                            className="form-control"
+                                                            placeholder="Phone"
+                                                            name="contactnumber"
+                                                            onChange={(e) => this.handleChange(e)}
+                                                            value={this.state.contactnumber}
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <div className="form-group col-md-6 mb-2">
-                                                    <label htmlFor="projectinput2">Full Name</label>
-                                                    <input type="text"
-                                                        id="projectinput2"
-                                                        className="form-control"
-                                                        placeholder="Full Name"
-                                                        name="fullname"
-                                                        onChange={(e) => this.handleChange(e)}
-                                                        value={this.state.fullname}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="row">
-                                                <div className="form-group col-md-6 mb-2">
-                                                    <label htmlFor="projectinput3">E-mail</label>
-                                                    <input type="text"
-                                                        id="projectinput3"
-                                                        className="form-control"
-                                                        placeholder="E-mail"
-                                                        name="email"
-                                                        onChange={(e) => this.handleChange(e)}
-                                                        value={this.state.email}
-                                                    />
-                                                </div>
-                                                <div className="form-group col-md-6 mb-2">
-                                                    <label htmlFor="projectinput4">Contact Number</label>
-                                                    <input type="text"
-                                                        id="projectinput4"
-                                                        className="form-control"
-                                                        placeholder="Phone"
-                                                        name="contactnumber"
-                                                        onChange={(e) => this.handleChange(e)}
-                                                        value={this.state.contactnumber}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="row">
-                                                {this.state.id === ""
-                                                    ?
-                                                    <>
-                                                        <div className="form-group col-6 mb-2">
-                                                            <label htmlFor="projectinput5">Password</label>
-                                                            <input type="password"
-                                                                id="projectinput5"
-                                                                className="form-control"
-                                                                placeholder="Password"
-                                                                name="password"
+                                                <div className="row">
+                                                    {this.state.id === ""
+                                                        ?
+                                                        <>
+                                                            <div className="form-group col-6 mb-2">
+                                                                <label htmlFor="projectinput5">Password</label>
+                                                                <input type="password"
+                                                                    id="projectinput5"
+                                                                    className="form-control"
+                                                                    placeholder="Password"
+                                                                    name="password"
+                                                                    onChange={(e) => this.handleChange(e)}
+                                                                    value={this.state.password}
+                                                                />
+                                                            </div>
+                                                        </>
+                                                        : ""}
+
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput6">Gender</label><br></br>
+                                                        <label className="radio-inline">
+                                                            <input
+                                                                type="radio"
+                                                                name="gender"
                                                                 onChange={(e) => this.handleChange(e)}
-                                                                value={this.state.password}
-                                                            />
-                                                        </div>
-                                                    </>
-                                                    : ""}
+                                                                checked={this.state.gender === "male"}
+                                                                value="male"
 
-                                                <div className="form-group col-md-6 mb-2">
-                                                    <label htmlFor="projectinput6">Gender</label><br></br>
-                                                    <label className="radio-inline">
-                                                        <input
-                                                            type="radio"
-                                                            name="gender"
-                                                            onChange={(e) => this.handleChange(e)}
-                                                            checked={this.state.gender === "male"}
-                                                            value="male"
-
-                                                        />Male
+                                                            />Male
                        </label>
-                                                    <label className="radio-inline">
-                                                        <input
-                                                            type="radio"
-                                                            name="gender"
-                                                            value="female"
-                                                            onChange={(e) => this.handleChange(e)}
-                                                            checked={this.state.gender === "female"}
+                                                        <label className="radio-inline">
+                                                            <input
+                                                                type="radio"
+                                                                name="gender"
+                                                                value="female"
+                                                                onChange={(e) => this.handleChange(e)}
+                                                                checked={this.state.gender === "female"}
 
-                                                        />Female
+                                                            />Female
                          </label>
-                                                    <label className="radio-inline">
-                                                        <input
-                                                            type="radio"
-                                                            name="gender"
-                                                            value="other"
-                                                            onChange={(e) => this.handleChange(e)}
-                                                            checked={this.state.gender === "other"}
+                                                        <label className="radio-inline">
+                                                            <input
+                                                                type="radio"
+                                                                name="gender"
+                                                                value="other"
+                                                                onChange={(e) => this.handleChange(e)}
+                                                                checked={this.state.gender === "other"}
 
-                                                        />Others
+                                                            />Others
                        </label>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div className="form-actions top">
-                                                {this.state.saving ? (
-                                                    <button
-                                                        type="button"
-                                                        className="mb-2 mr-2 btn btn-raised btn-primary"
-                                                    >
-                                                        <div
-                                                            className="spinner-grow spinner-grow-sm "
-                                                            role="status"
-                                                        ></div>
-                                &nbsp; Saving
-                                                    </button>
-                                                ) : (
+                                                <div className="form-actions top">
+                                                    {this.state.saving ? (
                                                         <button
-                                                            type="submit"
+                                                            type="button"
                                                             className="mb-2 mr-2 btn btn-raised btn-primary"
                                                         >
-                                                            <i className="fa fa-check" /> Add User
+                                                            <div
+                                                                className="spinner-grow spinner-grow-sm "
+                                                                role="status"
+                                                            ></div>
+                                &nbsp; Saving
                                                         </button>
-                                                    )}
+                                                    ) : (
+                                                            <button
+                                                                type="submit"
+                                                                className="mb-2 mr-2 btn btn-raised btn-primary"
+                                                            >
+                                                                <i className="fa fa-check" /> Add User
+                                                            </button>
+                                                        )}
 
-                                            </div>
-                                            {/* </form> */}
+                                                </div>
+                                                </form>
 
                                         </div>
                                     </div>

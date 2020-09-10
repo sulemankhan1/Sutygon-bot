@@ -20,7 +20,7 @@ import setAuthToken from "../utils/setAuthToken";
 // Add new user
 export const addNewUser = (user) => async (dispatch) => {
     dispatch({ type: USER_LOADING });
-  
+  console.log("user",user)
   
    
     const config = {
@@ -33,9 +33,9 @@ export const addNewUser = (user) => async (dispatch) => {
     // formData.append('anotherdata', JSON.stringify(user));
 
   
-    const body = JSON.stringify(user);
+    const body = user;
     try {
-      const res = await axios.post("/api/users/test",body);
+      const res = await axios.post("/api/users/test",body,config);
   
       dispatch({
         type: USER_SAVED,
