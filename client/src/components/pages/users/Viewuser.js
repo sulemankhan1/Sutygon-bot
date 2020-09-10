@@ -34,11 +34,12 @@ class ViewUser extends Component {
       return users.map((user) => (
         <tr>
           <td className="text-center text-muted">{tbl_sno++}</td>
+          <td className="text-center"><img class="media-object round-media" src={user.avatar} alt="Generic placeholder image" height={75} /></td>
+
           <td className="text-center">{user.username}</td>
           <td className="text-center">{user.contactnumber}</td>
           <td className="text-center">{user.email}</td>
           <td className="text-center">{user.gender}</td>
-          <td className="text-center"><img class="media-object round-media" src={user.avatar} alt="Generic placeholder image" height={75} /></td>
           {/* <td className="text-center">
             {user.accountStatus === "active" && (
               <span className="badge badge-warning">Active</span>
@@ -49,16 +50,18 @@ class ViewUser extends Component {
           </td> */}
           <td className="text-center">{user.accountStatus}</td>
           <td className="text-center">
-            <Link to="/viewuser/view"
+            <Link 
+             to={{ pathname: `/user/view/${user._id}` }}
+
               className="info p-0">
               <i className="ft-user font-medium-3 mr-2"></i>
             </Link>
             <Link
-              to={{ pathname: `/edituser/${user._id}` }}
+              to={{ pathname: `/user/edituser/${user._id}` }}
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2"></i>
             </Link>
-            <Link to="/viewuser"
+            <Link to="/user/viewuser"
               onClick={() => this.onDelete(user._id)}
               className="danger p-0">
               <i className="ft-x font-medium-3 mr-2"></i>
@@ -150,12 +153,13 @@ class ViewUser extends Component {
                               <thead>
                                 <tr>
                                   <th className="text-center">#</th>
+                                  <th className="text-center">Avatar</th>
+                                  
                                   <th className="text-center">Full Name</th>
                                   {/* <th>Last Name</th> */}
                                   <th className="text-center" >Contact</th>
                                   <th className="text-center">E-mail</th>
                                   <th className="text-center">Gender</th>
-                                  <th className="text-center">Avatar</th>
                                   <th className="text-center">Account Status</th>
                                   <th className="text-center">Actions</th>
 

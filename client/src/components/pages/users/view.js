@@ -1,0 +1,185 @@
+import React, { Component } from "react";
+import Sidebar from "../../layout/Sidebar";
+import Header from "../../layout/Header";
+import { getUser } from "../../../actions/user";
+
+import { Link } from "react-router-dom";
+
+import Alert from "../../layout/Alert";
+import { Redirect } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+
+class View extends Component {
+    async componentDidMount() {
+        // check form is to Add or Edit
+        if (this.props.match.params.id) {
+            const id = this.props.match.params.id;
+            let res = await this.props.getUser(id);
+
+        }
+console.log("user",this.props)
+    }
+
+       render() {
+        const { auth } = this.props;
+        const { user } = this.props;
+        if(user){
+
+console.log(user.username)
+                }        if (!auth.loading && !auth.isAuthenticated) {
+            return <Redirect to="/" />;
+        }
+        if (this.props.saved) {
+            return <Redirect to="/dashboard" />;
+        }
+
+        return (
+            <React.Fragment>
+                <div className="wrapper menu-collapsed">
+                    <Sidebar location={this.props.location} >
+                    </Sidebar>
+                    <Header>
+                    </Header>
+
+                    <div className="main-panel">
+                       <div className="main-content">
+                            <div className="content-wrapper">
+                                <div className="form-body">
+                                    <div className="card">
+                                        <div className="card-header">
+                                            <h4 className="form-section"><i className="ft-user"></i>
+                          View User
+                          </h4>
+                                        </div>
+                                        <Alert />
+
+                                        <div className="card-body">
+                                            <form onSubmit={(e) => this.onSubmit(e)}>
+
+                                                <div className="row">
+                                                    <div className="form-group col-12 mb-2">
+                                                        <label>Select Profile Image</label>
+                                                        <input
+                                                            type="file"
+                                                            className="form-control-file"
+                                                            id="projectinput8"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="row">
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput1">User Name</label>
+                                                        <input type="text"
+                                                            id="projectinput1"
+                                                            className="form-control"
+                                                            placeholder="User Name"
+                                                            name="username"
+                                                            value={user ? user.username : ""}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput3">E-mail</label>
+                                                        <input type="text"
+                                                            id="projectinput3"
+                                                            className="form-control"
+                                                            placeholder="E-mail"
+                                                            name="email"
+                                                            value={user ? user.email :""}
+
+                                                        />
+                                                    </div>
+                                                 
+                                                  
+                                                </div>
+                                                <div className="row">
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput4">Contact Number</label>
+                                                        <input type="text"
+                                                            id="projectinput4"
+                                                            className="form-control"
+                                                            placeholder="Phone"
+                                                            name="contactnumber"
+                                                            value={user ? user.contactnumber :""}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group col-md-6 mb-2">
+                                                        <label htmlFor="projectinput6">Gender</label><br></br>
+                                                        <label className="radio-inline">
+                                                            <input
+                                                                type="radio"
+                                                                name="gender"
+                                                                checked={user ? user.gender === "male" :""}
+                                                                value="male"
+
+                                                            />Male
+                       </label>
+                                                        <label className="radio-inline">
+                                                            <input
+                                                                type="radio"
+                                                                name="gender"
+                                                                value="female"
+                                                                onChange={(e) => this.handleChange(e)}
+                                                                checked={user ? user.gender === "female" : ""}
+
+                                                            />Female
+                         </label>
+                                                        <label className="radio-inline">
+                                                            <input
+                                                                type="radio"
+                                                                name="gender"
+                                                                value="other"
+                                                                onChange={(e) => this.handleChange(e)}
+                                                                checked={user ? user.gender === "other": ""}
+
+                                                            />Others
+                       </label>
+                                                    </div>
+                                                </div>
+                                                <div className="row">
+
+                                                  
+                                                </div>
+
+                                                
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <footer className="footer footer-static footer-light">
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
+                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                        </footer>
+
+                    </div>
+
+                </div>
+
+            </React.Fragment>
+
+        );
+    }
+}
+
+View.propTypes = {
+    saved: PropTypes.bool,
+       getUser: PropTypes.func.isRequired,
+
+    auth: PropTypes.object,
+   
+};
+
+const mapStateToProps = (state) => ({
+    saved: state.user.saved,
+    auth: state.auth,
+    user: state.user.profile,
+
+
+});
+export default connect(mapStateToProps, {
+    getUser
+})(View);
+

@@ -6,6 +6,8 @@ import { loadUser } from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
 import PrivateRoute from "./routing/PrivateRoute";
 import AddUser from "./components/pages/users/Adduser";
+import View from "./components/pages/users/view";
+
 import ViewUser from "./components/pages/users/Viewuser";
 import AddCustomer from "./components/pages/customers/Addcustomer";
 import AddProduct from "./components/pages/products/Addproduct";
@@ -13,6 +15,8 @@ import Orders from "./components/pages/orders";
 import AddAppointment from "./components/pages/appointment";
 import ViewCustomer from "./components/pages/customers/Viewcustomer";
 import ViewProduct from "./components/pages/products/Viewproduct";
+
+import Product from "./components/pages/products/Product";
 import RentProduct from "./components/pages/rentproduct";
 import Report from "./components/pages/report/report";
 import ReportOrder from "./components/pages/report/reportOrder";
@@ -26,9 +30,6 @@ import ReportOrder from "./components/pages/report/reportOrder";
 // Redux
 import { Provider } from "react-redux";
 import store from "./store";
-import Addproduct from "./components/pages/products/Addproduct";
-import Viewuser from "./components/pages/users/Viewuser";
-import { addNewAppointment } from "./actions/appointment";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -48,17 +49,20 @@ const Main = () => {
 {/* Dashboard */}
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
 {/* users */}
-          <PrivateRoute exact path="/adduser" component={AddUser} />
-          <PrivateRoute exact path="/viewuser" component={ViewUser} />
-          <PrivateRoute exact path="/edituser/:id" component={AddUser} />
+          <PrivateRoute exact path="/user/adduser" component={AddUser} />
+          <PrivateRoute exact path="/user/viewuser" component={ViewUser} />
+          <PrivateRoute exact path="/user/edituser/:id" component={AddUser} />
+          <PrivateRoute exact path="/user/view/:id" component={View} />
 
 {/* customers */}
-          <PrivateRoute exact path="/addcustomer" component={AddCustomer} />
-          <PrivateRoute exact path="/viewcustomer" component={ViewCustomer} />
+          <PrivateRoute exact path="/customer/addcustomer" component={AddCustomer} />
+          <PrivateRoute exact path="/customer/viewcustomer" component={ViewCustomer} />
 {/* products */}
-          <PrivateRoute exact path="/addproduct" component={AddProduct} />
-          <PrivateRoute exact path="/viewproduct" component={ViewProduct} />
-          <PrivateRoute exact path="/editproduct/:id" component={AddProduct} />
+          <PrivateRoute exact path="/product/addproduct" component={AddProduct} />
+          <PrivateRoute exact path="/product/viewproduct" component={ViewProduct} />
+          <PrivateRoute exact path="/product/editproduct/:id" component={AddProduct} />
+          <PrivateRoute exact path="/product/viewproduct/:id" component={Product} />
+
 {/* rent product */}
           <PrivateRoute exact path="/rentproduct" component={RentProduct} />
 

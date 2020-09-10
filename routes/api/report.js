@@ -61,7 +61,6 @@ router.get('',
             let result;
             // var gte = moment.utc(, 'DD-MM-YYYY');
             // var lte = moment.utc(, 'DD-MM-YYYY');
-            console.log("234",req.query);
             if (req.query.reportType === "order") {
             const result = await RentedProduct.find({
                 customer: { $eq: req.query.customer },

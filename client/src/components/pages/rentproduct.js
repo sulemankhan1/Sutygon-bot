@@ -89,7 +89,6 @@ class RentProduct extends Component {
       let result;
       if (this.state.product) {
         result = products.filter(record => record._id === this.state.product)
-        console.log(result)
         if (result) {
           qty = result[0].availableQuantity - this.state.orderedQuantity;
         }
@@ -99,7 +98,7 @@ class RentProduct extends Component {
        rentedQuantity:this.state.orderedQuantity
 
       };
-      console.log(productQTY)
+
 this.setState({ saving: true });
 
      await this.props.updateProduct(productQTY,result[0]._id);

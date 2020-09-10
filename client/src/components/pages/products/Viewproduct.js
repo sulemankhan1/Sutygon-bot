@@ -63,16 +63,17 @@ class ViewProduct extends Component {
            <td className="text-center">{product.rentedQuantity}</td>
           <td className="text-center"><img className="media-object round-media" src={product.image} alt="Generic placeholder image" height={75} /></td>
           <td className="text-center">
-            <Link to="/viewproduct/view"
+            <Link 
+           to={{ pathname: `/product/viewproduct/${product._id}` }}
               className="info p-0">
               <i className="ft-user font-medium-3 mr-2"></i>
             </Link>
             <Link
-              to={{ pathname: `/editproduct/${product._id}` }}
+              to={{ pathname: `/product/editproduct/${product._id}` }}
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2"></i>
             </Link>
-            <Link to="/viewproduct"
+            <Link to="/product/viewproduct"
               onClick={() => this.onDelete(product._id)}
               className="danger p-0">
               <i className="ft-x font-medium-3 mr-2"></i>
