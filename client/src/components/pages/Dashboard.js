@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Sidebar from "../layout/Sidebar";
 import Header from "../layout/Header";
+import Loader from "../layout/Loader";
 import "../../login.css"
 
 class Dashboard extends Component {
@@ -10,6 +11,7 @@ class Dashboard extends Component {
   
     return (
 <React.Fragment>
+  <Loader />
 <div className="wrapper menu-collapsed">
  <Sidebar location={this.props.location} >
  </Sidebar>

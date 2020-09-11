@@ -22,7 +22,7 @@ import Product from "./components/pages/products/Product";
 import RentProduct from "./components/pages/rentproduct";
 import Report from "./components/pages/report/report";
 import ReportOrder from "./components/pages/report/reportOrder";
-
+import Loader from "./components/layout/Loader";
 
 
 // import Calender from "./components/pages/calender";
@@ -44,6 +44,7 @@ const Main = () => {
     <Provider store={store}>
       <Router>
         <Switch>
+        
           <Route exact path="/" component={Login} />
           <Route exact path="/Login" component={Login} />
           {/* Dashboard */}

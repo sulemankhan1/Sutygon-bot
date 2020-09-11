@@ -34,11 +34,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         users: payload,
+        loading: false,
       };
     case GET_USER:
       return {
         ...state,
         profile: payload,
+        loading: false,
       };
 
       case USER_SAVED:
