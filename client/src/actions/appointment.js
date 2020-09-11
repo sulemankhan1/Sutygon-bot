@@ -49,11 +49,11 @@ export const addNewAppointment = (appointment) => async (dispatch) => {
   };
 
   // get All Users
-export const getAllAppointmens = () => async (dispatch) => {
+export const getAllAppointments = () => async (dispatch) => {
   dispatch({ type: APPOINTMENT_LOADING });
   try {
     const res = await axios.get(`/api/products`);
-
+console.log(res.data)
     dispatch({
       type: GET_APPOINTMENTS,
       payload: res.data,
@@ -104,7 +104,7 @@ export const deleteAppointment = (id) => async (dispatch) => {
       payload: res.data,
     });
     dispatch(setAlert(res.data.msg, "success"));
-    dispatch(getAllAppointmens());
+    dispatch(getAllAppointments());
   
   } catch (err) {
     const errors = err.response.data.errors;

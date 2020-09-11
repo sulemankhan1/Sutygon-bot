@@ -8,14 +8,14 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { getAllAppointmens } from "../../actions/appointment";
+import { getAllAppointments } from "../../actions/appointment";
 
 
 const localizer = momentLocalizer(moment)
 
 class Calender extends Component {
     async componentDidMount() {
-           this.props.getAllAppointmens();
+           this.props.getAllAppointments();
            console.log(this.props,"props")
 
     }
@@ -96,19 +96,19 @@ class Calender extends Component {
 Calender.propTypes = {
     saved: PropTypes.bool,
     auth: PropTypes.object,
-    getAllAppointmens:PropTypes.func.isRequired
+    getAllAppointments:PropTypes.func.isRequired,
+    calender: PropTypes.array,
     // getAllCustomers: PropTypes.func.isRequired,
     // getAllProducts: PropTypes.func.isRequired,
 
 };
 
 const mapStateToProps = (state) => ({
-    saved: state.appointment.saved,
     auth: state.auth,
-   calendar:state.appointment
+   calender:state.appointment
 
 });
 export default connect(mapStateToProps, {
-getAllAppointmens
+    getAllAppointments
 })(Calender);
 

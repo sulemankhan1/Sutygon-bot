@@ -48,14 +48,13 @@ router.post(
           .status(400)
           .json({ errors: [{ msg: "Invalid Email" }] });
       }
-
+      
       if(user.accountStatus === "block"){
         return res
         .status(400)
         .json({ errors: [{ msg: "Your account is blocked" }] });
       }
-
-
+      
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
