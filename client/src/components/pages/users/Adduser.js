@@ -65,15 +65,7 @@ class AddUser extends Component {
         formData.append('password',this.state.password)
         formData.append('gender',this.state.gender)
         
-        // const config = {
-        //     headers: {
-        //         'content-type': 'multipart/form-data'
-        //     }
-        // }
-        // console.log('avatar:',this.state.avatar);
-        // return  post('/api/users/test', formData,config)
-
-        if (this.state.id === "") {
+            if (this.state.id === "") {
             await this.props.addNewUser(formData);
         } else {
             await this.props.updateUser(formData, this.state.id);
@@ -88,6 +80,7 @@ class AddUser extends Component {
         if (this.props.saved) {
             return <Redirect to="/dashboard" />;
         }
+               
 
         return (
             <React.Fragment>
@@ -123,7 +116,6 @@ class AddUser extends Component {
                                                         <label>Select Profile Image</label>
                                                         <input
                                                             name="avatar"
-
                                                             type="file"
                                                             className="form-control-file"
                                                             id="projectinput8"
@@ -140,7 +132,7 @@ class AddUser extends Component {
                                                     <div className="form-group col-12 mb-2">
                                                         {/* <button
                                                             name=""
-                                                            value="submit"
+value="submit"
                                                             type="submit"
                                                             
                                                             // accept='file_extension|image/*|media_type'
@@ -150,9 +142,9 @@ class AddUser extends Component {
 
 
 
-                                                    </div>
-                                                </div>
-{/* </form> */}
+                                                   
+                                                </div> 
+                                                 </div>
                                                 <div className="row">
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput1">User Name</label>
@@ -177,6 +169,7 @@ class AddUser extends Component {
                                                         />
                                                     </div>
                                                 </div>
+{/* </form> */}
                                                 <div className="row">
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput3">E-mail</label>

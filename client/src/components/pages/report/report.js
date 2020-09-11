@@ -55,7 +55,6 @@ class Report extends Component {
             end: state.end,
             reportType: state.reportType
         };
-        console.log(report)
         await this.props.getReport(report);
         this.setState({ saving: false });
     };
@@ -137,7 +136,6 @@ class Report extends Component {
         const { employee, customer } = this.state;
         const { customers } = this.props.customers;
         const { users } = this.props;
-        console.log(this.state)
         return (
             <React.Fragment>
                 <div className="wrapper menu-collapsed">

@@ -47,6 +47,10 @@ class AddProduct extends Component {
         }
       }
     }
+    _onChange = (e, id = "") => {
+      this.setState({ [e.target.name]: e.target.files[0] });
+  }
+
 
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
@@ -57,22 +61,22 @@ class AddProduct extends Component {
         this.setState({ saving: true });
 
         const state = { ...this.state };
+        const formData = new FormData();
+        formData.append('name',state.name)
+        formData.append('image',state.image)
+        formData.append('fabric',state.fabric)
+        formData.append('size',state.size)
+        formData.append('color',state.color)
+        formData.append('availableQuantity',state.availableQuantity)
+        formData.append('rentedQuantity',state.rentedQuantity)
+        formData.append('inStock',state.inStock)
 
-        const product = {
-            name: state.name,
-            image: state.image,
-            fabric: state.fabric,
-            size:state.size,
-            color: state.color,
-            availableQuantity: state.availableQuantity,
-            rentedQuantity: state.rentedQuantity,
-            inStock: state.inStock,
-        };
+        
         if (state.id === "") {
-            await this.props.addNewProduct(product);
+            await this.props.addNewProduct(formData);
       
           } else {
-            await this.props.updateProduct(product, state.id);
+            await this.props.updateProduct(formData, state.id);
           }
           this.setState({ saving: false });
     }
@@ -110,13 +114,25 @@ class AddProduct extends Component {
 
             <div className="card-body">
 
-            <form onSubmit={(e) => this.onSubmit(e)}>
+            <form 
+                            encType="multipart/form-data"
+                            action="/upload"
+                            method="POST"
+                            onSubmit={(e) => this.onSubmit(e)}>
+
               <div className="row">
                   <div className="form-group col-12 mb-2">
                     <label>Select Image</label>
-                    <input type="file"
-                     className="form-control-file"
-                      id="projectinput8"/>
+                    <input 
+                    name="image"
+                    type="file"
+                    className="form-control-file"
+                    id="projectinput8"
+                    accept='image/*,.pdf,.jpg'
+
+                    // accept='file_extension|image/*|media_type'
+                    // value={this.state.avatar}
+                    onChange={(e) => this._onChange(e)} />
                   </div>
                 </div>
                 <div className="row">

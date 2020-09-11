@@ -46,7 +46,6 @@ export const getReport = (report) => async (dispatch) => {
           "reportType":report.reportType
         } }
       )
-   console.log("resData",res.data)
    
         dispatch({
         type: GET_REPORT,

@@ -16,7 +16,6 @@ class ReportOrder extends Component {
 
     async componentDidMount() {
         // await this.props.getOrders();
-        console.log("reportgeneration", this.props)
     };
 
     handleChange = (e, id = "") => {

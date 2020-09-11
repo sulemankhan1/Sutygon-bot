@@ -47,6 +47,9 @@ class ViewProduct extends Component {
           
            <td className="text-center text-muted">{tbl_sno++}</td>
            <td className="text-center">{""}</td>
+           <td className="text-center">
+             <img className="media-object round-media" src={`${product.image}`} alt="Generic placeholder image" height={75} />
+             </td>
 
           <td className="text-center">{product.name}</td>
           <td className="text-center">{product.color}</td>
@@ -61,7 +64,6 @@ class ViewProduct extends Component {
           </td> 
               <td className="text-center">{product.availableQuantity}</td> 
            <td className="text-center">{product.rentedQuantity}</td>
-          <td className="text-center"><img className="media-object round-media" src={product.image} alt="Generic placeholder image" height={75} /></td>
           <td className="text-center">
             <Link 
            to={{ pathname: `/product/viewproduct/${product._id}` }}
@@ -162,6 +164,8 @@ class ViewProduct extends Component {
                 <tr>
                   <th>#</th>
                   <th></th>
+                  <th>Image</th>
+
                   <th>Name</th>
                   <th>Color</th>
                   <th>Size</th>
@@ -169,7 +173,6 @@ class ViewProduct extends Component {
                   <th>In-Stock</th>
                   <th>Available Quantity</th>
                   <th>Rented Quantity</th>
-                  <th>Image</th>
                   <th>Actions</th>
                 </tr>
               </thead>
