@@ -13,6 +13,7 @@ const User = require("../../models/User");
 // @access  Private
 router.get("/", auth, async (req, res) => {
   try {
+    
     const user = await User.findById(req.user.id).select("-password");
     res.json(user);
   } catch (err) {
@@ -47,14 +48,13 @@ router.post(
           .status(400)
           .json({ errors: [{ msg: "Invalid Email" }] });
       }
-
-      if(user.accountStatus==="block"){
+      
+      if(user.accountStatus === "block"){
         return res
         .status(400)
         .json({ errors: [{ msg: "Your account is blocked" }] });
       }
-
-     
+      
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
