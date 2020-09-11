@@ -13,7 +13,18 @@ class Header extends Component {
   };
 
   componentDidMount() {
-    loadjs(`${process.env.PUBLIC_URL}/assets/test.js`, () => {});
+    loadjs(`/assets/vendors/js/core/jquery-3.2.1.min.js`);
+    loadjs(`/assets/vendors/js/core/popper.min.js`);
+    loadjs(`/assets/vendors/js/core/bootstrap.min.js`);
+    loadjs(`/assets/vendors/js/perfect-scrollbar.jquery.min.js`);
+    loadjs(`/assets/vendors/js/prism.min.js`);
+    loadjs(`/assets/vendors/js/jquery.matchHeight-min.js`);
+    loadjs(`/assets/vendors/js/screenfull.min.js`);
+    loadjs(`/assets/vendors/js/pace/pace.min.js`);
+    loadjs(`/assets/js/app-sidebar.js`);
+    loadjs(`/assets/js/notification-sidebar.js`);
+    loadjs(`/assets/js/customizer.js`);
+    // console.log('loader: ',`${process.env.PUBLIC_URL}/assets/vendors/js/core/jquery-3.2.1.min.js`);
   }
 
   componentWillReceiveProps(nextProps) {

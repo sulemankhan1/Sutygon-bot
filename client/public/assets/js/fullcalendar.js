@@ -744,7 +744,7 @@ $(document).ready(function () {
       // render the timezone offset below the event title
       if (event.start.hasZone()) {
         el.find('.fc-title').after(
-          $('<div class="tzo"/>').text(event.start.format('Z'))
+          $('<div className="tzo"/>').text(event.start.format('Z'))
         );
       }
     },
