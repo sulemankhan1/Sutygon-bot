@@ -7,6 +7,7 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Alert from "../layout/Alert";
+import Loader from "../layout/Loader";
 import { deleteOrder,getAllOrders } from "../../actions/order";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -94,6 +95,7 @@ class Orders extends Component {
 
         return (
             <React.Fragment>
+              <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>

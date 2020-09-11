@@ -9,6 +9,7 @@ import { getAllUsers, deleteUser,blockUser } from "../../../actions/user";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
 
 class ViewUser extends Component {
   async componentDidMount() {
@@ -144,6 +145,7 @@ const auth_user = auth.user;
 
     return (
       <React.Fragment>
+        <Loader />
         <div className="wrapper menu-collapsed">
           <Sidebar location={this.props.location} >
           </Sidebar>

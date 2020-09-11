@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Sidebar from "../layout/Sidebar";
 import Header from "../layout/Header";
 import Alert from "../layout/Alert";
+import Loader from "../layout/Loader";
 import moment from "moment"
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -42,6 +43,7 @@ class Calender extends Component {
 
         return (
             <React.Fragment>
+                <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
