@@ -72,6 +72,8 @@ class Login extends Component {
                                   Welcome back, please login to your account.
                   </p>
                                 <form onSubmit={(e) => this.onSubmit(e)}>
+                                <Alert/>
+                              
 
                                   <input type="text"
                                     className="form-control mb-3"
