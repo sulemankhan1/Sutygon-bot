@@ -17,14 +17,16 @@ class Sidebar extends Component {
   
     const path = pathname.split("/");
     const activepath = active.split("/");
+    
     if (activepath[0] === path[1]) {
       active = path[1];
     } 
 
     if (active === name) {
       return "open";
+    } else {
+      return "";
     }
-    return "";
   };
 
   handleClick = (name) => {
@@ -51,17 +53,16 @@ class Sidebar extends Component {
           <div className="nav-container">
             <ul id="main-menu-navigation"
              data-menu="menu-navigation" data-scroll-to-active="true" className="navigation navigation-main">
-              <li className="nav-item">
+              <li className={"nav-item " + this.getClassName("dashboard")} >
               <Link
                       to="/dashboard"
                       onClick={() => this.handleClick("dashboard")}
-                      className={this.getClassName("dashboard")}
                     >
                       <i className="ft-home" /> Dashboard
                 </Link>
               </li>
-              <li className="has-sub nav-item">
-              <a href="#" className={this.getClassName("user")}>
+              <li className={"has-sub nav-item " + this.getClassName("user")}>
+              <a href="#">
                 <i className="ft-users"></i>
                   <span className="menu-title">Users</span>
                 </a>
@@ -70,7 +71,6 @@ class Sidebar extends Component {
                   <Link
                           to="/user/adduser"
                           onClick={() => this.handleClick("user")}
-                          className={this.getClassName("user")}
                         >
                           <i className="menu-item" /> Add Users
                     </Link>
@@ -79,14 +79,13 @@ class Sidebar extends Component {
                   <Link
                           to="/user/viewuser"
                           onClick={() => this.handleClick("user")}
-                          className={this.getClassName("user")}
                         >
                           <i className="menu-item" /> View Users
                     </Link>
                   </li>
                 </ul>
               </li>
-              <li className="has-sub nav-item">
+              <li  className={"has-sub nav-item " + this.getClassName("product")}>
                 <a href="#" className={this.getClassName("product")}>
                 <i className="icon-social-dropbox">
                 </i><span className="menu-title">Products</span>
@@ -95,7 +94,6 @@ class Sidebar extends Component {
                   <li>  <Link
                           to="/product/addproduct"
                           onClick={() => this.handleClick("product")}
-                          className={this.getClassName("product")}
                         >
                           <i className="menu-item" /> Add Product
                     </Link>
@@ -104,15 +102,14 @@ class Sidebar extends Component {
                     <Link
                           to="/product/viewproduct"
                           onClick={() => this.handleClick("product")}
-                          className={this.getClassName("product")}
                         >
                           <i className="menu-item" /> View Product
                     </Link>
                   </li>
                 </ul>
               </li>
-              <li className="has-sub nav-item">
-                <a href="#"  className={this.getClassName("customer")}>
+              <li className={"has-sub nav-item " + this.getClassName("customer")}>
+                <a href="#"  >
                   <i className="ft-user"></i>
                   <span className="menu-title">Customers</span>
                 </a>
@@ -121,7 +118,6 @@ class Sidebar extends Component {
                        <Link
                           to="/customer/addcustomer"
                           onClick={() => this.handleClick("customer")}
-                          className={this.getClassName("customer")}
                         >
                           <i className="menu-item" />  Add Customer
                     </Link>
@@ -130,54 +126,48 @@ class Sidebar extends Component {
                        <Link
                           to="/customer/viewcustomer"
                           onClick={() => this.handleClick("customer")}
-                          className={this.getClassName("customer")}
                         >
                           <i className="menu-item" />  View Customer
                     </Link>
                   </li>
                 </ul>
               </li>
-              <li className="nav-item">
+              <li className={"nav-item " + this.getClassName("rentproduct")}>
               <Link
                       to="/rentproduct"
                       onClick={() => this.handleClick("rentproduct")}
-                      className={this.getClassName("rentproduct")}
                     >
                       <i className="icon-basket-loaded" />  Rent a Product
                 </Link>
               </li>
-              <li className=" nav-item">
+              <li className=" nav-item" className={"nav-item " + this.getClassName("orders")}>
               <Link
                       to="/orders"
                       onClick={() => this.handleClick("orders")}
-                      className={this.getClassName("orders")}
                     >
                       <i className="icon-bag" />  Orders
                 </Link>
               </li>
-              <li className=" nav-item">
+              <li className={"nav-item " + this.getClassName("appointments")}>
               <Link
                       to="/appointments"
                       onClick={() => this.handleClick("appointments")}
-                      className={this.getClassName("appointments")}
                     >
                       <i className="ft-activity" />  Add Fitting Appointment
                 </Link>
               </li>
-              <li className=" nav-item">
+              <li className={"nav-item " + this.getClassName("calender")}>
               <Link
                       to="/calender"
                       onClick={() => this.handleClick("calender")}
-                      className={this.getClassName("calender")}
                     >
                       <i className="ft-calendar" />  Calender
                 </Link>
               </li>
-              <li className=" nav-item">
+              <li className={"nav-item " + this.getClassName("reports")}>
               <Link
                       to="/reports"
                       onClick={() => this.handleClick("reports")}
-                      className={this.getClassName("reports")}
                     >
                       <i className="ft-clipboard" />  Report
                 </Link>
