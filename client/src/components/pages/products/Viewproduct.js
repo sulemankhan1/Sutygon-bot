@@ -48,14 +48,14 @@ class ViewProduct extends Component {
            <td className="text-center text-muted">{tbl_sno++}</td>
            <td className="text-center">{""}</td>
            <td className="text-center">
-             <img className="media-object round-media" src={`${product.image}`} alt="Generic placeholder image" height={75} />
-             </td>
+            <img className="media-object round-media" src={`${product.image}`} alt="Generic placeholder image" height={75} />
+            </td>
 
           <td className="text-center">{product.name}</td>
           <td className="text-center">{product.color}</td>
           <td className="text-center">{product.size}</td>
           <td className="text-center">{product.fabric}</td>
-  <td className="text-center">
+          <td className="text-center">
             {product.availableQuantity > 0 ? (
               <span className="">Available</span>
             ):
@@ -107,7 +107,6 @@ class ViewProduct extends Component {
     });
   };
 
-
     render() {
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -118,78 +117,73 @@ class ViewProduct extends Component {
         if(products){
           var filteredProduct = products.filter(function (product,k) {
             return product.name.toLocaleLowerCase() == filter.toLocaleLowerCase();
-            
           });
-
-              
       }
        
         return (
             <React.Fragment>
                 <div className="wrapper menu-collapsed">
-                    <Sidebar location={this.props.location} >
-                    </Sidebar>
-                    <Header>
-                    </Header>
+                    <Sidebar location={this.props.location} />
+                    <Header />
                     <div className="main-panel">
 
                     <div className="main-content">
-  <div className="content-wrapper">
-    <section id="extended">
-  <div className="row">
-    <div className="col-sm-12">
-      <div className="card">
-        <div className="card-header">
-          <h4 className="card-title">View Product</h4>
-          <form role="search" className="navbar-form navbar-right mt-1">
-              <div className="position-relative has-icon-right">
-                <input 
-                type="text"
-                 placeholder="Search"
-                  className="form-control round"
-                  value={filter}
-                  name="filter"
-                  onChange={(e) => this.handleChange(e)}
-                  />
-                <div className="form-control-position"><i className="ft-search"></i></div>
-              </div>
-            </form>
-        </div>
-        <div className="card-content">
-          <div className="card-body table-responsive">
-          <Alert />
+                          <div className="content-wrapper">
+                            <section id="extended">
+                          <div className="row">
+                            <div className="col-sm-12">
+                              <div className="card">
+                                <div className="card-header">
+                                  <h4 className="card-title">View Product</h4>
+                                  <form role="search" className="navbar-form navbar-right mt-1">
+                                      <div className="position-relative has-icon-right">
+                                        <input 
+                                        type="text"
+                                        placeholder="Search"
+                                          className="form-control round"
+                                          value={filter}
+                                          name="filter"
+                                          onChange={(e) => this.handleChange(e)}
+                                          />
+                                        <div className="form-control-position"><i className="ft-search"></i></div>
+                                      </div>
+                                    </form>
+                                </div>
+                                <div className="card-content">
+                                  <div className="card-body table-responsive">
+                                  <Alert />
 
-            <table className="table text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th></th>
-                  <th>Image</th>
+                                    <table className="table text-center">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th></th>
+                                          <th>Image</th>
 
-                  <th>Name</th>
-                  <th>Color</th>
-                  <th>Size</th>
-                  <th>Fabric</th>
-                  <th>In-Stock</th>
-                  <th>Available Quantity</th>
-                  <th>Rented Quantity</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-           {this.getTAble()}  
-           
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-</div>
-</div>
-</div>
+                                          <th>Name</th>
+                                          <th>Color</th>
+                                          <th>Size</th>
+                                          <th>Fabric</th>
+                                          <th>In-Stock</th>
+                                          <th>Available Quantity</th>
+                                          <th>Rented Quantity</th>
+                                          <th>Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                  {this.getTAble()}  
+                                  
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+                        </div>
+                        </div>
+                        </div>
                    
                         <footer className="footer footer-static footer-light">
                             <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}

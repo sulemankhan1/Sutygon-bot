@@ -3,13 +3,18 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logout } from "../../actions/auth";
+import loadjs from 'loadjs';
+
 
 
 class Header extends Component {
   state = {
       id:"",
   };
-  
+
+  componentDidMount() {
+    loadjs(`${process.env.PUBLIC_URL}/assets/test.js`, () => {});
+  }
 
   componentWillReceiveProps(nextProps) {
       const { user } = nextProps.auth;
@@ -39,9 +44,6 @@ class Header extends Component {
           <div className="navbar-container">
             <div id="navbarSupportedContent" className="collapse navbar-collapse">
               <ul className="navbar-nav">
-                <li className="nav-item mr-2 d-none d-lg-block"><a id="navbar-fullscreen"
-                 href="#" className="nav-link apptogglefullscreen"><i className="ft-maximize font-medium-3 blue-grey darken-4"></i>
-                    <p className="d-none">fullscreen</p></a></li>
                 <li className="dropdown nav-item">
                   <a id="dropdownBasic3" href="#" data-toggle="dropdown" className="nav-link position-relative dropdown-toggle"><i className="ft-user font-medium-3 blue-grey darken-4"></i>
                     <p className="d-none">User Settings</p></a>

@@ -33,7 +33,7 @@ class Sidebar extends Component {
   render() {
 
     return (
-      <div data-active-color="white" data-background-color="purple-bliss" data-image="assets/img/sidebar-bg/01.jpg" className="app-sidebar">
+      <div data-active-color="white" data-background-color="purple-bliss" data-image={process.env.PUBLIC_URL+'/assets/img/sidebar-bg/01.jpg'} className="app-sidebar">
 
         <div className="sidebar-header">
           <div className="logo">
@@ -41,8 +41,7 @@ class Sidebar extends Component {
                       to="/dashboard"
                       >
               <div className="text-center align-middle mt-n4 mb-n4">
-                
-                <img src="assets/img/logo.png" height={120} width={120}/>
+                <img src={process.env.PUBLIC_URL+'/assets/img/logo.png'} height={120} width={120}/>
               </div>
               {/* <span className="text align-middle"></span> */}
 </Link>            
@@ -62,7 +61,7 @@ class Sidebar extends Component {
                 </Link>
               </li>
               <li className="has-sub nav-item">
-              <a href="javascript:void(0)" className={this.getClassName("user")}>
+              <a href="#" className={this.getClassName("user")}>
                 <i className="ft-users"></i>
                   <span className="menu-title">Users</span>
                 </a>
@@ -88,7 +87,7 @@ class Sidebar extends Component {
                 </ul>
               </li>
               <li className="has-sub nav-item">
-                <a href="javascript:void(0)" className={this.getClassName("product")}>
+                <a href="#" className={this.getClassName("product")}>
                 <i className="icon-social-dropbox">
                 </i><span className="menu-title">Products</span>
               </a>
@@ -113,7 +112,7 @@ class Sidebar extends Component {
                 </ul>
               </li>
               <li className="has-sub nav-item">
-                <a href="javascript:void(0)"  className={this.getClassName("customer")}>
+                <a href="#"  className={this.getClassName("customer")}>
                   <i className="ft-user"></i>
                   <span className="menu-title">Customers</span>
                 </a>

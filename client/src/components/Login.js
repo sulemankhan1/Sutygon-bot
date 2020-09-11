@@ -84,8 +84,6 @@ class Login extends Component {
                                     onChange={(e) => this.onChange(e)}
                                     name="password" />
 
-
-
                                   <div className="fg-actions justify-content-between">
 
                                     <div className="recover-pass">
@@ -97,8 +95,6 @@ class Login extends Component {
                                     </div>
                                   </div>
                                 </form>
-
-
 
                               </div>
                             </div>
