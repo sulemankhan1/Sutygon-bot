@@ -27,7 +27,7 @@ import {
       case GET_APPOINTMENTS:
         return {
           ...state,
-          products: payload,
+          appointments: payload,
           loading: false,
           saved: false,
         };
@@ -35,7 +35,7 @@ import {
       case GET_APPOINTMENT:
         return {
           ...state,
-          product: payload,
+          appointment: payload,
           loading: false,
         };
   
