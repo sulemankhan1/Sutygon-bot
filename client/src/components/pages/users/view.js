@@ -18,7 +18,6 @@ class View extends Component {
             let res = await this.props.getUser(id);
 
         }
-console.log("user",this.props)
     }
 
        render() {
@@ -26,7 +25,6 @@ console.log("user",this.props)
         const { user } = this.props;
         if(user){
 
-console.log(user.username)
                 }        if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
         }

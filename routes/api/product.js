@@ -3,7 +3,24 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const Product = require("../../models/Product");
 const { check, validationResult } = require("express-validator");
-const Inventory = require("../../models/Inventory");
+
+
+var multer  = require('multer')
+var upload = multer({ dest: 'client/public/uploads/products' })
+
+const FILE_PATH = 'client/public/uploads/products';
+
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, FILE_PATH)
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.originalname)
+    }
+  })
+
+  var upload = multer({ storage: storage })
 
 // @route   POST api/products/add
 // @desc    Add New Product
@@ -21,18 +38,32 @@ router.post(
 
     ],
     auth,
+    upload.single('image'),
     async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res
-                .status(422)
-                .json({ errors: errors.array() });
-        }
+        // const errors = validationResult(req);
+        // if (!errors.isEmpty()) {
+        //     return res
+        //         .status(422)
+        //         .json({ errors: errors.array() });
+        // }
 
+    const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+
+    
         try {
-            let product = new Product(req.body);
+            const productBody = {
+                name: body.name,
+                image: `/uploads/products/${req.file.originalname}`,
+                color: body.color,
+                fabric: body.fabric,
+                size: body.size,
+                availableQuantity: body.availableQuantity,
+                rentedQuantity: body.rentedQuantity,
+              };
+         
+            let product = new Product(productBody);
             await product.save();
-            res.json({ msg: "Product Added Successfully" });
+            res.json({ product,msg: "Product Added Successfully" });
         } catch (err) {
             console.log(err);
             res
@@ -48,22 +79,36 @@ router.post(
 router.post(
     "/:id",
     [
+        check("name", "Product Name Required").not().isEmpty(),
+        check("image", "Product Image Required").not().isEmpty(),
+        check("color", "Product Color Required").not().isEmpty(),
+        check("size", "Product Size Required").not().isEmpty(),
+        check("fabric", "Product fabric Required").not().isEmpty(),
         check("availableQuantity", "Available Quantity Required").not().isEmpty(),
-    ],
+        check("rentedQuantity", "Rented Quantity Required").not().isEmpty(),    ],
     auth,
+    upload.single('image'),
     async (req, res) => {
         try {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res
-                    .status(422)
-                    .json({ errors: errors.array() });
-            }
+            // const errors = validationResult(req);
+            // if (!errors.isEmpty()) {
+            //     return res
+            //         .status(422)
+            //         .json({ errors: errors.array() });
+            
+            // }
+    const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+
+    
             await Product.updateOne({ _id: req.params.id }, {
                 $set: {
-                                    availableQuantity: req.body.availableQuantity,
-                    rentedQuantity: req.body.rentedQuantity,
-
+                    name: body.name,
+                    image: `/uploads/products/${req.file.originalname}`,
+                    color: body.color,
+                    fabric: body.fabric,
+                    size: body.size,
+                    availableQuantity: body.availableQuantity,
+                    rentedQuantity: body.rentedQuantity,
                 }
             });
             res

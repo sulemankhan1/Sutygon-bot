@@ -68,7 +68,6 @@ class AddUser extends Component {
             gender: state.gender,
             avatar: state.avatar
         };
-        console.log(this.state)
         if (state.id === "") {
             await this.props.addNewUser(user);
 

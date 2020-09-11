@@ -1,6 +1,6 @@
 import axios from "axios";
 import {
-  
+
   USER_LOADING,
  USER_SAVED,
   USER_ERROR,
@@ -10,7 +10,7 @@ import {
   USERS_LOADING,
   USER_DELETED,
   USER_UPDATED
- 
+
 
 } from "./types";
 import { setAlert } from "./alert";
@@ -20,27 +20,19 @@ import setAuthToken from "../utils/setAuthToken";
 // Add new user
 export const addNewUser = (user) => async (dispatch) => {
     dispatch({ type: USER_LOADING });
-  console.log("user",user)
   
-   
-    const config = {
+   const config = {
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data; boundary=---WebKitFormBoundary7MA4YWxkTrZu0gW',
-      },
-    };
-    // const formData = new FormData();
-    // formData.append('anotherdata', JSON.stringify(user));
-
-  
-    const body = user;
+          'content-type': 'multipart/form-data'
+      }
+  }
     try {
-      const res = await axios.post("/api/users/test",body,config);
-  
+      const res = await axios.post("/api/users/add",user, config);
+
       dispatch({
         type: USER_SAVED,
       });
-      
+
       dispatch(setAlert(res.data.msg, "success"));
 
     } catch (err) {
@@ -77,7 +69,7 @@ export const getAllUsers = () => async (dispatch) => {
 // Get User by ID
 export const getUser = (id) => async (dispatch) => {
   dispatch({ type: USERS_LOADING });
- 
+
   try {
     const res = await axios.get(`/api/users/${id}`);
     dispatch({
@@ -123,14 +115,14 @@ export const updateUser = (user, id) => async (dispatch) => {
     });
   }
 };
-  
+
   // Delete User
 export const deleteUser = (id) => async (dispatch) => {
   dispatch({ type: USERS_LOADING });
   const config = {
     headers: {
       "Content-Type": "application/json",
-    },  
+    },
   };
 
    try {
@@ -142,7 +134,7 @@ export const deleteUser = (id) => async (dispatch) => {
     });
     dispatch(setAlert(res.data.msg, "success"));
     dispatch(getAllUsers());
-  
+
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {

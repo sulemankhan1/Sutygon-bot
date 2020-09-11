@@ -20,16 +20,13 @@ import setAuthToken from "../utils/setAuthToken";
 // Add new product
 export const addNewProduct = (product) => async (dispatch) => {
     dispatch({ type: PRODUCT_LOADING });
-  
     const config = {
       headers: {
-        "Content-Type": "application/json",
-      },
-    };
-  
-    const body = JSON.stringify(product);
+          'content-type': 'multipart/form-data'
+      }
+  }
     try {
-      const res = await axios.post("/api/products/add", body, config);
+      const res = await axios.post("/api/products/add", product, config);
   
       dispatch({
         type: PRODUCT_SAVED,
@@ -93,13 +90,12 @@ export const updateProduct = (product, id) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });
   const config = {
     headers: {
-      "Content-Type": "application/json",
-    },
-  };
+        'content-type': 'multipart/form-data'
+    }
+}
 
-  const body = JSON.stringify(product);
   try {
-    const res = await axios.post(`/api/products/${id}`, body, config);
+    const res = await axios.post(`/api/products/${id}`, product, config);
 
     dispatch({
       type: PRODUCT_UPDATED,

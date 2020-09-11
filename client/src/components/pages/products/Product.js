@@ -35,7 +35,6 @@ class Product extends Component {
           return <Redirect to="/" />;
         }
         const { products } = this.props;
-       console.log(products)
         return (
             <React.Fragment>
                 <div className="wrapper menu-collapsed">

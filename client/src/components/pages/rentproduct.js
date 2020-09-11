@@ -110,7 +110,6 @@ this.setState({ saving: true });
 
   
   render() {
-    console.log(this.state)
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;

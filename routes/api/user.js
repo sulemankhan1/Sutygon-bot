@@ -9,9 +9,9 @@ const config = require("config");
 const auth = require("../../middleware/auth");
 const User = require("../../models/User");
 var multer  = require('multer')
-var upload = multer({ dest: 'client/src/uploads' })
+var upload = multer({ dest: 'client/public/uploads/user' })
 
-const FILE_PATH = 'client/src/uploads';
+const FILE_PATH = 'client/public/uploads/user';
 
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -19,18 +19,18 @@ const FILE_PATH = 'client/src/uploads';
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-      cb(null, file.fieldname + '-' + uniqueSuffix)
+      cb(null, file.originalname)
     }
   })
-  
+
   var upload = multer({ storage: storage })
 
-router.post('/test', upload.single('avatar'), function (req, res, next) {
-  console.log(req.file)
-  console.log(req.body)
+// router.post('/test', upload.single('avatar'), function (req, res, next) {
+//   console.log(req.file)
+//   console.log(req.body)
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
-})
+// })
 // @route   POST /api/users/add
 // @desc    Add new user
 // @access  Private
@@ -46,39 +46,32 @@ router.post("/add",
     check("gender", "Please select your Gender").not().isEmpty(),
     check("password", "Please Enter a password with 6 or more characters").isLength({ min: 6 }),
   ],
-  auth,    
-  upload.single('avatar'), 
+  auth,
+  upload.single('avatar'),
     async (req, res) => {
     const url = `${req.protocol}:${req.get('host')}`
     const file = req.file;
-    console.log(req.body)
+    const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+
     // Finds the validation errors in this request and wraps them in an object with handy functions
-    
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res
-        .status(422)
-        .json({ errors: errors.array() });
-    }
     const salt = await bcrypt.genSalt(10);
 
-    const password = await bcrypt.hash(req.body.password, salt);
+    const password = await bcrypt.hash(body.password, salt);
 
     try {
       // check if there is any record with same email
-      const rec = User.find({ email: req.body.email });
+      const rec = User.find({ email: body.email });
       // save user record
-      // const { avatar } = req.file.path;
+      // const { avatar } = file.path;
       const userBody = {
-        username: req.body.username,
-        fullname: req.body.name,
-        email: req.body.email,
+        username: body.username,
+        fullname: body.name,
+        email: body.email,
         password: password,
-        gender: req.body.gender,
-        contactnumber: req.body.contactnumber,
-avatar:`${url}/client/src/uploads/${req.file.name}`,
+        gender: body.gender,
+        contactnumber: body.contactnumber,
+avatar:`/uploads/user/${req.file.originalname}`,
       };
-      console.log("userbody",userBody)
       let user = new User(userBody);
       await user.save();
 
@@ -91,7 +84,7 @@ avatar:`${url}/client/src/uploads/${req.file.name}`,
         .status(500)
         .send("Server error");
     }
-  
+
 },
 )
 
@@ -279,7 +272,7 @@ router.post(
 );
 
 
-// @route  DELETE api/users/:id 
+// @route  DELETE api/users/:id
 // @desc   Delete a user
 // @access Private
 router.delete("/:id",auth, async (req, res) => {

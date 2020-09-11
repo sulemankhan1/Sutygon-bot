@@ -17,7 +17,6 @@ class ViewUser extends Component {
 
   getTAble = () => {
     const { users } = this.props;
-    
     let tbl_sno = 1;
     // const {user} = this.props.auth;
 
@@ -32,10 +31,16 @@ class ViewUser extends Component {
         );
       }
       return users.map((user) => (
+        // console.log(user)
+      //  <img className="media-object round-media" src="../../uploads/avatar-1599780670164-862543959" alt="Generic placeholder image" height={75} />
         <tr>
           <td className="text-center text-muted">{tbl_sno++}</td>
-          <td className="text-center"><img class="media-object round-media" src={user.avatar} alt="Generic placeholder image" height={75} /></td>
+          <td className="text-center">
+            <img class="media-object round-media" src={`${user.avatar}`} alt="Generic placeholder image" height={75} />
+            </td>
+            {/* E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\8a8d8ee8-f05f-4a80-91cd-5eea99c8d8bc.jpg*/}
 
+ 
           <td className="text-center">{user.username}</td>
           <td className="text-center">{user.contactnumber}</td>
           <td className="text-center">{user.email}</td>
@@ -67,31 +72,7 @@ class ViewUser extends Component {
               <i className="ft-x font-medium-3 mr-2"></i>
             </Link>
           </td>
-
-          {/* <td className="text-center">
-            <Link to="/batches/view/"
-             className="mb-2 btn btn-sm btn-dark">
-              View
-            </Link>
-            {(user && (user.type === "Admin" || user.type === "Teacher" ))? 
-            <Link
-              to={{ pathname: `/batches/edit/${batch._id}` }}
-              className="mb-2 btn btn-sm btn-dark"
-            >
-              Edit
-            </Link> : ""
-            }
-             {(user && (user.type === "Admin" || user.type === "Teacher" ))? 
-            <Link
-              to="/batches"
-              className="mb-2 btn btn-sm btn-dark"
-              onClick={() => this.onDelete(batch._id)}
-            >
-              Delete
-              </Link> : ""
-            }
-          </td> */}
-        </tr>
+  </tr>
       ));
     }
   };
