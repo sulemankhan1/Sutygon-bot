@@ -13,28 +13,41 @@ import { getAllAppointments } from "../../actions/appointment";
 
 const localizer = momentLocalizer(moment)
 
+
+
 class Calender extends Component {
     async componentDidMount() {
-           this.props.getAllAppointments();
-           console.log(this.props,"props")
-
+        await this.props.getAllAppointments();
     }
 
     render() {
-        const dummyEvents = [
-            {
-              allDay: false,
-              endDate: new Date('December 10, 2017 11:13:00'),
-              startDate: new Date('December 09, 2017 11:13:00'),
-              title: 'hi',
-            },
-            {
-              allDay: true,
-              endDate: new Date('December 09, 2017 11:13:00'),
-              startDate: new Date('December 09, 2017 11:13:00'),
-              title: 'All Day Event',
-            },
-            ];
+        const { calender } = this.props;
+
+        const mapToRBCFormat = e => Object.assign({}, e, {
+            start: new Date(e.startDate),
+            end: new Date(e.endDate)
+
+        })
+        // const events = [
+        //   {
+        //     id: 0,
+        //     title: 'Meeting',
+        //     start: moment({ hours: 8 }).toDate(),
+        //     end: moment({ hours: 10 }).toDate(),
+        //   },
+        //   {
+        //     id: 1,
+        //     title: 'Lunch',
+        //     start: moment({ hours: 12 }).toDate(),
+        //     end: moment({ hours: 13 }).toDate()
+        //   },
+        //   {
+        //     id: 2,
+        //     title: 'Coding',
+        //     start: moment({ hours: 14 }).toDate(),
+        //     end: moment({ hours: 17 }).toDate(),
+        //   },
+        // ];
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
@@ -61,15 +74,31 @@ class Calender extends Component {
                                             <Alert />
 
                                             <div className="card-body">
-                                            <div>
-    <Calendar
-    localizer={localizer}
-      events={dummyEvents}
-      startAccessor="startDate"
-      endAccessor="endDate"
-    //   style={{ height: 500 }}
-    />
-  </div>
+                                                {this.props.calender ?
+
+                                                    <Calendar
+                                                        events={calender}
+                                                        localizer={localizer}
+                                                        defaultDate={new Date()}
+                                                        components={
+                                                            {
+                                                                eventWrapper: ({ event, children }) => (
+                                                                    <div
+                                                                        onContextMenu={
+                                                                            e => {
+                                                                                alert(`${event.title} is clicked.`);
+                                                                                e.preventDefault();
+                                                                            }
+                                                                        }
+                                                                    >
+                                                                        {children}
+                                                                    </div>
+                                                                )
+
+                                                            }
+                                                        }
+                                                    />
+                                                    : ""}
                                             </div>
                                         </div>
                                     </div>
@@ -96,7 +125,7 @@ class Calender extends Component {
 Calender.propTypes = {
     saved: PropTypes.bool,
     auth: PropTypes.object,
-    getAllAppointments:PropTypes.func.isRequired,
+    getAllAppointments: PropTypes.func.isRequired,
     calender: PropTypes.array,
     // getAllCustomers: PropTypes.func.isRequired,
     // getAllProducts: PropTypes.func.isRequired,
@@ -105,7 +134,7 @@ Calender.propTypes = {
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-   calender:state.appointment
+    calender: state.appointment.appointments
 
 });
 export default connect(mapStateToProps, {
