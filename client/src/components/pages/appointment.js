@@ -6,6 +6,7 @@ import { getAllProducts } from "../../actions/product";
 import { getAllCustomers } from "../../actions/customer";
 import { Link } from "react-router-dom";
 import Alert from "../layout/Alert";
+import Loader from "../layout/Loader";
 import moment from "moment"
 
 import { Redirect } from "react-router-dom";
@@ -72,6 +73,7 @@ const {user} = this.props.auth;
           
         return (
             <React.Fragment>
+              <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>

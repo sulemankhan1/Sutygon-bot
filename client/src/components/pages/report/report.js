@@ -10,6 +10,7 @@ import { getAllUsers } from "../../../actions/user";
 import { getAllCustomers } from "../../../actions/customer";
 import moment from "moment"
 import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
 import report from "../../../reducers/report";
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
@@ -138,6 +139,7 @@ class Report extends Component {
         const { users } = this.props;
         return (
             <React.Fragment>
+                <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>

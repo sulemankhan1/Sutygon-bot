@@ -9,6 +9,7 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
 import moment from 'moment';
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
@@ -82,6 +83,7 @@ class ReportOrder extends Component {
 
         return (
             <React.Fragment>
+              <Loader />
                 <div className="wrapper menu-collapsed">
                 <section className="invoice-template">
   <div className="card"  >

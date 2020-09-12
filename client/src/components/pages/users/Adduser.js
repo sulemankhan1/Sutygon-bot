@@ -6,6 +6,7 @@ import axios, { post } from 'axios';
 import { Link } from "react-router-dom";
 
 import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -84,6 +85,7 @@ class AddUser extends Component {
 
         return (
             <React.Fragment>
+                <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>

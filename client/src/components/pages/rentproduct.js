@@ -11,6 +11,7 @@ import { getAllCustomers } from "../../actions/customer";
 import moment from "moment"
 import { setAlert } from "../../actions/alert";
 import Alert from "../layout/Alert";
+import Loader from "../layout/Loader";
 
 class RentProduct extends Component {
   state = {
@@ -124,6 +125,7 @@ this.setState({ saving: true });
     const { products } = this.props.products;
     return (
       <React.Fragment>
+        <Loader />
         <div className="wrapper menu-collapsed">
           <Sidebar location={this.props.location} >
           </Sidebar>

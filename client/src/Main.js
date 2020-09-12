@@ -22,7 +22,7 @@ import Product from "./components/pages/products/Product";
 import RentProduct from "./components/pages/rentproduct";
 import Report from "./components/pages/report/report";
 import ReportOrder from "./components/pages/report/reportOrder";
-
+import Loader from "./components/layout/Loader";
 
 
 // import Calender from "./components/pages/calender";
@@ -44,20 +44,21 @@ const Main = () => {
     <Provider store={store}>
       <Router>
         <Switch>
+        
           <Route exact path="/" component={Login} />
           <Route exact path="/Login" component={Login} />
-{/* Dashboard */}
+          {/* Dashboard */}
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
-{/* users */}
+          {/* users */}
           <PrivateRoute exact path="/user/adduser" component={AddUser} />
           <PrivateRoute exact path="/user/viewuser" component={ViewUser} />
           <PrivateRoute exact path="/user/edituser/:id" component={AddUser} />
           <PrivateRoute exact path="/user/view/:id" component={View} />
 
-{/* customers */}
+          {/* customers */}
           <PrivateRoute exact path="/customer/addcustomer" component={AddCustomer} />
           <PrivateRoute exact path="/customer/viewcustomer" component={ViewCustomer} />
-{/* products */}
+          {/* products */}
           <PrivateRoute exact path="/product/addproduct" component={AddProduct} />
           <PrivateRoute exact path="/product/viewproduct" component={ViewProduct} />
           <PrivateRoute exact path="/product/editproduct/:id" component={AddProduct} />
