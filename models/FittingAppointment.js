@@ -10,8 +10,15 @@ const FittingAppointmentSchema = new mongoose.Schema({
         type: String,
         unique: true,
     },
-    appointmentDate: {
+    start: {
         type: Date,
+    },
+    end: {
+        type: Date,
+    },
+    title:{
+        type:String,
+        default:"Fitting Apointment"
     },
     employee: {
         type: Schema.Types.ObjectId,

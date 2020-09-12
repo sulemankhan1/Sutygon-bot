@@ -14,11 +14,14 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 class AddAppointment extends Component {
+  // let d1Start = moment().add(1, "hours").toDate();
+  // let d1End = moment(d1Start).add(1, "hours").toDate();
     state = {
         id: "",
         appointmentNumber: 3,
         trackingNumber:`${"A"}${Date.now()}`,
-        appointmentDate: moment().format('DD-MM-YYYY'),
+        start:"",
+        end:"",
         customer: "",
         employee:"",
         saving: false,
@@ -43,7 +46,8 @@ const {user} = this.props.auth;
    const appointment = {
             appointmentNumber: state.appointmentNumber,
             trackingNumber:state.trackingNumber,
-            appointmentDate: state.appointmentDate,
+            start: state.start,
+            end: state.start,
             customer:state.customer,
             employee: user._id,
                    };
@@ -123,13 +127,13 @@ const {user} = this.props.auth;
                                 type="date"
                                 id="issueinput3"
                                 className="form-control"
-                                name="appointmentDate"
+                                name="start"
                                 data-toggle="tooltip"
                                 data-trigger="hover"
                                 data-placement="top"
                                 data-title="Date Opened"
                                 onChange={(e) => this.handleChange(e)}
-                                value={this.state.appointmentDate}
+                                value={this.state.start}
                               />
                             </div>
                           </div>      
