@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import Sidebar from "../layout/Sidebar";
-import Header from "../layout/Header";
+import Sidebar from "../../layout/Sidebar";
+import Header from "../../layout/Header";
 import { Link } from "react-router-dom";
 
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Alert from "../layout/Alert";
-import Loader from "../layout/Loader";
-import { deleteOrder,getAllOrders } from "../../actions/order";
+import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
+import { deleteOrder,getAllOrders } from "../../../actions/order";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 class Orders extends Component {
@@ -18,6 +18,7 @@ class Orders extends Component {
    
  getTAble = () => {
     const { orders } = this.props;
+     console.log(orders)
         let tbl_sno=1;
     if (orders) {
       if (orders.length === 0) {
@@ -35,29 +36,26 @@ class Orders extends Component {
            <td className="text-center text-muted">{tbl_sno++}</td>
            <td className="text-center">{""}</td>
 
-          <td className="text-center">{order.customer.name}</td>
-          <td className="text-center">{order.product.name}</td>
+          <td className="text-center">{order.customer ? order.customer.name : ""}</td>
+          <td className="text-center">{order.product ?  order.product.name:""}</td>
           <td className="text-center">{order.deliveryDate}</td>
           <td className="text-center">{order.returnDate}</td>
           <td className="text-center">
-            {/* <Link to="/orders/view"
-              className="info p-0">
-              <i className="ft-user font-medium-3 mr-2"></i>
-            </Link> */}
-            {/* <Link
+      
+       {/* <Link
               to={{ pathname: `/orders/${order._id}` }}
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2"></i>
-            </Link> */}
+            </Link>  */}
             <Link to="/orders"
               onClick={() => this.onDelete(order._id)}
               className="danger p-0">
-              <i className="ft-x font-medium-3 mr-2"></i>
+              <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
             </Link>
           </td>
 
         </tr>
-      ));
+       ));
     }
   };
    

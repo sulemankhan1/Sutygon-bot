@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import Sidebar from "../layout/Sidebar";
 import Header from "../layout/Header";
 import Alert from "../layout/Alert";
-import Loader from "../layout/Loader";
 import moment from "moment"
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -12,51 +11,42 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { getAllAppointments } from "../../actions/appointment";
 
 
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 
 
-class Calender extends Component {
+class AppointmentCalendar extends Component {
+    state = {
+        id: "",
+        start: "",
+        end: "",
+        title: ""
+    }
     async componentDidMount() {
         await this.props.getAllAppointments();
-    }
+}
+
 
     render() {
-        const { calender } = this.props;
-
-        const mapToRBCFormat = e => Object.assign({}, e, {
-            start: new Date(e.startDate),
-            end: new Date(e.endDate)
-
-        })
-        // const events = [
-        //   {
-        //     id: 0,
-        //     title: 'Meeting',
-        //     start: moment({ hours: 8 }).toDate(),
-        //     end: moment({ hours: 10 }).toDate(),
-        //   },
-        //   {
-        //     id: 1,
-        //     title: 'Lunch',
-        //     start: moment({ hours: 12 }).toDate(),
-        //     end: moment({ hours: 13 }).toDate()
-        //   },
-        //   {
-        //     id: 2,
-        //     title: 'Coding',
-        //     start: moment({ hours: 14 }).toDate(),
-        //     end: moment({ hours: 17 }).toDate(),
-        //   },
-        // ];
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
         }
+        const { calendar } = this.props;
+        let newEvents;
+        if (calendar) {
+            
+            newEvents = calendar.map(event => ({
+                title: event.title,
+                start:new Date(event.start),
+                end: new Date(event.end)
+            })
+            );
+           console.log(newEvents)
+        }
 
         return (
             <React.Fragment>
-                <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
@@ -76,31 +66,15 @@ class Calender extends Component {
                                             <Alert />
 
                                             <div className="card-body">
-                                                {this.props.calender ?
-
-                                                    <Calendar
-                                                        events={calender}
-                                                        localizer={localizer}
-                                                        defaultDate={new Date()}
-                                                        components={
-                                                            {
-                                                                eventWrapper: ({ event, children }) => (
-                                                                    <div
-                                                                        onContextMenu={
-                                                                            e => {
-                                                                                alert(`${event.title} is clicked.`);
-                                                                                e.preventDefault();
-                                                                            }
-                                                                        }
-                                                                    >
-                                                                        {children}
-                                                                    </div>
-                                                                )
-
-                                                            }
-                                                        }
-                                                    />
-                                                    : ""}
+{newEvents ? 
+                                            <Calendar
+      localizer={localizer}
+      events={newEvents}
+      startAccessor="start"
+      endAccessor="end"
+      style={{ height: 500 }}
+    />
+    :""}
                                             </div>
                                         </div>
                                     </div>
@@ -124,11 +98,11 @@ class Calender extends Component {
     }
 }
 
-Calender.propTypes = {
+AppointmentCalendar.propTypes = {
     saved: PropTypes.bool,
     auth: PropTypes.object,
     getAllAppointments: PropTypes.func.isRequired,
-    calender: PropTypes.array,
+    calendar: PropTypes.array,
     // getAllCustomers: PropTypes.func.isRequired,
     // getAllProducts: PropTypes.func.isRequired,
 
@@ -136,10 +110,10 @@ Calender.propTypes = {
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-    calender: state.appointment.appointments
+    calendar: state.appointment.appointments
 
 });
 export default connect(mapStateToProps, {
     getAllAppointments
-})(Calender);
+})(AppointmentCalendar);
 

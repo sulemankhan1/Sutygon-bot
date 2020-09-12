@@ -33,7 +33,7 @@ class Sidebar extends Component {
     this.props.changePage(name);
   };
   render() {
-
+    const { user } = this.props.auth;
     return (
       <div data-active-color="white" data-background-color="purple-bliss" data-image={process.env.PUBLIC_URL+'/assets/img/sidebar-bg/01.jpg'} className="app-sidebar">
 
@@ -68,12 +68,17 @@ class Sidebar extends Component {
                 </a>
                 <ul className="menu-content">
                   <li >
+                  {(user && (user.type === "Admin")) ? (
+                  <>
                   <Link
                           to="/user/adduser"
                           onClick={() => this.handleClick("user")}
                         >
                           <i className="menu-item" /> Add Users
                     </Link>
+                    </>
+                ) : ""
+                }
                   </li>
                   <li>
                   <Link

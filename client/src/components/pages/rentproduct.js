@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import Sidebar from "../layout/Sidebar";
 import Header from "../layout/Header";
-import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { deleteProduct, addNewRentProduct } from "../../actions/rentproduct";
 import { getAllProducts, getProduct , updateProduct} from "../../actions/product";
 import { getAllCustomers } from "../../actions/customer";
-import moment from "moment"
-import { setAlert } from "../../actions/alert";
 import Alert from "../layout/Alert";
 import Loader from "../layout/Loader";
 

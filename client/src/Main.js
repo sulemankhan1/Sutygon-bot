@@ -11,7 +11,8 @@ import View from "./components/pages/users/view";
 import ViewUser from "./components/pages/users/Viewuser";
 import AddCustomer from "./components/pages/customers/Addcustomer";
 import AddProduct from "./components/pages/products/Addproduct";
-import Orders from "./components/pages/orders";
+import Orders from "./components/pages/orders/orders";
+import AddOrder from "./components/pages/orders/AddOrder";
 
 import Calender from "./components/pages/calender";
 import AddAppointment from "./components/pages/appointment";
@@ -22,7 +23,6 @@ import Product from "./components/pages/products/Product";
 import RentProduct from "./components/pages/rentproduct";
 import Report from "./components/pages/report/report";
 import ReportOrder from "./components/pages/report/reportOrder";
-import Loader from "./components/layout/Loader";
 
 
 // import Calender from "./components/pages/calender";
@@ -68,7 +68,9 @@ const Main = () => {
           <PrivateRoute exact path="/rentproduct" component={RentProduct} />
 
 {/* orders */}
-          <PrivateRoute exact path="/orders" component={Orders} />
+<PrivateRoute exact path="/orders" component={Orders} />
+          <PrivateRoute exact path="/orders/addorder" component={AddOrder} />
+
 {/* appointment */}
 <PrivateRoute exact path="/appointments" component={AddAppointment} />
 

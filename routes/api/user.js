@@ -179,7 +179,7 @@ router.post(
 // @access Private
 router.post(
   "/changestatus/:id",
-  [check("accountStatus", "Please Provide a Required").not().isEmpty()],
+  // [check("accountStatus", "Please Provide a Required").not().isEmpty()],
   auth,
   async (req, res) => {
     try {
@@ -190,10 +190,12 @@ router.post(
           .json({ errors: errors.array() });
       }
 
-      await User.updateOne({ _id: req.params.id }, {
+      const user = await User.findById(req.params.id);
+
+      await User.updateOne({_id: user._id }, {
         $set:
         {
-          accountStatus: req.body.accountStatus
+          accountStatus: "block"
         }
       });
       res
