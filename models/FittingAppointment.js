@@ -18,7 +18,7 @@ const FittingAppointmentSchema = new mongoose.Schema({
     },
     title:{
         type:String,
-        default:"Fitting Apointment"
+        default:"Appointment"
     },
     employee: {
         type: Schema.Types.ObjectId,
