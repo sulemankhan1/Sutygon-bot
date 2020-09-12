@@ -1916,3 +1916,7 @@
 .ball-grid-pulse > div {
   background-color: #343a40;
 }
+
+.loader-img {
+  margin-left: -20px
+}
