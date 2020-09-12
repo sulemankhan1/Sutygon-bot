@@ -36,7 +36,7 @@ const auth_user = auth.user;
       return users.map((user) => (
         // console.log(user)
         //  <img className="media-object round-media" src="../../uploads/avatar-1599780670164-862543959" alt="Generic placeholder image" height={75} />
-        <tr>
+        <tr key={user._id}>
           <td className="text-center text-muted">{tbl_sno++}</td>
           <td className="text-center">
             <img className="media-object round-media" src={`${user.avatar}`} alt="Generic placeholder image" height={75} />
@@ -153,19 +153,19 @@ const auth_user = auth.user;
           </Header>
           <div className="main-panel">
 
-            <div class="main-content">
-              <div class="content-wrapper">
+            <div className="main-content">
+              <div className="content-wrapper">
                 <section id="simple-table">
-                  <div class="row">
-                    <div class="col-sm-12">
-                      <div class="card">
-                        <div class="card-header">
-                          <h4 class="card-title">View User</h4>
+                  <div className="row">
+                    <div className="col-sm-12">
+                      <div className="card">
+                        <div className="card-header">
+                          <h4 className="card-title">View User</h4>
                         </div>
-                        <div class="card-content">
-                          <div class="card-body">
+                        <div className="card-content">
+                          <div className="card-body">
                             <Alert />
-                            <table class="table">
+                            <table className="table">
                               <thead>
                                 <tr>
                                   <th className="text-center">#</th>
@@ -215,8 +215,6 @@ ViewUser.propTypes = {
   auth: PropTypes.object,
   deleteUser: PropTypes.func.isRequired,
   blockUser: PropTypes.func.isRequired,
-
-  users: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
