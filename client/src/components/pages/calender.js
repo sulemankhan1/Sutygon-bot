@@ -15,13 +15,13 @@ const localizer = momentLocalizer(moment)
 
 
 
-class Calender extends Component {
+class AppointmentCalendar extends Component {
     async componentDidMount() {
         await this.props.getAllAppointments();
     }
 
     render() {
-        const { calender } = this.props;
+        const { calendar } = this.props;
 
         const mapToRBCFormat = e => Object.assign({}, e, {
             start: new Date(e.startDate),
@@ -74,10 +74,10 @@ class Calender extends Component {
                                             <Alert />
 
                                             <div className="card-body">
-                                                {this.props.calender ?
+                                                {this.props.calendar ?
 
                                                     <Calendar
-                                                        events={calender}
+                                                        events={calendar}
                                                         localizer={localizer}
                                                         defaultDate={new Date()}
                                                         components={
@@ -122,11 +122,11 @@ class Calender extends Component {
     }
 }
 
-Calender.propTypes = {
+AppointmentCalendar.propTypes = {
     saved: PropTypes.bool,
     auth: PropTypes.object,
     getAllAppointments: PropTypes.func.isRequired,
-    calender: PropTypes.array,
+    calendar: PropTypes.array,
     // getAllCustomers: PropTypes.func.isRequired,
     // getAllProducts: PropTypes.func.isRequired,
 
@@ -134,10 +134,10 @@ Calender.propTypes = {
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-    calender: state.appointment.appointments
+    calendar: state.appointment.appointments
 
 });
 export default connect(mapStateToProps, {
     getAllAppointments
-})(Calender);
+})(AppointmentCalendar);
 
