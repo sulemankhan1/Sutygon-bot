@@ -20,12 +20,12 @@ class View extends Component {
         }
     }
 
-       render() {
+    render() {
         const { auth } = this.props;
         const { user } = this.props;
-        if(user){
+        if (user) {
 
-                }        if (!auth.loading && !auth.isAuthenticated) {
+        } if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
         }
         if (this.props.saved) {
@@ -41,7 +41,7 @@ class View extends Component {
                     </Header>
 
                     <div className="main-panel">
-                       <div className="main-content">
+                        <div className="main-content">
                             <div className="content-wrapper">
                                 <div className="form-body">
                                     <div className="card">
@@ -50,102 +50,102 @@ class View extends Component {
                           View User
                           </h4>
                                         </div>
-                                        <Alert />
 
                                         <div className="card-body">
-                                            <form onSubmit={(e) => this.onSubmit(e)}>
 
-                                                <div className="row">
-                                                    <div className="form-group col-12 mb-2">
-                                                        <label>Select Profile Image</label>
-                                                        <input
-                                                            type="file"
-                                                            className="form-control-file"
-                                                            id="projectinput8"
-                                                        />
-                                                    </div>
+                                            <div className="row">
+
+                                                <div className="form-group col-md-6 mb-2 text-center">
+                                                    {user ?
+                                                        <>
+                                                            <img
+                                                                // className="form-control"
+                                                                id="projectinput8"
+                                                                src={`${user.avatar}`}
+                                                                height={290} width={250}
+                                                            />
+                                                        </> : ""}
                                                 </div>
-                                                <div className="row">
-                                                    <div className="form-group col-md-6 mb-2">
-                                                        <label htmlFor="projectinput1">User Name</label>
-                                                        <input type="text"
-                                                            id="projectinput1"
-                                                            className="form-control"
-                                                            placeholder="User Name"
-                                                            name="username"
-                                                            value={user ? user.username : ""}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group col-md-6 mb-2">
-                                                        <label htmlFor="projectinput3">E-mail</label>
-                                                        <input type="text"
-                                                            id="projectinput3"
-                                                            className="form-control"
-                                                            placeholder="E-mail"
-                                                            name="email"
-                                                            value={user ? user.email :""}
+                                                <div className="form-group col-md-6 mb-2">
+                                                    <div className="row">
+                                                        <div className="form-group col-12 mb-2">
+                                                            <label htmlFor="projectinput1">User Name</label>
+                                                            <input type="text"
+                                                                id="projectinput1"
+                                                                className="form-control"
+                                                                placeholder="User Name"
+                                                                name="username"
+                                                                value={user ? user.username : ""}
+                                                            />
+                                                        </div>
+                                                        <div className="form-group col-12 mb-2">
+                                                            <label htmlFor="projectinput3">E-mail</label>
+                                                            <input type="text"
+                                                                id="projectinput3"
+                                                                className="form-control"
+                                                                placeholder="E-mail"
+                                                                name="email"
+                                                                value={user ? user.email : ""}
 
-                                                        />
-                                                    </div>
-                                                 
-                                                  
-                                                </div>
-                                                <div className="row">
-                                                    <div className="form-group col-md-6 mb-2">
-                                                        <label htmlFor="projectinput4">Contact Number</label>
-                                                        <input type="text"
-                                                            id="projectinput4"
-                                                            className="form-control"
-                                                            placeholder="Phone"
-                                                            name="contactnumber"
-                                                            value={user ? user.contactnumber :""}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group col-md-6 mb-2">
-                                                        <label htmlFor="projectinput6">Gender</label><br></br>
-                                                        <label className="radio-inline">
-                                                            <input
-                                                                type="radio"
-                                                                name="gender"
-                                                                checked={user ? user.gender === "male" :""}
-                                                                value="male"
+                                                            />
+                                                        </div>
+                                                        <div className="form-group col-12 mb-2">
+                                                            <label htmlFor="projectinput4">Contact Number</label>
+                                                            <input type="text"
+                                                                id="projectinput4"
+                                                                className="form-control"
+                                                                placeholder="Phone"
+                                                                name="contactnumber"
+                                                                value={user ? user.contactnumber : ""}
+                                                            />
 
-                                                            />Male
+                                                        </div>
+                                                        <div className="form-group col-12 mb-2">
+                                                            <label htmlFor="projectinput6">Gender</label><br></br>
+                                                            <label className="radio-inline">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="gender"
+                                                                    checked={user ? user.gender === "male" : ""}
+                                                                    value="male"
+
+                                                                /> Male
                        </label>
-                                                        <label className="radio-inline">
-                                                            <input
-                                                                type="radio"
-                                                                name="gender"
-                                                                value="female"
-                                                                onChange={(e) => this.handleChange(e)}
-                                                                checked={user ? user.gender === "female" : ""}
+                                                            <label className="radio-inline">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="gender"
+                                                                    value="female"
+                                                                    onChange={(e) => this.handleChange(e)}
+                                                                    checked={user ? user.gender === "female" : ""}
 
-                                                            />Female
+                                                                /> Female
                          </label>
-                                                        <label className="radio-inline">
-                                                            <input
-                                                                type="radio"
-                                                                name="gender"
-                                                                value="other"
-                                                                onChange={(e) => this.handleChange(e)}
-                                                                checked={user ? user.gender === "other": ""}
 
-                                                            />Others
+                                                            <label className="radio-inline">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="gender"
+                                                                    value="other"
+                                                                    onChange={(e) => this.handleChange(e)}
+                                                                    checked={user ? user.gender === "other" : ""}
+
+                                                                /> Others
                        </label>
+                                                        </div>
+
+
                                                     </div>
                                                 </div>
-                                                <div className="row">
 
-                                                  
-                                                </div>
+                                            </div>
 
-                                                
-                                            </form>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
 
                         <footer className="footer footer-static footer-light">
                             <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
@@ -164,10 +164,10 @@ class View extends Component {
 
 View.propTypes = {
     saved: PropTypes.bool,
-       getUser: PropTypes.func.isRequired,
+    getUser: PropTypes.func.isRequired,
 
     auth: PropTypes.object,
-   
+
 };
 
 const mapStateToProps = (state) => ({

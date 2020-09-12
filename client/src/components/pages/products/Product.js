@@ -34,7 +34,8 @@ class Product extends Component {
         if (!auth.loading && !auth.isAuthenticated) {
           return <Redirect to="/" />;
         }
-        const { products } = this.props;
+        const { product } = this.props;
+        console.log(this.props)
         return (
             <React.Fragment>
                 <div className="wrapper menu-collapsed">
@@ -45,96 +46,85 @@ class Product extends Component {
                     <div className="main-panel">
 
                     <div className="main-content">
-  {/* <div className="content-wrapper">
+   <div className="content-wrapper">
     <section id="extended">
   <div className="row">
     <div className="col-sm-12">
       <div className="card">
         <div className="card-header">
           <h4 className="card-title">View Product</h4>
-          <div className="row">
-                  <div className="form-group col-12 mb-2">
-                    <label>Select Image</label>
-                    <input type="file"
-                     className="form-control-file"
-                      id="projectinput8"/>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="form-group col-md-6 mb-2">
-                    <label htmlFor="projectinput1">Name</label>
-                    <input type="text"
-                     id="projectinput1"
-                      className="form-control" 
-                      
-                      placeholder="Name"
-                      value={this.state.name}
-                      name="name"              
-                      onChange={(e) => this.handleChange(e)}
-/>
-                </div>
-                  <div className="form-group col-md-6 mb-2">
-                    <label htmlFor="projectinput2">Color</label>
-                    <input type="text"
-                     id="projectinput2" 
-                     className="form-control"
-                      placeholder="Color"
-                      value={this.state.color}
-                      name="color"
-onChange={(e) => this.handleChange(e)}
-/>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="form-group col-md-6 mb-2">
-                    <label htmlFor="projectinput3">Fabric</label>
-                    <input type="text" 
+       
+              
+            
+          <div className="card-body">
+
+<div className="row">
+
+    <div className="form-group col-md-6 mb-2 text-center">
+        {product ?
+            <>
+                <img
+                    // className="form-control"
+                    id="projectinput8"
+                    src={`${product.image}`}
+                    height={290} width={250}
+                />
+            </> : ""}
+    </div>
+    <div className="form-group col-md-6 mb-2">
+        <div className="row">
+            <div className="form-group col-12 mb-2">
+                <label htmlFor="projectinput1">Name</label>
+                <input type="text"
+                    id="projectinput1"
+                    className="form-control"
+                    placeholder="User Name"
+                    name="productname"
+                    value={product ? product.name : ""}
+                />
+            </div>
+            <div className="form-group col-12 mb-2">
+                <label htmlFor="projectinput3">fabric</label>
+                <input type="text"
                     id="projectinput3"
-                     className="form-control"
-                      placeholder="Fabric"
-                      value={this.state.fabric}
-                       name="fabric"
-                      onChange={(e) => this.handleChange(e)}
-/>
-                  </div>
-                  <div className="form-group col-md-6 mb-2">
-                    <label htmlFor="projectinput4">Size</label>
-                    <input type="number"
-                     id="projectinput4"
-                      className="form-control" 
-                      placeholder="Size" 
-                      name="size"
-                      value={this.state.size}
-                      onChange={(e) => this.handleChange(e)}
+                    className="form-control"
+                    placeholder="E-mail"
+                    name="email"
+                    value={product ? product.fabric : ""}
 
-                     />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="form-group col-md-6 mb-2">
-                    <label htmlFor="projectinput4">Available Quantity</label>
-                    <input type="number"
-                     id="projectinput4" 
-                     className="form-control" 
-                     placeholder="Available Quantity"
-                      name="availableQuantity"
-                      value={this.state.availableQuantity}
-                      onChange={(e) => this.handleChange(e)}
-                      />
-                  </div>
-                  <div className="form-group col-md-6 mb-2">
-                    <label htmlFor="projectinput4">Rented Quantity</label>
-                    <input type="number"
-                     id="projectinput4"
-                      className="form-control"
-                       placeholder="Rented Quantity" 
-                       name="rentedQuantity"
-                       value={this.state.rentedQuantity}
+                />
+            </div>
+            <div className="form-group col-12 mb-2">
+                <label htmlFor="projectinput4">Size</label>
+                <input type="text"
+                    id="projectinput4"
+                    className="form-control"
+                    placeholder="Phone"
+                    name="contactnumber"
+                    value={product ? product.size : ""}
+                />
 
-                       onChange={(e) => this.handleChange(e)}
-                       />
-                  </div>
-                </div>
+            </div>
+            <div className="form-group col-12 mb-2">
+                <label htmlFor="projectinput6">Available Quanity</label><br></br>
+                <input type="text"
+                    id="projectinput4"
+                    className="form-control"
+                    placeholder="Phone"
+                    name="contactnumber"
+                    value={product ? product.availableQuantity : ""}
+                />
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+</div>
         </div>
         <div className="card-content">
           <div className="card-body table-responsive">
@@ -147,7 +137,7 @@ onChange={(e) => this.handleChange(e)}
     </div>
   </div>
 </section>
-</div> */}
+</div> 
 </div>
 </div>
                    
@@ -170,11 +160,11 @@ Product.propTypes = {
    auth: PropTypes.object,
 
 getProduct: PropTypes.func.isRequired,
-   products: PropTypes.array,
+   product: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
-    products: state.product.products,
+    product: state.product.product,
     auth: state.auth,
 
 

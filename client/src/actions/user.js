@@ -90,13 +90,41 @@ export const updateUser = (user, id) => async (dispatch) => {
   dispatch({ type: USERS_LOADING });
   const config = {
     headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  const body = JSON.stringify(user);
+        'content-type': 'multipart/form-data'
+    }
+}
+  
   try {
-    const res = await axios.put(`/api/users/${id}`, body, config);
+    const res = await axios.post(`/api/users/${id}`, user, config);
+
+    dispatch({
+      type: USER_UPDATED,
+      payload: res.data,
+    });
+    dispatch(setAlert(res.data.msg, "success"));
+    dispatch(getAllUsers());
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: USERS_ERROR,
+    });
+  }
+};
+
+export const blockUser = (user, id) => async (dispatch) => {
+  dispatch({ type: USERS_LOADING });
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    }
+}
+  
+  try {
+    const res = await axios.post(`/api/users/changestatus/${id}`, user, config);
 
     dispatch({
       type: USER_UPDATED,

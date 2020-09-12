@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getAllUsers, deleteUser } from "../../../actions/user";
+import { getAllUsers, deleteUser,blockUser } from "../../../actions/user";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Alert from "../../layout/Alert";
@@ -16,6 +16,8 @@ class ViewUser extends Component {
   }
 
   getTAble = () => {
+    const { auth } = this.props;
+const auth_user = auth.user;
     const { users } = this.props;
     let tbl_sno = 1;
     // const {user} = this.props.auth;
@@ -32,31 +34,41 @@ class ViewUser extends Component {
       }
       return users.map((user) => (
         // console.log(user)
-      //  <img className="media-object round-media" src="../../uploads/avatar-1599780670164-862543959" alt="Generic placeholder image" height={75} />
+        //  <img className="media-object round-media" src="../../uploads/avatar-1599780670164-862543959" alt="Generic placeholder image" height={75} />
         <tr>
           <td className="text-center text-muted">{tbl_sno++}</td>
           <td className="text-center">
-            <img class="media-object round-media" src={`${user.avatar}`} alt="Generic placeholder image" height={75} />
-            </td>
-            {/* E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\8a8d8ee8-f05f-4a80-91cd-5eea99c8d8bc.jpg*/}
+            <img className="media-object round-media" src={`${user.avatar}`} alt="Generic placeholder image" height={75} />
+          </td>
+          {/* E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\8a8d8ee8-f05f-4a80-91cd-5eea99c8d8bc.jpg*/}
 
- 
+
           <td className="text-center">{user.username}</td>
           <td className="text-center">{user.contactnumber}</td>
           <td className="text-center">{user.email}</td>
           <td className="text-center">{user.gender}</td>
-          {/* <td className="text-center">
+          <td className="text-center">
             {user.accountStatus === "active" && (
               <span className="badge badge-warning">Active</span>
             )}
             {user.accountStatus === "block" && (
               <span className="badge badge-success">Block</span>
             )}
-          </td> */}
-          <td className="text-center">{user.accountStatus}</td>
+          </td>
+          {/* <td className="text-center">{user.accountStatus}</td> */}
           <td className="text-center">
-            <Link 
-             to={{ pathname: `/user/view/${user._id}` }}
+            {auth_user && auth_user.type === "Admin" ?
+                <Link
+                  to={{ pathname: `/user/changeStatus/${user._id}` }}
+
+                  onClick={() => this.onBlock(user._id)}
+                  className="info p-0">
+                  <i className="ft-alert-triangle font-medium-3 mr-2"></i>
+                </Link>
+
+               : ""}
+            <Link
+              to={{ pathname: `/user/view/${user._id}` }}
 
               className="info p-0">
               <i className="ft-user font-medium-3 mr-2"></i>
@@ -72,7 +84,7 @@ class ViewUser extends Component {
               <i className="ft-x font-medium-3 mr-2"></i>
             </Link>
           </td>
-  </tr>
+        </tr>
       ));
     }
   };
@@ -87,6 +99,27 @@ class ViewUser extends Component {
           label: "Yes",
           onClick: () => {
             this.props.deleteUser(id);
+          },
+        },
+        {
+          label: "No",
+          onClick: () => { },
+        },
+      ],
+    });
+  };
+
+  
+
+  onBlock = (id) => {
+    confirmAlert({
+      title: "Block User",
+      message: "Are you sure you want to block this user?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            this.props.blockUser(id);
           },
         },
         {
@@ -135,7 +168,7 @@ class ViewUser extends Component {
                                 <tr>
                                   <th className="text-center">#</th>
                                   <th className="text-center">Avatar</th>
-                                  
+
                                   <th className="text-center">Full Name</th>
                                   {/* <th>Last Name</th> */}
                                   <th className="text-center" >Contact</th>
@@ -179,6 +212,8 @@ ViewUser.propTypes = {
   getAllUsers: PropTypes.func.isRequired,
   auth: PropTypes.object,
   deleteUser: PropTypes.func.isRequired,
+  blockUser: PropTypes.func.isRequired,
+
   users: PropTypes.object,
 };
 
@@ -188,6 +223,6 @@ const mapStateToProps = (state) => ({
 
 });
 export default connect(mapStateToProps, {
-  getAllUsers, deleteUser
+  getAllUsers, deleteUser,blockUser
 })(ViewUser);
 

@@ -49,8 +49,7 @@ router.post("/add",
   auth,
   upload.single('avatar'),
     async (req, res) => {
-    const url = `${req.protocol}:${req.get('host')}`
-    const file = req.file;
+
     const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
 
     // Finds the validation errors in this request and wraps them in an object with handy functions
@@ -148,23 +147,18 @@ router.post(
 
   ],
   auth,
-
+  upload.single('avatar'),
   async (req, res) => {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res
-          .status(422)
-          .json({ errors: errors.array() });
-      }
-
+      const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
       await User.updateOne({ _id: req.params.id }, {
         $set: {
-          name: req.body.name,
-          email: req.body.email,
-          contactNumber: req.body.contactNumber,
-          gender: req.body.gender,
-
+          username: body.username,
+          fullname: body.name,
+          email: body.email,
+          gender: body.gender,
+          contactnumber: body.contactnumber,
+  avatar:`/uploads/user/${req.file.originalname}`,
         }
       });
 
