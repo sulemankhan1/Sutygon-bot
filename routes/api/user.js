@@ -69,7 +69,7 @@ router.post("/add",
         password: password,
         gender: body.gender,
         contactnumber: body.contactnumber,
-avatar:`/uploads/user/${req.file.originalname}`,
+        avatar:`/uploads/user/${req.file.originalname}`,
       };
       let user = new User(userBody);
       await user.save();
@@ -104,6 +104,33 @@ router.get("/", auth,
         .send("Server Error!");
     }
   });
+
+// @route   GET api/users/search/sarchval
+// @desc    Search user
+// @access  Private
+router.get("/search/:val", auth,
+async (req, res) => {
+  try {
+    const search = req.params.val;
+    // const users = await User.find({username: /search/, contactnumber: /search/, email: /search/, gender: /search/, accountStatus: /search/});
+    // const users = await User.find({username: {$regex: search}, contactnumber: {$regex: search}, email: {$regex: search}, accountStatus: {$regex: search} });
+    const users = await User.find({
+      $or: [
+        {username: search},
+        {contactnumber: search},
+        {email: search},
+        {gender: search},
+        {accountStatus: search},
+      ]
+    });
+    res.json(users);
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .send("Server Error!");
+  }
+});
 
 // @route   GET /api/users/id
 // @desc    Get User by Id

@@ -64,6 +64,24 @@ export const getAllUsers = () => async (dispatch) => {
   }
 };
 
+  // Find user
+  export const findUsers = (searchVal) => async (dispatch) => {
+    dispatch({ type: USER_LOADING });
+    try {
+      const res = await axios.get(`/api/users/search/${searchVal}`);
+  
+      dispatch({
+        type: GET_USERS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USERS_ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
 
 
 // Get User by ID

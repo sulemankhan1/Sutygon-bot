@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
-import { getAllProducts ,deleteProduct,getProduct} from "../../../actions/product";
+import { getAllProducts ,deleteProduct,getProduct, findProducts} from "../../../actions/product";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { Link } from "react-router-dom";
@@ -46,12 +46,11 @@ class ViewProduct extends Component {
       return products.map((product,i) => (
         <tr key={i}>
           
-           <td className="text-center text-muted">{tbl_sno++}</td>
-           <td className="text-center">{""}</td>
-           <td className="text-center">
+          <td className="text-center text-muted">{tbl_sno++}</td>
+          <td className="text-center">{""}</td>
+          <td className="text-center">
             <img className="media-object round-media" src={`${product.image}`} alt="Generic placeholder image" height={75} />
-            </td>
-
+          </td>
           <td className="text-center">{product.name}</td>
           <td className="text-center">{product.color}</td>
           <td className="text-center">{product.size}</td>
@@ -108,6 +107,16 @@ class ViewProduct extends Component {
     });
   };
 
+  async searchTable() {
+    const searchVal = this.state.search;
+    if(searchVal) {
+        await this.props.findProducts(searchVal);
+    } else {
+        await this.props.getAllProducts();
+    }
+    
+}
+
     render() {
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -125,6 +134,7 @@ class ViewProduct extends Component {
             <React.Fragment>
               <Loader />
                 <div className="wrapper menu-collapsed">
+                  <Header />
                     <Sidebar location={this.props.location} />
                     <div className="main-panel">
 
@@ -152,6 +162,13 @@ class ViewProduct extends Component {
                                 </div>
                                 <div className="card-content">
                                   <div className="card-body table-responsive">
+
+                                  <div className="row">
+                                    <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
+                                    <div className="col-md-4">
+                                        <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
+                                    </div>
+                                  </div>
                                   <Alert />
 
                                     <table className="table text-center">
@@ -202,11 +219,12 @@ class ViewProduct extends Component {
 
 
 ViewProduct.propTypes = {
-   auth: PropTypes.object,
-getAllProducts: PropTypes.func.isRequired,
-getProduct: PropTypes.func.isRequired,
-deleteProduct: PropTypes.func.isRequired,
-   products: PropTypes.array,
+  auth: PropTypes.object,
+  getAllProducts: PropTypes.func.isRequired,
+  getProduct: PropTypes.func.isRequired,
+  deleteProduct: PropTypes.func.isRequired,
+  findProducts: PropTypes.func.isRequired,
+  products: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
@@ -216,6 +234,6 @@ const mapStateToProps = (state) => ({
 
 });
 export default connect(mapStateToProps, {
-  getAllProducts,deleteProduct,getProduct
+  getAllProducts,deleteProduct,getProduct, findProducts
 })(ViewProduct);
 
