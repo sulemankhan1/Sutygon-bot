@@ -8,12 +8,17 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
-import { deleteOrder,getAllOrders } from "../../../actions/order";
+import { deleteOrder,getAllOrders, findOrders } from "../../../actions/order";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 class Orders extends Component {
+
   async componentDidMount() {
     await this.props.getAllOrders();
+  }
+
+  state = {
+    search: ""
   }
    
  getTAble = () => {
@@ -40,9 +45,9 @@ class Orders extends Component {
           <td className="text-center">{order.product ?  order.product.name:""}</td>
           <td className="text-center">{order.deliveryDate}</td>
           <td className="text-center">{order.returnDate}</td>
-          <td className="text-center">
+          <td className="text-d">
       
-       {/* <Link
+            {/* <Link
               to={{ pathname: `/orders/${order._id}` }}
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2"></i>
@@ -79,8 +84,21 @@ class Orders extends Component {
     });
   };
 
-   
-  
+  handleChange = (e, id = "") => {
+    this.setState({ 'search': e.target.value });
+  };
+
+  async searchTable() {
+        const searchVal = this.state.search;
+        if(searchVal) {
+            await this.props.findOrders(searchVal);
+        } else {
+            await this.props.getAllOrders();
+        }
+        
+    }
+
+    
   render() {
         const { auth   } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -102,50 +120,54 @@ class Orders extends Component {
                     <div className="main-panel">
 
                     <div className="main-content">
-  <div className="content-wrapper">
-  <section id="extended">
-  <div className="row">
-    <div className="col-sm-12">
-      <div className="card">
-        <div className="card-header">
-          <h4 className="card-title">Orders</h4>
-        </div>
-        <div className="card-content">
-          <div className="card-body table-responsive">
-            <Alert />
-            <table className="table text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th></th>
-                  <th>Customer</th>
-                  <th>Product</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-           {this.getTAble()}  
-           
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-</div>
-</div>
-</div>
+                      <div className="content-wrapper">
+                      <section id="extended">
+                      <div className="row">
+                        <div className="col-sm-12">
+                          <div className="card">
+                            <div className="card-header">
+                              <h4 className="card-title">Orders</h4>
+                            </div>
+                            <div className="card-content">
+                              <div className="card-body table-responsive">
+                                {/* <div className="row">
+                                  <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
+                                  <div className="col-md-4">
+                                      <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
+                                  </div>
+                                </div> */}
+                                <Alert />
+                                <table className="table text-center">
+                                  <thead>
+                                    <tr>
+                                      <th>#</th>
+                                      <th></th>
+                                      <th>Customer</th>
+                                      <th>Product</th>
+                                      <th>Start Date</th>
+                                      <th>End Date</th>
+                                      <th>Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                              {this.getTAble()}  
+                              
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                    </div>
+                    </div>
+                    </div>
                    
-                        <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
-                        </footer>
-
-
+                    <footer className="footer footer-static footer-light">
+                        <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
+                            <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                    </footer>
                 </div>
 
             </React.Fragment>
@@ -158,6 +180,7 @@ Orders.propTypes = {
   auth: PropTypes.object,
   getAllOrders: PropTypes.func.isRequired,
   deleteOrder: PropTypes.func.isRequired,
+  findOrders: PropTypes.func.isRequired,
      orders: PropTypes.array,
   };
 
@@ -167,6 +190,6 @@ const mapStateToProps = (state) => ({
 
 });
 export default connect(mapStateToProps, {
-  getAllOrders,deleteOrder
+  getAllOrders,deleteOrder, findOrders
 })(Orders);
 
