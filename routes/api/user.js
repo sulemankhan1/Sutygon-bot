@@ -62,15 +62,34 @@ router.post("/add",
       const rec = User.find({ email: body.email });
       // save user record
       // const { avatar } = file.path;
-      const userBody = {
+      const avatar = gravatar.url(body.email, {
+        s: "200",
+        r: "pg",
+        d: "mm",
+      });
+let userBody;
+      if(req.file == undefined){
+       userBody = {
+          username: body.username,
+          fullname: body.username,
+          email: body.email,
+          password: password,
+          gender: body.gender,
+          contactnumber: body.contactnumber,
+  avatar:avatar,
+        };
+      }
+      else {
+       userBody = {
         username: body.username,
-        fullname: body.name,
+        fullname: body.username,
         email: body.email,
         password: password,
         gender: body.gender,
         contactnumber: body.contactnumber,
         avatar:`/uploads/user/${req.file.originalname}`,
       };
+    }
       let user = new User(userBody);
       await user.save();
 
@@ -178,6 +197,25 @@ router.post(
   async (req, res) => {
     try {
       const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+      const avatar = gravatar.url(body.email, {
+        s: "200",
+        r: "pg",
+        d: "mm",
+      });
+  
+      if(req.file== undefined){
+    await User.updateOne({ _id: req.params.id }, {
+      $set: {
+        username: body.username,
+        fullname: body.name,
+        email: body.email,
+        gender: body.gender,
+        contactnumber: body.contactnumber,
+avatar:avatar
+      }
+  })
+  }
+      else {
       await User.updateOne({ _id: req.params.id }, {
         $set: {
           username: body.username,
@@ -188,7 +226,7 @@ router.post(
   avatar:`/uploads/user/${req.file.originalname}`,
         }
       });
-
+      }
       res
         .status(200)
         .json({ msg: "User Updated Successfully" });

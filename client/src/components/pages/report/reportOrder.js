@@ -11,6 +11,8 @@ import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 import moment from 'moment';
+import { getUser } from "../../../actions/user";
+
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
 class ReportOrder extends Component {
@@ -43,7 +45,9 @@ class ReportOrder extends Component {
 
         let tbl_sno = 1;
         if (data) {
-            if (data.length === 0) {
+          const {report} = data ;
+          if(data.reportType==="order") {
+          if (data.report === 0) {
                 return (
                     <tr>
                         <td colSpan={6} className="text-center">
@@ -52,25 +56,59 @@ class ReportOrder extends Component {
                     </tr>
                 );
             }
-            return data.map((record, i) => (
-                <tr key={i}>
+            return report.map((record, i) => (
+              <tr key={i}>
+                  <td className="text-center text-muted">{tbl_sno++}</td>
+                  <td className="text-center">{""}</td>
+                  <td className="">{record.orderNumber}</td>
 
-                    <td className="text-center text-muted">{tbl_sno++}</td>
-                    <td className="text-center">{""}</td>
-                    <td className="text-center">{record.orderNumber}</td>
+                  <td className="text-center">{record.customer.name}</td>
+                  <td className="text-center">{record.product.name}</td>
+                  {/* <td className="text-center">{record.status}</td> */}
 
-                    <td className="text-center">{record.customer.name}</td>
-                    <td className="text-center">{record.product.name}</td>
-                    <td className="text-center">{user.username}</td>
-                    <td className="text-center">{moment(record.deliveryDate).format("DD/MMM/YYYY")}</td>
+                  <td className="text-center">{record.user.username}</td>
+                  <td className="text-center">{moment(record.deliveryDate).format("DD/MMM/YYYY")}</td>
 
-                    
+                  
 
-                </tr>
+              </tr>
 
-            ));
+          )
+          );
+          }
+          else if(data.reportType==="appointment"){
+            if (data.report === 0) {
+              return (
+                  <tr>
+                      <td colSpan={6} className="text-center">
+                          No Appointment Found
+          </td>
+                  </tr>
+              );
+          }
+          return report.map((record, i) => (
+            <tr key={i}>
+                <td className="text-center text-muted">{tbl_sno++}</td>
+                <td className="text-center">{""}</td>
+                <td className="">{record.appointmentNumber}</td>
+                <td className="text-center">{record.trackingNumber}</td>
+
+                <td className="text-center">{record.customer.name}</td>
+                {/* <td className="text-center">{record.status}</td> */}
+
+                <td className="text-center">{record.user.username}</td>
+                <td className="text-center">{moment(record.start).format("DD/MMM/YYYY")}</td>
+
+                
+
+            </tr>
+
+        )
+        );
         }
-    };
+          }
+        };
+    
 
 
     render() {
@@ -141,10 +179,10 @@ class ReportOrder extends Component {
                   <tr>
                     <th>#</th>
                     <th></th>
-                    <th>Order Number</th>
+                    <th>Appointment Number</th>
+                    <th className="text-center">Tracking Number</th>
                     <th className="text-center">Customer</th>
-                    <th className="text-center">Product</th>
-                    <th className="text-center">Order Status</th>
+                    <th className="text-center">User Name</th>
                     <th className="text-center">Delivery Date</th>
                      {/* <th className="text-center">Amount</th>  */}
                   </tr>

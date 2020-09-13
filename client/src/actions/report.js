@@ -40,7 +40,7 @@ export const getReport = (report) => async (dispatch) => {
       const res = await axios.get(`/api/reports/`, {
         params: {
           "customer": report.customer,
-          "employee": report.employee,
+          "user": report.user,
           "start":report.start,
           "end":report.end,
           "reportType":report.reportType

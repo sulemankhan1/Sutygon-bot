@@ -68,7 +68,7 @@ class ViewProduct extends Component {
             <Link 
            to={{ pathname: `/product/viewproduct/${product._id}` }}
               className="info p-0">
-              <i className="ft-user font-medium-3 mr-2" title="View"></i>
+              <i className="ft-eye font-medium-3 mr-2" title="View"></i>
             </Link>
             <Link
               to={{ pathname: `/product/editproduct/${product._id}` }}

@@ -20,16 +20,15 @@ const FittingAppointmentSchema = new mongoose.Schema({
         type:String,
         default:"Appointment"
     },
-    employee: {
+    user: {
         type: Schema.Types.ObjectId,
-        ref: "employee",
+        ref: "user",
     },
     customer: {
         type: Schema.Types.ObjectId,
         ref: "customer",
     },
- 
-
+  
 },
 );
 FittingAppointmentSchema.plugin(AutoIncrement, {inc_field: 'appointmentNumber'});

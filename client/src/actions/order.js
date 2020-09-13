@@ -7,43 +7,42 @@ import {
   ORDERS_ERROR,
   ORDERS_LOADING,
   ORDER_DELETED,
- 
+ ORDER_SAVED,
+ ORDER_ERROR
 
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
 
+//Add new product
+export const addNewOrder = (order) => async (dispatch) => {
+  dispatch({ type: ORDER_LOADING });
 
-// Add new product
-// export const addNewOrder = (order) => async (dispatch) => {
-//   dispatch({ type: ORDER_LOADING });
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
 
-//   const config = {
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   };
+  const body = JSON.stringify(order);
+  try {
+    const res = await axios.post("/api/orders/add", body, config);
 
-//   const body = JSON.stringify(product);
-//   try {
-//     const res = await axios.post("/api/orders/add", body, config);
-
-//     dispatch({
-//       type: ORDER_SAVED,
-//     });
+    dispatch({
+      type: ORDER_SAVED,
+    });
     
-//     dispatch(setAlert(res.data.msg, "success"));
+    dispatch(setAlert(res.data.msg, "success"));
 
-//   } catch (err) {
-//     const errors = err.response.data.errors;
-//     if (errors) {
-//       errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
-//     }
-//     dispatch({
-//       type: ORDER_ERROR,
-//     });
-//   }
-// };
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: ORDER_ERROR,
+    });
+  }
+};
 
 
   // get All Users

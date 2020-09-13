@@ -83,8 +83,7 @@ class Sidebar extends Component {
 
                   {/* customer/addcustomer */}
                   <li className={this.getClassName("customer")}>
-                    <Link
-                        to="/customer/viewcustomer"
+                    <Link to="/customer/viewcustomer"
                         onClick={() => this.handleClick("customer")}
                       >
                         <i className="ft-user" /> Customers
