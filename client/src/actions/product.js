@@ -114,7 +114,7 @@ export const updateProduct = (product, id) => async (dispatch) => {
 }
 
   try {
-    const res = await axios.post(`/api/products/${id}`, product, config);
+    const res = await axios.post(`/api/products/${id}`,product, config);
 
     dispatch({
       type: PRODUCT_UPDATED,
@@ -134,6 +134,39 @@ export const updateProduct = (product, id) => async (dispatch) => {
   }
 };
   
+
+
+// Update User
+export const updateProductQty = (product, id) => async (dispatch) => {
+
+  dispatch({ type: PRODUCTS_LOADING });
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },  
+  };
+  const body = JSON.stringify(product);
+  try {
+    const res = await axios.post(`/api/products/updateQty/${id}`,body, config);
+
+    dispatch({
+      type: PRODUCT_UPDATED,
+      payload: res.data,
+    });
+    dispatch(setAlert(res.data.msg, "success"));
+    dispatch(getAllProducts());
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: PRODUCTS_ERROR,
+    });
+  }
+};
+
   // Delete User
 export const deleteProduct = (id) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });

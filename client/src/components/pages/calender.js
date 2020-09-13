@@ -14,7 +14,6 @@ import { getAllAppointments } from "../../actions/appointment";
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 
-
 class AppointmentCalendar extends Component {
     state = {
         id: "",
@@ -72,6 +71,7 @@ class AppointmentCalendar extends Component {
       startAccessor="start"
       endAccessor="end"
       style={{ height: 500 }}
+    
     />
     :""}
                                             </div>
