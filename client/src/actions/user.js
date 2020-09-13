@@ -46,7 +46,7 @@ export const addNewUser = (user) => async (dispatch) => {
     }
   };
 
-  // get All Users
+// get All Users
 export const getAllUsers = () => async (dispatch) => {
   dispatch({ type: USER_LOADING });
   try {

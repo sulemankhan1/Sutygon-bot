@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import auth from "./auth";
 import alert from "./alert";
 
+import dashboard from "./dashboard";
 import user from "./user";
 import pages from "./pages";
 import product from "./product";
@@ -22,6 +23,7 @@ export default combineReducers({
   rentproduct,
   order,
   appointment,
-  report
+  report,
+  dashboard,
 
 });
