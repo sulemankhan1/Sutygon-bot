@@ -4,7 +4,7 @@ import Header from "../layout/Header";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { deleteProduct, addNewRentProduct } from "../../actions/rentproduct";
+import { addNewRentProduct,deleteRentedProduct } from "../../actions/rentproduct";
 import { getAllProducts, getProduct , updateProduct} from "../../actions/product";
 import { getAllCustomers } from "../../actions/customer";
 import Alert from "../layout/Alert";
@@ -44,15 +44,15 @@ class RentProduct extends Component {
       }
     }
   }
-  getRentedQuantity = () => {
-    const { products } = this.props.products;
-    if (this.state.product) {
-      const result = products.filter(record => record._id === this.state.product)
-      if (result) {
-        return result[0].rentedQuantity
-      }
-    }
-  }
+  // getRentedQuantity = () => {
+  //   const { products } = this.props.products;
+  //   if (this.state.product) {
+  //     const result = products.filter(record => record._id === this.state.product)
+  //     if (result) {
+  //       return result[0].rentedQuantity
+  //     }
+  //   }
+  // }
   onSubmit = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
@@ -65,7 +65,7 @@ class RentProduct extends Component {
       trackingNumber: state.orderNumber,
       product: state.product,
       customer: state.customer,
-      employee: user._id,
+      user: user._id,
       orderedSize:state.orderedSize,
       orderedQuantity:state.orderedQuantity,
       deliveryDate: state.deliveryDate,
@@ -93,7 +93,7 @@ class RentProduct extends Component {
       }
          const productQTY = {
        availableQuantity:qty,
-       rentedQuantity:this.state.orderedQuantity
+      //  rentedQuantity:this.state.orderedQuantity
 
       };
 
@@ -195,23 +195,23 @@ this.setState({ saving: true });
                                 className="form-control"
                                 placeholder="Available Quantity"
                                 name="availableQuantity"
-                                value={this.getavailableQuantity() >= 0 ?  this.getavailableQuantity(): `Available Quantity`}
+                                value={this.getavailableQuantity() >= 0 ?  this.getavailableQuantity(): `0`}
                                 onChange={(e) => this.handleChange(e)}
                                 readOnly
                               />
                             </div>
                             <div className="form-group col-md-6 mb-2">
-                              <label htmlFor="projectinput4">Rented Quantity</label>
+                              {/* <label htmlFor="projectinput4">Rented Quantity</label>
                     <input type="text"
                      id="projectinput4"
                       className="form-control"
                        placeholder="Rented Quantity" 
                        name="orderedQuantity"
-                       value={this.getRentedQuantity() >= 0 ?  this.getRentedQuantity(): `Rented Quantity`}
+                       value={this.getRentedQuantity() >= 0 ?  this.getRentedQuantity(): `0`}
                        onChange={(e) => this.handleChange(e)}
                        readOnly
 
-                       />
+                       /> */}
                             </div>
                           </div>
                    
@@ -355,7 +355,7 @@ export default connect(mapStateToProps, {
   getAllCustomers,
   getAllProducts,
   addNewRentProduct,
-  deleteProduct,
+  deleteRentedProduct,
   getProduct,
   updateProduct
 })(RentProduct);

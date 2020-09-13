@@ -61,6 +61,24 @@ class AddOrder extends Component {
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
     };
+    getavailableQuantity = () => {
+      const { products } = this.props.products;
+      if (this.state.product) {
+        const result = products.filter(record => record._id === this.state.product)
+        if (result) {
+          return result[0].availableQuantity
+        }
+      }
+    }
+    getRentedQuantity = () => {
+      const { products } = this.props.products;
+      if (this.state.product) {
+        const result = products.filter(record => record._id === this.state.product)
+        if (result) {
+          return result[0].rentedQuantity
+        }
+      }
+    }
     onSubmit = async (e) => {
       e.preventDefault();
       this.setState({ saving: true });
@@ -113,6 +131,7 @@ class AddOrder extends Component {
                         <div className="content-wrapper">
                         <section id="form-action-layouts">
      <div className="form-body">
+     
         <div className="card">
           <div className="card-header">
                 <h4 className="form-section"><i className="icon-social-dropbox"></i> 
@@ -177,7 +196,7 @@ class AddOrder extends Component {
                                 className="form-control"
                                 placeholder="Available Quantity"
                                 name="availableQuantity"
-                                // value={this.getavailableQuantity() >= 0 ?  this.getavailableQuantity(): `Available Quantity`}
+                               value={this.getavailableQuantity() >= 0 ?  this.getavailableQuantity(): `Available Quantity`}
                                 onChange={(e) => this.handleChange(e)}
                                 readOnly
                               />
@@ -189,7 +208,7 @@ class AddOrder extends Component {
                       className="form-control"
                        placeholder="Rented Quantity" 
                        name="orderedQuantity"
-                      //  value={this.getRentedQuantity() >= 0 ?  this.getRentedQuantity(): `Rented Quantity`}
+                        value={this.getRentedQuantity() >= 0 ?  this.getRentedQuantity(): `Rented Quantity`}
                        onChange={(e) => this.handleChange(e)}
                        readOnly
 

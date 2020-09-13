@@ -19,8 +19,8 @@ class AddProduct extends Component {
         color: "",
         size: "",
         availableQuantity:"",
-        rentedQuantity: "",
-        inStock:"",
+        // rentedQuantity: "",
+        // inStock:"",
         image: "default",
         saving: false,
     };
@@ -41,7 +41,7 @@ class AddProduct extends Component {
             color: product.color,
             size:product.size,
             availableQuantity:product.availableQuantity,
-            rentedQuantity:product.rentedQuantity,
+            // rentedQuantity:product.rentedQuantity,
   
 
           });
@@ -69,8 +69,8 @@ class AddProduct extends Component {
         formData.append('size',state.size)
         formData.append('color',state.color)
         formData.append('availableQuantity',state.availableQuantity)
-        formData.append('rentedQuantity',state.rentedQuantity)
-        formData.append('inStock',state.inStock)
+        // formData.append('rentedQuantity',state.rentedQuantity)
+        //  formData.append('inStock',state.inStock)
 
         
         if (state.id === "") {
@@ -112,7 +112,6 @@ class AddProduct extends Component {
                           ? "Add New Product"
                           : "Update Product"}</h4>
             </div>
-            <Alert />
 
             <div className="card-body">
 
@@ -122,7 +121,8 @@ class AddProduct extends Component {
                             method="POST"
                             onSubmit={(e) => this.onSubmit(e)}>
 
-              <div className="row">
+<Alert />
+    <div className="row">
                   <div className="form-group col-12 mb-2">
                     <label>Select Image</label>
                     <input 
@@ -200,7 +200,7 @@ onChange={(e) => this.handleChange(e)}
                       />
                   </div>
                   <div className="form-group col-md-6 mb-2">
-                    <label htmlFor="projectinput4">Rented Quantity</label>
+                    {/* <label htmlFor="projectinput4">Rented Quantity</label>
                     <input type="number"
                      id="projectinput4"
                       className="form-control"
@@ -209,7 +209,7 @@ onChange={(e) => this.handleChange(e)}
                        value={this.state.rentedQuantity}
 
                        onChange={(e) => this.handleChange(e)}
-                       />
+                       /> */}
                   </div>
                 </div>
               <div className="form-actions top">

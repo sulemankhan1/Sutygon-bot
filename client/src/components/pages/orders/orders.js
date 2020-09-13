@@ -8,13 +8,15 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
-import { deleteOrder,getAllOrders, findOrders } from "../../../actions/order";
+import {getAllRentedProducts,deleteRentedProduct } from "../../../actions/rentproduct";
 import { confirmAlert } from "react-confirm-alert";
+import * as moment from 'moment'
+
 import "react-confirm-alert/src/react-confirm-alert.css";
 class Orders extends Component {
 
   async componentDidMount() {
-    await this.props.getAllOrders();
+    await this.props.getAllRentedProducts();
   }
 
   state = {
@@ -22,11 +24,11 @@ class Orders extends Component {
   }
    
  getTAble = () => {
-    const { orders } = this.props;
-     console.log(orders)
+    const { rentproducts } = this.props;
+    console.log(rentproducts)
         let tbl_sno=1;
-    if (orders) {
-      if (orders.length === 0) {
+    if (rentproducts) {
+      if (rentproducts.length === 0) {
         return (
           <tr>
             <td colSpan={6} className="text-center">
@@ -35,7 +37,7 @@ class Orders extends Component {
           </tr>
         );
       }
-      return orders.map((order,i) => (
+      return rentproducts.map((order,i) => (
         <tr key={i}>
            
            <td className="text-center text-muted">{tbl_sno++}</td>
@@ -45,10 +47,10 @@ class Orders extends Component {
           <td className="text-center">{order.product ?  order.product.name:""}</td>
           <td className="text-center">{order.status}</td>
 
-          <td className="text-center">{order.deliveryDate}</td>
+          <td className="text-center">{moment(order.deliveryDate).format('DD/MMM/YYYY')}</td>
 
-          <td className="text-center">{order.returnDate}</td>
-          <td className="text-d">
+          <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
+          <td className="text-center">
       
             {/* <Link
               to={{ pathname: `/orders/${order._id}` }}
@@ -76,7 +78,7 @@ class Orders extends Component {
         {
           label: "Yes",
           onClick: () => {
-            this.props.deleteOrder(id);
+            this.props.deleteRentedProduct(id);
           },
         },
         {
@@ -176,18 +178,17 @@ class Orders extends Component {
 
 Orders.propTypes = {
   auth: PropTypes.object,
-  getAllOrders: PropTypes.func.isRequired,
-  deleteOrder: PropTypes.func.isRequired,
-  findOrders: PropTypes.func.isRequired,
-     orders: PropTypes.array,
+  getAllRentedProducts: PropTypes.func.isRequired,
+  deleteRentedProduct: PropTypes.func.isRequired,
+  rentproducts: PropTypes.array,
   };
 
 const mapStateToProps = (state) => ({
-  orders: state.order.orders,
+  rentproducts: state.rentproduct.rentproducts,
   auth: state.auth,
 
 });
 export default connect(mapStateToProps, {
-  getAllOrders,deleteOrder, findOrders
+  getAllRentedProducts,deleteRentedProduct
 })(Orders);
 

@@ -91,7 +91,7 @@ router.post(
 router.get("/",auth,
     async (req, res) => {
         try {
-            const rentedProducts = await RentedProduct.find();
+            const rentedProducts = await RentedProduct.find().populate("customer").populate("product").populate("user");
             res.json(rentedProducts);
         } catch (err) {
             console.log(err);

@@ -2,16 +2,31 @@ import React, { Component } from "react";
 import Sidebar from "../layout/Sidebar";
 import Header from "../layout/Header";
 import Loader from "../layout/Loader";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { getAllAppointments } from "../../actions/appointment";
 import { getAllOrders } from "../../actions/order";
+import { getAllRentedProducts} from "../../actions/rentproduct";
+import { getAllProducts} from "../../actions/product";
+
 // import { getAllAppointments } from "../../actions/appointment";
 // import { getAllAppointments } from "../../actions/appointment";
 
 import "../../login.css"
 
 class Dashboard extends Component {
+
+  async componentDidMount() {
+    await this.props.getAllAppointments();
+    await this.props.getAllOrders();
+    await this.props.getAllRentedProducts();
+    await this.props.getAllProducts();
+  }
+
   render() {
+    console.log(this.props)
  
+    
     return (
 <React.Fragment>
   <Loader />
@@ -123,5 +138,31 @@ class Dashboard extends Component {
   }
 }
 
+Dashboard.propTypes = {
+  getAllAppointments: PropTypes.func.isRequired,
+  getAllOrders: PropTypes.func.isRequired,
+  getAllProducts: PropTypes.func.isRequired,
+  getAllRentedProducts: PropTypes.func.isRequired,
+  auth: PropTypes.object,
+  products: PropTypes.array,
+  orders: PropTypes.array,
+  rentedproducts:PropTypes.array
 
-export default Dashboard;
+//   deleteUser: PropTypes.func.isRequired,
+//   blockUser: PropTypes.func.isRequired,
+ };
+
+const mapStateToProps = (state) => ({
+  users: state.user.users,
+  auth: state.auth,
+  products: state.product.products,
+  appointment: state.appointment.appointments,
+  orders:state.order.orders,
+// rentedproducts:state.rentedproduct.rentedproducts,
+
+
+});
+export default connect(mapStateToProps, {
+   getAllAppointments, getAllOrders,getAllProducts,getAllRentedProducts
+})(Dashboard);
+

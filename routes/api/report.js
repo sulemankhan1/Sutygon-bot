@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
-const Order = require("../../models/Orders");
 const  RentedProduct= require("../../models/RentedProducts");
 const  FittingAppointment= require("../../models/FittingAppointment");
 const moment = require("moment")
@@ -55,7 +54,7 @@ const moment = require("moment")
 // @desc   Get Order (Search for Order by customer,user,custom date)
 // @access Private
 router.get('',
-//  auth,
+ auth,
     async (req, res) => {
         try {
             let result;

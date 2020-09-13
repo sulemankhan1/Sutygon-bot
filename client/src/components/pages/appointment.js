@@ -23,7 +23,7 @@ class AddAppointment extends Component {
         start:"",
         end:"",
         customer: "",
-        employee:"",
+        user:"",
         saving: false,
     };
     async componentDidMount() {
@@ -49,7 +49,7 @@ const {user} = this.props.auth;
             start: state.start,
             end: state.start,
             customer:state.customer,
-            employee: user._id,
+            user: user._id,
                    };
 
         if (state.id === "") {
@@ -90,11 +90,12 @@ const {user} = this.props.auth;
                 <h4 className="form-section"><i className="icon-social-dropbox"></i> 
                           Add New Appointment</h4>
             </div>
-            <Alert />
 
             <div className="card-body">
 
             <form onSubmit={(e) => this.onSubmit(e)}>
+            <Alert />
+
             <div className="row">
                             <div className="form-group col-6 mb-2">
                               <label htmlFor="issueinput5">Select Customer</label>

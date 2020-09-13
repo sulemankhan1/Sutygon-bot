@@ -28,7 +28,6 @@ export const addNewAppointment = (appointment) => async (dispatch) => {
     };
   
     const body = JSON.stringify(appointment);
-    console.log("123",body)
     try {
       const res = await axios.post("/api/appointments/add", body, config);
   

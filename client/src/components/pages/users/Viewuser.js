@@ -188,7 +188,9 @@ class ViewUser extends Component {
                                 <tr>
                                   <th className="text-center">#</th>
                                   <th className="text-center">Avatar</th>
+
                                   <th className="text-center">Full Name</th>
+                                  {/* <th>Last Name</th> */}
                                   <th className="text-center" >Contact</th>
                                   <th className="text-center">E-mail</th>
                                   <th className="text-center">Gender</th>

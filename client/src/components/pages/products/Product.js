@@ -36,7 +36,6 @@ class Product extends Component {
           return <Redirect to="/" />;
         }
         const { product } = this.props;
-        console.log(this.props)
         return (
             <React.Fragment>
                 <Loader />
