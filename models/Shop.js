@@ -23,9 +23,10 @@ const ShopSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    default:"off"
+    default: "off"
   }, 
-    date: {
+  shopStartTime: {type: Date},
+  date: {
     type: Date,
     default: Date.now,
   },

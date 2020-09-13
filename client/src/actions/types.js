@@ -88,3 +88,14 @@ export const APPOINTMENT_UPDATED = "APPOINTMENT_UPDATED";
 export const GET_REPORT = "GET_REPORT";
 export const REPORT_ERROR = "REPORTS_ERROR";
 export const REPORT_LOADING = "REPORT_LOADING";
+
+
+// dashbaord
+export const SHOP_STARTED = "SHOP_STARTED";
+export const SHOP_STOPPED = "SHOP_STOPPED";
+export const DASHBOARD_LOADING = "DASHBOARD_LOADING";
+export const DASHBOARD_LOADED = "DASHBOARD_LOADED";
+export const DASHBOARD_ERROR = "DASHBOARD_ERROR";
+export const SHOP_LOADING = "SHOP_LOADING";
+export const SHOP_LOADED = "SHOP_LOADED";
+export const SHOP_ERROR = "SHOP_ERROR";

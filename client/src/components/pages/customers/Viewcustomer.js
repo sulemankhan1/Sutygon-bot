@@ -106,46 +106,46 @@ class ViewCustomer extends Component {
                         <div className="main-content">
                         <div className="content-wrapper">
                         <section id="extended">
-  <div className="row">
-    <div className="col-sm-12">
-      <div className="card">
-        <div className="card-header">
-          <h4 className="card-title">All Customers</h4>
-        </div>
-        <div className="card-content">
-          <div className="card-body table-responsive">
-          <div className="row">
-            <div className="col-md-12">
-              <Link to="/customer/addcustomer" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New Customer</Link>
-            </div>
-          </div>
-            <Alert />
-            <table className="table text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th></th>
-                  <th>Name</th>
-                  <th>Contact</th>
-                  <th>Address</th>
-                  {/* <th>Phone</th> */}
-                  <th>Email</th>
-                  <th>No of Orders</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.getTAble()}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+                          <div className="row">
+                            <div className="col-sm-12">
+                              <div className="card">
+                                <div className="card-header">
+                                  <h4 className="card-title">All Customers</h4>
+                                </div>
+                                <div className="card-content">
+                                  <div className="card-body table-responsive">
+                                  <div className="row">
+                                    <div className="col-md-12">
+                                      <Link to="/customer/addcustomer" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New Customer</Link>
+                                    </div>
+                                  </div>
+                                    <Alert />
+                                    <table className="table text-center">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th></th>
+                                          <th>Name</th>
+                                          <th>Contact</th>
+                                          <th>Address</th>
+                                          {/* <th>Phone</th> */}
+                                          <th>Email</th>
+                                          <th>No of Orders</th>
+                                          <th>Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {this.getTAble()}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
 
-        </div>
+                        </div>
                         </div>
 
                         <footer className="footer footer-static footer-light">
