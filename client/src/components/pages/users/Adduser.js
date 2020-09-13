@@ -52,7 +52,6 @@ class AddUser extends Component {
     
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
-
     };
 
     onSubmit = async (e) => {

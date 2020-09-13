@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getAllUsers, deleteUser,blockUser } from "../../../actions/user";
+import { getAllUsers, deleteUser,blockUser,findUsers } from "../../../actions/user";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Alert from "../../layout/Alert";
@@ -13,13 +13,17 @@ import Loader from "../../layout/Loader";
 
 class ViewUser extends Component {
   
+    state = {
+        search: ""
+    }
+
   async componentDidMount() {
     await this.props.getAllUsers();
   }
 
   getTAble = () => {
     const { auth } = this.props;
-const auth_user = auth.user;
+    const auth_user = auth.user;
     const { users } = this.props;
     let tbl_sno = 1;
     if (users) {
@@ -86,6 +90,10 @@ const auth_user = auth.user;
     }
   };
 
+    handleChange = (e, id = "") => {
+        this.setState({ 'search': e.target.value });
+    };
+
 
   onDelete = (id) => {
     confirmAlert({
@@ -97,8 +105,7 @@ const auth_user = auth.user;
           onClick: () => {
             this.props.deleteUser(id);
           },
-        },
-        {
+        }, {
           label: "No",
           onClick: () => { },
         },
@@ -128,6 +135,16 @@ const auth_user = auth.user;
     });
   };
 
+    async searchTable() {
+        const searchVal = this.state.search;
+        if(searchVal) {
+            await this.props.findUsers(searchVal);
+        } else {
+            await this.props.getAllUsers();
+        }
+        
+    }
+
 
 
   render() {
@@ -135,10 +152,6 @@ const auth_user = auth.user;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
     }
-
-    // if (this.props.saved) {
-    //     return <Redirect to="/dashboard" />;
-    //   }
 
     return (
       <React.Fragment>
@@ -149,7 +162,6 @@ const auth_user = auth.user;
           <Header>
           </Header>
           <div className="main-panel">
-
             <div className="main-content">
               <div className="content-wrapper">
                 <section id="simple-table">
@@ -157,30 +169,35 @@ const auth_user = auth.user;
                     <div className="col-sm-12">
                       <div className="card">
                         <div className="card-header">
-                          <h4 className="card-title">View User</h4>
+                          <h4 className="card-title">All Users</h4>
                         </div>
                         <div className="card-content">
                           <div className="card-body">
+                              <div className="row">
+                                <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
+                                <div className="col-md-4">
+                                    <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
+                                </div>
+                                <div className="col-md-4">
+                                  <Link to="/user/adduser" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New User</Link>
+                                </div>
+                              </div>
                             <Alert />
                             <table className="table">
                               <thead>
                                 <tr>
                                   <th className="text-center">#</th>
                                   <th className="text-center">Avatar</th>
-
                                   <th className="text-center">Full Name</th>
-                                  {/* <th>Last Name</th> */}
                                   <th className="text-center" >Contact</th>
                                   <th className="text-center">E-mail</th>
                                   <th className="text-center">Gender</th>
                                   <th className="text-center">Account Status</th>
                                   <th className="text-center">Actions</th>
-
                                 </tr>
                               </thead>
                               <tbody>
                                 {this.getTAble()}
-
                               </tbody>
                             </table>
                           </div>
@@ -192,17 +209,12 @@ const auth_user = auth.user;
               </div>
             </div>
           </div>
-
           <footer className="footer footer-static footer-light">
             <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
               <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
           </footer>
         </div>
-
-
-
       </React.Fragment>
-
     );
   }
 }
@@ -212,14 +224,13 @@ ViewUser.propTypes = {
   auth: PropTypes.object,
   deleteUser: PropTypes.func.isRequired,
   blockUser: PropTypes.func.isRequired,
+  findUsers: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   users: state.user.users,
   auth: state.auth,
-
 });
 export default connect(mapStateToProps, {
-  getAllUsers, deleteUser,blockUser
+  getAllUsers, deleteUser,blockUser, findUsers
 })(ViewUser);
-
