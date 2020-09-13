@@ -169,7 +169,7 @@ class ViewUser extends Component {
                     <div className="col-sm-12">
                       <div className="card">
                         <div className="card-header">
-                          <h4 className="card-title">View Users</h4>
+                          <h4 className="card-title">All Users</h4>
                         </div>
                         <div className="card-content">
                           <div className="card-body">
@@ -177,6 +177,9 @@ class ViewUser extends Component {
                                 <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
                                 <div className="col-md-4">
                                     <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
+                                </div>
+                                <div className="col-md-4">
+                                  <Link to="/user/adduser" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New User</Link>
                                 </div>
                               </div>
                             <Alert />

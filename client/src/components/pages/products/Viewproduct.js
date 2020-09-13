@@ -145,20 +145,7 @@ class ViewProduct extends Component {
                             <div className="col-sm-12">
                               <div className="card">
                                 <div className="card-header">
-                                  <h4 className="card-title">View Product</h4>
-                                  <form role="search" className="navbar-form navbar-right mt-1">
-                                      <div className="position-relative has-icon-right">
-                                        <input 
-                                        type="text"
-                                        placeholder="Search"
-                                          className="form-control round"
-                                          value={filter}
-                                          name="filter"
-                                          onChange={(e) => this.handleChange(e)}
-                                          />
-                                        <div className="form-control-position"><i className="ft-search"></i></div>
-                                      </div>
-                                    </form>
+                                  <h4 className="card-title">All Products</h4>
                                 </div>
                                 <div className="card-content">
                                   <div className="card-body table-responsive">
@@ -167,6 +154,9 @@ class ViewProduct extends Component {
                                     <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
                                     <div className="col-md-4">
                                         <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
+                                    </div>
+                                    <div className="col-md-4">
+                                      <Link to="/product/addproduct" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New Product</Link>
                                     </div>
                                   </div>
                                   <Alert />
