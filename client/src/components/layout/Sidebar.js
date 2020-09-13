@@ -61,82 +61,37 @@ class Sidebar extends Component {
                       <i className="ft-home" /> Dashboard
                 </Link>
               </li>
-              <li className={"has-sub nav-item " + this.getClassName("user")}>
-              <a href="#">
-                <i className="ft-users"></i>
-                  <span className="menu-title">Users</span>
-                </a>
-                <ul className="menu-content">
-                  <li >
-                  {(user && (user.type === "Admin")) ? (
-                  <>
-                  <Link
-                          to="/user/adduser"
-                          onClick={() => this.handleClick("user")}
-                        >
-                          <i className="menu-item" /> Add Users
-                    </Link>
-                    </>
+              {(user && (user.type === "Admin")) ? (
+              <li className={this.getClassName("user")}>
+              <Link
+                      to="/user/viewuser"
+                      onClick={() => this.handleClick("user")}
+                    >
+                      <i className="ft-users" /> Users
+                </Link>
+                </li>
                 ) : ""
-                }
-                  </li>
-                  <li>
+              }
+                  <li className={this.getClassName("product")}>
                   <Link
-                          to="/user/viewuser"
-                          onClick={() => this.handleClick("user")}
-                        >
-                          <i className="menu-item" /> View Users
-                    </Link>
+                      to="/product/viewproduct"
+                      onClick={() => this.handleClick("product")}
+                    >
+                      <i className="ft-box" /> Products
+                </Link>
                   </li>
-                </ul>
-              </li>
-              <li  className={"has-sub nav-item " + this.getClassName("product")}>
-                <a href="#" className={this.getClassName("product")}>
-                <i className="icon-social-dropbox">
-                </i><span className="menu-title">Products</span>
-              </a>
-                <ul className="menu-content">
-                  <li>  <Link
-                          to="/product/addproduct"
-                          onClick={() => this.handleClick("product")}
-                        >
-                          <i className="menu-item" /> Add Product
-                    </Link>
-                  </li>
-                  <li> 
+
+                  {/* customer/addcustomer */}
+                  <li className={this.getClassName("customer")}>
                     <Link
-                          to="/product/viewproduct"
-                          onClick={() => this.handleClick("product")}
-                        >
-                          <i className="menu-item" /> View Product
-                    </Link>
+                        to="/customer/viewcustomer"
+                        onClick={() => this.handleClick("customer")}
+                      >
+                        <i className="ft-user" /> Customers
+                  </Link>
                   </li>
-                </ul>
-              </li>
-              <li className={"has-sub nav-item " + this.getClassName("customer")}>
-                <a href="#"  >
-                  <i className="ft-user"></i>
-                  <span className="menu-title">Customers</span>
-                </a>
-                <ul className="menu-content">
-                  <li >
-                       <Link
-                          to="/customer/addcustomer"
-                          onClick={() => this.handleClick("customer")}
-                        >
-                          <i className="menu-item" />  Add Customer
-                    </Link>
-                  </li>
-                  <li>
-                       <Link
-                          to="/customer/viewcustomer"
-                          onClick={() => this.handleClick("customer")}
-                        >
-                          <i className="menu-item" />  View Customer
-                    </Link>
-                  </li>
-                </ul>
-              </li>
+                
+
               <li className={"nav-item " + this.getClassName("rentproduct")}>
               <Link
                       to="/rentproduct"

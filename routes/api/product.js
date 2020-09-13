@@ -141,6 +141,36 @@ router.get("/", auth,
         }
     });
 
+    
+// @route   GET api/products/search/search val
+// @desc    Search products
+// @access  Private
+router.get("/search/:val", auth,
+
+async (req, res) => {
+    try {
+        const search = req.params.val;
+        const products = await Product.find({
+            $or: [
+              {name: search},
+              {color: search},
+              {size: search},
+              {fabric: search},
+              {availableQuantity: search},
+              {rentedQuantity: search},
+            ]
+          });
+        res
+            .status(200)
+            .json(products);
+    } catch (err) {
+        console.log(err);
+        res
+            .status(500)
+            .send("Server Error!");
+    }
+});
+
 // @route  GET api/products/:id
 // @desc   Get Product by id
 // @access Private

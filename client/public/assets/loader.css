@@ -1893,7 +1893,7 @@
   height: 100%;
   position: fixed;
   text-align: center;
-  background: #fff;
+  /* background: #fff; */
   z-index: 100;
   white-space: nowrap;
   text-align: center;
