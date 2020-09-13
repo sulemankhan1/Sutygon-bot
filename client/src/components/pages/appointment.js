@@ -18,7 +18,7 @@ class AddAppointment extends Component {
   // let d1End = moment(d1Start).add(1, "hours").toDate();
     state = {
         id: "",
-        appointmentNumber: 3,
+        appointmentNumber: "",
         trackingNumber:`${"A"}${Date.now()}`,
         start:"",
         end:"",

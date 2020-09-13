@@ -115,7 +115,8 @@ export const updateUser = (user, id) => async (dispatch) => {
   }
 };
 
-export const blockUser = (user, id) => async (dispatch) => {
+export const blockUser = (id) => async (dispatch) => {
+  console.log(id)
   dispatch({ type: USERS_LOADING });
   const config = {
     headers: {
@@ -124,7 +125,7 @@ export const blockUser = (user, id) => async (dispatch) => {
 }
   
   try {
-    const res = await axios.post(`/api/users/changestatus/${id}`, user, config);
+    const res = await axios.post(`/api/users/changestatus/${id}`,  config);
 
     dispatch({
       type: USER_UPDATED,

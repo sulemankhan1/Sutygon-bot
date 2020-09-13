@@ -2,13 +2,16 @@ import React, { Component } from "react";
 import Sidebar from "../layout/Sidebar";
 import Header from "../layout/Header";
 import Loader from "../layout/Loader";
+import { getAllAppointments } from "../../actions/appointment";
+import { getAllOrders } from "../../actions/order";
+// import { getAllAppointments } from "../../actions/appointment";
+// import { getAllAppointments } from "../../actions/appointment";
+
 import "../../login.css"
 
 class Dashboard extends Component {
-  
-  
   render() {
-  
+ 
     return (
 <React.Fragment>
   <Loader />
@@ -25,7 +28,9 @@ class Dashboard extends Component {
     <div className="card bg-primary">
       <div className="card-content">
         <div className="card-body pt-2 pb-0">
+       
           <div className="media">
+            
             <div className="media-body white text-left">
               <h3 className="font-large-1 mb-0">$15,678</h3>
               <span>Total Cost</span>

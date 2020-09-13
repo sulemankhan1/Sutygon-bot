@@ -69,17 +69,17 @@ class ViewProduct extends Component {
             <Link 
            to={{ pathname: `/product/viewproduct/${product._id}` }}
               className="info p-0">
-              <i className="ft-user font-medium-3 mr-2"></i>
+              <i className="ft-user font-medium-3 mr-2" title="View"></i>
             </Link>
             <Link
               to={{ pathname: `/product/editproduct/${product._id}` }}
               className="success p-0">
-              <i className="ft-edit-2 font-medium-3 mr-2"></i>
+              <i className="ft-edit-2 font-medium-3 mr-2" title="Edit"></i>
             </Link>
             <Link to="/product/viewproduct"
               onClick={() => this.onDelete(product._id)}
               className="danger p-0">
-              <i className="ft-x font-medium-3 mr-2"></i>
+              <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
             </Link>
           </td>
 

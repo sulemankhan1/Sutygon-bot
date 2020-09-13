@@ -12,6 +12,7 @@ import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 
 class ViewUser extends Component {
+  
   async componentDidMount() {
     await this.props.getAllUsers();
   }
@@ -21,8 +22,6 @@ class ViewUser extends Component {
 const auth_user = auth.user;
     const { users } = this.props;
     let tbl_sno = 1;
-    // const {user} = this.props.auth;
-
     if (users) {
       if (users.length === 0) {
         return (
@@ -34,15 +33,13 @@ const auth_user = auth.user;
         );
       }
       return users.map((user) => (
-        // console.log(user)
-        //  <img className="media-object round-media" src="../../uploads/avatar-1599780670164-862543959" alt="Generic placeholder image" height={75} />
-        <tr key={user._id}>
+       
+       <tr key={user._id}>
           <td className="text-center text-muted">{tbl_sno++}</td>
           <td className="text-center">
             <img className="media-object round-media" src={`${user.avatar}`} alt="Generic placeholder image" height={75} />
           </td>
-          {/* E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\8a8d8ee8-f05f-4a80-91cd-5eea99c8d8bc.jpg*/}
-
+       
 
           <td className="text-center">{user.username}</td>
           <td className="text-center">{user.contactnumber}</td>
@@ -50,40 +47,39 @@ const auth_user = auth.user;
           <td className="text-center">{user.gender}</td>
           <td className="text-center">
             {user.accountStatus === "active" && (
-              <span className="badge badge-warning">Active</span>
+              <span className="badge badge-success">Active</span>
             )}
             {user.accountStatus === "block" && (
-              <span className="badge badge-success">Block</span>
+              <span className="badge badge-warning">Block</span>
             )}
           </td>
           {/* <td className="text-center">{user.accountStatus}</td> */}
           <td className="text-center">
-            {auth_user && auth_user.type === "Admin" ?
-                <Link
-                  to={{ pathname: `/user/changeStatus/${user._id}` }}
-
-                  onClick={() => this.onBlock(user._id)}
-                  className="info p-0">
-                  <i className="ft-alert-triangle font-medium-3 mr-2"></i>
-                </Link>
-
-               : ""}
             <Link
               to={{ pathname: `/user/view/${user._id}` }}
 
               className="info p-0">
-              <i className="ft-user font-medium-3 mr-2"></i>
+              <i className="ft-user font-medium-3 mr-2"  title="View Profile"></i>
             </Link>
             <Link
               to={{ pathname: `/user/edituser/${user._id}` }}
               className="success p-0">
-              <i className="ft-edit-2 font-medium-3 mr-2"></i>
+              <i className="ft-edit-2 font-medium-3 mr-2 "  title="Edit User"></i>
             </Link>
             <Link to="/user/viewuser"
               onClick={() => this.onDelete(user._id)}
               className="danger p-0">
-              <i className="ft-x font-medium-3 mr-2"></i>
+              <i className="ft-x font-medium-3 mr-2"  title="Delete"></i>
             </Link>
+            {auth_user && auth_user.type === "Admin" ?
+                <Link
+                  to={{ pathname: `/user/viewuser` }}
+                  onClick={() => this.onBlock(user._id)}
+                  className="info p-0">
+                  <i className="ft-alert-triangle font-medium-3 mr-2" title="Block User"></i>
+                </Link>
+
+               : ""}
           </td>
         </tr>
       ));
@@ -113,6 +109,7 @@ const auth_user = auth.user;
   
 
   onBlock = (id) => {
+    console.log(id)
     confirmAlert({
       title: "Block User",
       message: "Are you sure you want to block this user?",
