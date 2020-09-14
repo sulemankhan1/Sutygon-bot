@@ -38,7 +38,8 @@ class AddUser extends Component {
                     avatar: user.avatar,
                     email: user.email,
                     contactnumber: user.contactnumber,
-                    password: user.password
+                    password: user.password,
+                    gender: user.gender
 
                 });
             }
@@ -105,9 +106,10 @@ class AddUser extends Component {
                                                     : "Update User"}
                                             </h4>
                                         </div>
-                                        <Alert />
+                                     
 
                                         <div className="card-body">
+                                        <Alert />
                                             <form
                                                 encType="multipart/form-data"
                                                 action="/upload"
@@ -251,27 +253,52 @@ value="submit"
                                                 </div>
 
                                                 <div className="form-actions top">
-                                                    {this.state.saving ? (
-                                                        <button
-                                                            type="button"
-                                                            className="mb-2 mr-2 btn btn-raised btn-primary"
-                                                        >
-                                                            <div
-                                                                className="spinner-grow spinner-grow-sm "
-                                                                role="status"
-                                                            ></div>
-                                &nbsp; Saving
-                                                        </button>
-                                                    ) : (
-                                                            <button
-                                                                type="submit"
-                                                                className="mb-2 mr-2 btn btn-raised btn-primary"
-                                                            >
-                                                                <i className="fa fa-check" /> Add User
-                                                            </button>
-                                                        )}
-
-                                                </div>
+              {this.state.id === ""
+                          ? <>
+                          
+                          {this.state.saving ? (
+                            <button
+                              type="button"
+                              className="mb-2 mr-2 btn btn-raised btn-primary"
+                            >
+                              <div
+                                className="spinner-grow spinner-grow-sm "
+                                role="status"
+                              ></div>
+                                &nbsp; Adding
+                            </button>
+                          ) : (
+                              <button
+                                type="submit"
+                                className="mb-2 mr-2 btn btn-raised btn-primary"
+                              >
+                                <i className="ft-check" /> Add User
+                              </button>
+                            )}
+                          </>
+                          : <>
+                          
+                          {this.state.saving ? (
+                            <button
+                              type="button"
+                              className="mb-2 mr-2 btn btn-raised btn-primary"
+                            >
+                              <div
+                                className="spinner-grow spinner-grow-sm "
+                                role="status"
+                              ></div>
+                                &nbsp; Updating
+                            </button>
+                          ) : (
+                              <button
+                                type="submit"
+                                className="mb-2 mr-2 btn btn-raised btn-primary"
+                              >
+                                <i className="ft-check" /> Update User
+                              </button>
+                            )}
+                          </>}            
+              </div>
                                                 </form>
 
                                         </div>

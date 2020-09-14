@@ -60,7 +60,7 @@ class Header extends Component {
                     <p className="d-none">User Settings</p></a>
                   <div ngbdropdownmenu="" aria-labelledby="dropdownBasic3" className="dropdown-menu text-left dropdown-menu-right">
                   
-                      <a href={`/edituser/${this.state.id}`}
+                      <a href={`/user/edituser/${this.state.id}`}
                        className="dropdown-item py-1"><i className="ft-edit mr-2"></i><span>Edit Profile</span></a>
                      
                     

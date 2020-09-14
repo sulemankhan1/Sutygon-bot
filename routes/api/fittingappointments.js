@@ -25,7 +25,6 @@ router.post(
         }
 
         try {
-        console.log(req.body)
             let appointment = new FittingAppointment(req.body);
             await appointment.save();
             res.json({ appointment, msg: "Appointment Added Successfully" });

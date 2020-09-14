@@ -20,7 +20,7 @@ router.post(
         check("deliveryDate", "Delivery Date Required").not().isEmpty(),
         check("returnDate", "Return Date Required").not().isEmpty(),
         // check("createdOn", "Created Date Required").not().isEmpty(),
-        check("status", "Status Required").not().isEmpty(),
+        // check("status", "Status Required").not().isEmpty(),
 
     ],
     // auth,

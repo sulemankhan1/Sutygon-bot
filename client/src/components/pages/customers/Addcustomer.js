@@ -83,11 +83,11 @@ class AddCustomer extends Component {
                          Add New Customer
                          </h4>
             </div>
-            <Alert />
+          
 
             <div className="card-body">
               <form onSubmit={(e) => this.onSubmit(e)}>
-
+              <Alert />
                 <div className="row">
                   <div className="form-group col-md-6 mb-2">
                     <label htmlFor="projectinput1">Name</label>

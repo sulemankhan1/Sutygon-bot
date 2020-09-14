@@ -168,7 +168,7 @@ const auth_user = auth.user;
                                   <th className="text-center">#</th>
                                   <th className="text-center">Avatar</th>
 
-                                  <th className="text-center">Full Name</th>
+                                  <th className="text-center">User Name</th>
                                   {/* <th>Last Name</th> */}
                                   <th className="text-center" >Contact</th>
                                   <th className="text-center">E-mail</th>

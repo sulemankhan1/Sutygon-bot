@@ -42,7 +42,6 @@ class AppointmentCalendar extends Component {
                 end: new Date(event.end)
             })
             );
-           console.log(newEvents)
         }
 
         return (
