@@ -134,7 +134,6 @@ export const updateUser = (user, id) => async (dispatch) => {
 };
 
 export const blockUser = (id) => async (dispatch) => {
-  console.log(id)
   dispatch({ type: USERS_LOADING });
   const config = {
     headers: {

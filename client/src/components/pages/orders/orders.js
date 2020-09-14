@@ -45,7 +45,13 @@ class Orders extends Component {
 
           <td className="text-center">{order.customer ? order.customer.name : ""}</td>
           <td className="text-center">{order.product ?  order.product.name:""}</td>
-          <td className="text-center"> <div className="badge badge-warning" >{this.getStatus(order.last)}</div></td>
+          <td className="text-center">{this.getStatus(order.deliveryDate) === "Pending"
+          ? <div className="badge badge-success">Pending</div>
+          : this.getStatus(order.deliveryDate) === "Due" 
+          ? <div className="badge badge-warning">Over Due</div>
+          :<div className="badge badge-danger">Due Today</div>
+        
+        }</td>
 
           <td className="text-center">{moment(order.deliveryDate).format('DD/MMM/YYYY')}</td>
 
@@ -69,19 +75,19 @@ class Orders extends Component {
     }
   };
    
-  getStatus=(returnDate) =>{
-    var lastdate = moment(new Date(returnDate), "dd/MM/yyyy");
-    var currentdate = moment(new Date(), "dd/MM/yyyy");
+  getStatus=(date) =>{
+    var deliveryDate = moment(date).format('MM/DD/YYYY');
+
+    var currentdate = moment(new Date).format('MM/DD/YYYY');
+
     var status;
-    console.log(lastdate);
-    console.log(currentdate)
-    if(moment(lastdate).isSameOrAfter(currentdate)){
+       if(moment(deliveryDate).isAfter(currentdate)){
     status="Pending"
   }
-  if(moment(lastdate).isSameOrBefore(currentdate)){
+  if(moment(deliveryDate).isBefore(currentdate)){
      status = "Due"
   }
-  if(moment(lastdate).isSame(currentdate)){
+  if(moment(deliveryDate).isSame(currentdate)){
      status = "Due Today"
   }
    return status;

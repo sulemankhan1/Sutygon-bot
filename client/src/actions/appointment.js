@@ -53,7 +53,6 @@ export const getAllAppointments = () => async (dispatch) => {
   dispatch({ type: APPOINTMENT_LOADING });
   try {
     const res = await axios.get(`/api/appointments`);
-console.log(res.data)
     dispatch({
       type: GET_APPOINTMENTS,
       payload: res.data,

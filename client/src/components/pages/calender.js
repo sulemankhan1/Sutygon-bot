@@ -14,6 +14,25 @@ import { getAllAppointments } from "../../actions/appointment";
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 
+function EventAgenda({ event }) {
+    return <span>
+      <em style={{ color: 'magenta'}}>{event.title}</em>
+      <p>{ event.desc }</p>
+    </span>
+  }
+
+  function Event({ event }) {
+    return (
+      <span>
+        <strong>
+        {event.title}
+        </strong>
+        { event.desc && (':  ' + event.desc)}
+      </span>
+    )
+  }
+  
+
 class AppointmentCalendar extends Component {
     state = {
         id: "",
@@ -21,9 +40,10 @@ class AppointmentCalendar extends Component {
         end: "",
         title: ""
     }
+    
     async componentDidMount() {
         await this.props.getAllAppointments();
-}
+    }
 
 
     render() {
@@ -34,10 +54,10 @@ class AppointmentCalendar extends Component {
         const { calendar } = this.props;
         let newEvents;
         if (calendar) {
-            
+
             newEvents = calendar.map(event => ({
                 title: event.title,
-                start:new Date(event.start),
+                start: new Date(event.start),
                 end: new Date(event.end)
             })
             );
@@ -64,16 +84,22 @@ class AppointmentCalendar extends Component {
                                             <Alert />
 
                                             <div className="card-body">
-{newEvents ? 
-                                            <Calendar
-      localizer={localizer}
-      events={newEvents}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: 500 }}
-    
-    />
-    :""}
+                                                {newEvents ?
+                                                    <Calendar
+                                                        localizer={localizer}
+                                                        events={newEvents}
+                                                        defaultDate={new Date()}
+                                                        views={{
+                                                            month: true,
+                                                        week:true,
+                                                        day:true   
+                                                          }}               
+                                                        startAccessor="start"
+                                                        endAccessor="end"
+                                                        style={{ height: 500 }}
+                                                        
+                                                    />
+                                                    : ""}
                                             </div>
                                         </div>
                                     </div>

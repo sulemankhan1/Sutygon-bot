@@ -46,11 +46,7 @@ class AddCustomer extends Component {
             await this.props.addNewCustomer(customer);
       
           } 
-          // else {
-          //   await this.props.updateCustomer(customer, state.id);
-          // }
-
-          this.setState({ saving: false });
+                this.setState({ saving: false });
     }
     render() {
         const { auth } = this.props;
@@ -59,7 +55,7 @@ class AddCustomer extends Component {
         }
 
         if (this.props.saved) {
-            return <Redirect to="/dashboard" />;
+            return <Redirect to="/customer" />;
           }
 
         return (

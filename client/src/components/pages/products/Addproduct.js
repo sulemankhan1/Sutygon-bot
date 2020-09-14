@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import { addNewProduct,getProduct,updateProduct } from "../../../actions/product";
-
-import { Link } from "react-router-dom";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 
@@ -88,7 +86,7 @@ class AddProduct extends Component {
         }
 
         if (this.props.saved) {
-            return <Redirect to="/dashboard" />;
+            return <Redirect to="/product" />;
           }
 
         return (

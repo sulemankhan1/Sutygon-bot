@@ -29,10 +29,7 @@ class View extends Component {
         } if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
         }
-        if (this.props.saved) {
-            return <Redirect to="/dashboard" />;
-        }
-
+       
         return (
             <React.Fragment>
                 <Loader />

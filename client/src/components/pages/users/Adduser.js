@@ -80,7 +80,7 @@ class AddUser extends Component {
             return <Redirect to="/" />;
         }
         if (this.props.saved) {
-            return <Redirect to="/dashboard" />;
+            return <Redirect to="/user" />;
         }
                
 

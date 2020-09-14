@@ -70,7 +70,6 @@ class RentProduct extends Component {
       orderedQuantity:state.orderedQuantity,
       deliveryDate: state.deliveryDate,
       returnDate: state.returnDate,
-
       image: state.image
     };
     await this.props.addNewRentProduct(product);
@@ -116,7 +115,7 @@ this.setState({ saving: true });
     }
 
     if (this.props.saved) {
-      return <Redirect to="/dashboard" />;
+      return <Redirect to="/orders" />;
     }
 
     const { product, customer } = this.state;

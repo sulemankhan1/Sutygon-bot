@@ -75,7 +75,7 @@ class ViewProduct extends Component {
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2" title="Edit"></i>
             </Link>
-            <Link to="/product/viewproduct"
+            <Link to="/product"
               onClick={() => this.onDelete(product._id)}
               className="danger p-0">
               <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
