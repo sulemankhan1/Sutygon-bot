@@ -38,7 +38,10 @@ class Orders extends Component {
 
           <td className="text-center">{order.customer ? order.customer.name : ""}</td>
           <td className="text-center">{order.product ?  order.product.name:""}</td>
+          <td className="text-center">{order.status}</td>
+
           <td className="text-center">{order.deliveryDate}</td>
+
           <td className="text-center">{order.returnDate}</td>
           <td className="text-center">
       
@@ -120,6 +123,7 @@ class Orders extends Component {
                   <th></th>
                   <th>Customer</th>
                   <th>Product</th>
+                  <th>Status</th>
                   <th>Start Date</th>
                   <th>End Date</th>
                   <th>Actions</th>

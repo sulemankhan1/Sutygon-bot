@@ -13,9 +13,9 @@ const RentedProductSchema = new mongoose.Schema({
         type: String,
         unique: true,
     },
-    employee: {
+    user: {
         type: Schema.Types.ObjectId,
-        ref: "employee",
+        ref: "user",
     },
     customer: {
         type: Schema.Types.ObjectId,

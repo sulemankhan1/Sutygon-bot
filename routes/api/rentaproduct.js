@@ -53,7 +53,7 @@ router.post(
         check("trackingNumber", "Tracking Number Required").not().isEmpty(),
         check("customer", "Customer Name Required").not().isEmpty(),
         check("customer", "Customer Name Required").not().isEmpty(),
-        check("employee", "Employee Name Required").not().isEmpty(),
+        check("user", "User Name Required").not().isEmpty(),
         check("orderedQuantity", "Quantity Required").not().isEmpty(),
         check("orderedSize", "Size Required").not().isEmpty(),
         // check("createdOn", "Created Date Required").not().isEmpty(),

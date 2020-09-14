@@ -13,7 +13,7 @@ router.post(
         check("orderNumber", "Order Number Required").not().isEmpty(),
         check("trackingNumber", "Tracking Number Required").not().isEmpty(),
         check("customer", "Customer Name Required").not().isEmpty(),
-        check("employee", "Employee Name Required").not().isEmpty(),
+        check("user", "User Name Required").not().isEmpty(),
         check("product", "Product Name Required").not().isEmpty(),
         check("orderedQuantity", "Quantity Required").not().isEmpty(),
         check("orderedSize", "Size Required").not().isEmpty(),
@@ -98,7 +98,7 @@ router.get("/:id",
 // @route  GET api/orders/search/:product/:customer
 // @desc   Get Order (Search for Order by product)
 // @access Private
-router.get("/search/:product/:customer/:employee",
+router.get("/search/:product/:customer/:user",
     auth,
 
     async (req, res) => {
@@ -106,7 +106,7 @@ router.get("/search/:product/:customer/:employee",
             const order = await Order.findOne({
                 product: { $eq: req.params.product },
                 customer: { $eq: req.params.customer },
-                employee: { $eq: req.params.employee },
+                user: { $eq: req.params.user },
             });
 
             if (!order) {

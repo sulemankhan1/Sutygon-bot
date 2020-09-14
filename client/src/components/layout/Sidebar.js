@@ -105,7 +105,7 @@ class Sidebar extends Component {
                   </li>
                   <li> 
                     <Link
-                          to="/product/viewproduct"
+                          to="/product"
                           onClick={() => this.handleClick("product")}
                         >
                           <i className="menu-item" /> View Product

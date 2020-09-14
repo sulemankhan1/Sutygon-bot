@@ -24,7 +24,7 @@ class Report extends Component {
     state = {
         id: "",
         customer: "",
-        employee: "",
+        user: "",
         start: "",
         end: "",
         reportType: "",
@@ -50,7 +50,7 @@ class Report extends Component {
         const { user } = this.props.auth;
 
         const report = {
-            employee: user._id,
+            user: user._id,
             customer: state.customer,
             start: state.start,
             end: state.end,
@@ -134,7 +134,7 @@ class Report extends Component {
         if (this.props.saved) {
             return <Redirect to="/dashboard" />;
         }
-        const { employee, customer } = this.state;
+        const { user, customer } = this.state;
         const { customers } = this.props.customers;
         const { users } = this.props;
         return (
@@ -182,9 +182,9 @@ class Report extends Component {
                                                             </select>
                                                         </div>
                                                         <div className="form-group col-6 mb-2">
-                                                            <label htmlFor="issueinput5">Select Employee</label>
+                                                            <label htmlFor="issueinput5">Select User</label>
                                                             <select
-                                                                name="employee"
+                                                                name="user"
                                                                 className="form-control"
                                                                 onChange={(e) => this.handleChange(e)}
 
@@ -195,7 +195,7 @@ class Report extends Component {
                                                                         <option
                                                                             key={record._id}
                                                                             value={record._id}
-                                                                            selected={record._id === employee}
+                                                                            selected={record._id === user}
                                                                         >
                                                                             {record.username}
                                                                         </option>
@@ -303,7 +303,8 @@ class Report extends Component {
                                                             <Link
                                                                 to={{
                                                                     pathname: "/report",
-                                                                    data: this.props.report.reports // your data array of objects
+                                                                    data: {report :this.props.report.reports,
+                                                                    reportType:this.state.reportType} // your data array of objects
                                                                 }}
                                                                 className="mb-2 mr-2 btn btn-raised btn-primary"
                                                             >
@@ -331,7 +332,7 @@ class Report extends Component {
                                                                                 <th>Order Number</th>
                                                                                 <th>Customer</th>
                                                                                 <th>Product</th>
-                                                                                <th>Employee</th>
+                                                                                <th>User</th>
                                                                                 <th>Delivery Date</th>
                                                                                 <th>Action</th>
                                                                             </tr>

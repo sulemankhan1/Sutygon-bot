@@ -21,9 +21,9 @@ const OrderSchema = new mongoose.Schema({
         required: true,
         // set:date => moment(date).format('DD MM YYYY')
     },
-    employee: {
+    user: {
         type: Schema.Types.ObjectId,
-        ref: "employee",
+        ref: "user",
     },
     customer: {
         type: Schema.Types.ObjectId,
@@ -51,11 +51,13 @@ const OrderSchema = new mongoose.Schema({
         required: true,
         default: "new"
     },
+   
 
 },
     {
         timestamps: true
     }
+   
 );
 
 module.exports = Order = mongoose.model("order", OrderSchema);
