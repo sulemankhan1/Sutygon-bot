@@ -8,11 +8,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
-<<<<<<< HEAD
 import {getAllRentedProducts,deleteRentedProduct } from "../../../actions/rentproduct";
-=======
-import { deleteOrder,getAllOrders, findOrders } from "../../../actions/order";
->>>>>>> ff6b8d1ba6cb881d77a1077d7d7b4cf1c338202f
 import { confirmAlert } from "react-confirm-alert";
 import * as moment from 'moment'
 
@@ -53,13 +49,8 @@ class Orders extends Component {
 
           <td className="text-center">{moment(order.deliveryDate).format('DD/MMM/YYYY')}</td>
 
-<<<<<<< HEAD
           <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
           <td className="text-center">
-=======
-          <td className="text-center">{order.returnDate}</td>
-          <td className="text-d">
->>>>>>> ff6b8d1ba6cb881d77a1077d7d7b4cf1c338202f
       
             {/* <Link
               to={{ pathname: `/orders/${order._id}` }}
@@ -187,16 +178,9 @@ class Orders extends Component {
 
 Orders.propTypes = {
   auth: PropTypes.object,
-<<<<<<< HEAD
   getAllRentedProducts: PropTypes.func.isRequired,
   deleteRentedProduct: PropTypes.func.isRequired,
   rentproducts: PropTypes.array,
-=======
-  getAllOrders: PropTypes.func.isRequired,
-  deleteOrder: PropTypes.func.isRequired,
-  findOrders: PropTypes.func.isRequired,
-     orders: PropTypes.array,
->>>>>>> ff6b8d1ba6cb881d77a1077d7d7b4cf1c338202f
   };
 
 const mapStateToProps = (state) => ({
@@ -205,10 +189,6 @@ const mapStateToProps = (state) => ({
 
 });
 export default connect(mapStateToProps, {
-<<<<<<< HEAD
   getAllRentedProducts,deleteRentedProduct
-=======
-  getAllOrders,deleteOrder, findOrders
->>>>>>> ff6b8d1ba6cb881d77a1077d7d7b4cf1c338202f
 })(Orders);
 
