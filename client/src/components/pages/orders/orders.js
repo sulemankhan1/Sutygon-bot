@@ -123,47 +123,44 @@ class Orders extends Component {
                     <Header>
                     </Header>
                     <div className="main-panel">
-
-                    <div className="main-content">
-<div className="content-wrapper">
-  <section id="extended">
-  <div className="row">
-    <div className="col-sm-12">
-      <div className="card">
-        <div className="card-header">
-          <h4 className="card-title">Orders</h4>
-        </div>
-        <div className="card-content">
-          <div className="card-body table-responsive">
-            <Alert />
-            <table className="table text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th></th>
-                  <th>Customer</th>
-                  <th>Product</th>
-                  <th>Status</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-           {this.getTAble()}  
-           
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-</div>
-</div>
-</div>
-                   
+                      <div className="main-content">
+                      <div className="content-wrapper">
+                        <section id="extended">
+                          <div className="row">
+                            <div className="col-sm-12">
+                              <div className="card">
+                                <div className="card-header">
+                                  <h4 className="card-title">Orders</h4>
+                                </div>
+                                <div className="card-content">
+                                  <div className="card-body table-responsive">
+                                    <Alert />
+                                    <table className="table text-center">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th></th>
+                                          <th>Customer</th>
+                                          <th>Product</th>
+                                          <th>Status</th>
+                                          <th>Start Date</th>
+                                          <th>End Date</th>
+                                          <th>Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {this.getTAble()} 
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+                      </div>
+                      </div>
+                    </div>
                     <footer className="footer footer-static footer-light">
                         <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
                             <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
