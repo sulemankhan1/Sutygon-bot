@@ -46,21 +46,42 @@ class Login extends Component {
 
   render() {
     // Redirect if logged in
-    if (this.props.AuthLoading === false && this.props.isAuthenticated) {
-      return <Redirect to="/dashboard" />;
-    }
     const { shop } = this.props;
-    const { user } = this.props.auth;
-
-    if(user && user.type == "User") 
-       if(shop && shop.status == "off"){
-      if(shop.status == "off"){
-        localStorage.clear();
-        this.props.history.push("/");
-        window.location.reload();
-        setAlert("Shop is closed", "danger", 5000);
+    const { user } = this.props.auth; 
+   
+if(user && user.type == "User") {
+  if(shop){
+    let openShop = shop[0]
+    if(openShop){
+    if (this.props.AuthLoading === false && this.props.isAuthenticated){
+    if( openShop.status == "on") {
+      return <Redirect to="/dashboard" />;
+    }}
+    else if(openShop.status == "off"){
+      setAlert("Shop is closed", "danger", 5000);
+    }
+  }}
+  }
+    // if(user && user.type == "User") {
+    //   if(shop){
+    //   let openShop = shop[0]
+    //   console.log(openShop)
+    //    if(openShop && openShop.status === "off"){
+    //     console.log("USer")
+    //     localStorage.clear();
+    //     this.props.history.push("/");
+    //     window.location.reload();
+    //     setAlert("Shop is closed", "danger", 5000);
+    //    }
+    // };
+    // }
+     
+    if(user && user.type == "Admin") {
+      if (this.props.AuthLoading === false && this.props.isAuthenticated) {
+        return <Redirect to="/dashboard" />;
       }
-      };
+    }
+
     return (
 
       <div className="wrapper menu-collapsed">
@@ -148,7 +169,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   AuthLoading: state.auth.loading,
   auth: state.auth,
-  shop: state.user.shop
+  shop: state.dashboard.shop
 
 });
 

@@ -10,11 +10,13 @@ import { getAllRentedProducts} from "../../actions/rentproduct";
 import { getAllProducts} from "../../actions/product";
 import { changeShopStatus, getShop} from "../../actions/dashboard";
 import * as moment from 'moment'
+import { setAlert } from "../../actions/alert";
 // import { getAllAppointments } from "../../actions/appointment";
 // import { getAllAppointments } from "../../actions/appointment";
 
 import "../../login.css"
 import "../../dashbaord.css"
+import { dateFnsLocalizer } from "react-big-calendar";
 
 class Dashboard extends Component {
 
@@ -30,10 +32,68 @@ class Dashboard extends Component {
     await this.props.changeShopStatus(status);
     await this.props.getShop();
   }
-  render() {
+  getPendingOrder = ()=>{
+    // e.preventDefault()
+    const { orders } = this.props;
+if(orders){
 
+  let events = orders.filter(a => (new Date(a.deliveryDate)).getTime() - (new Date()).getTime() > 0);
+  return events.length;
+
+  }
+}
+getOverDueOrder = ()=>{
+  // e.preventDefault()
+  const { orders } = this.props;
+  console.log(orders)
+if(orders){
+console.log(new Date)
+
+ let events = orders.filter(a => (new Date(a.deliveryDate)).getTime()-  (new Date()).getTime()  < 0);
+return events.length;
+
+}
+}
+getReturnOrder = ()=>{
+ 
+  // e.preventDefault()
+  const { orders } = this.props;
+  console.log(orders)
+if(orders){
+
+const date = new Date()
+
+let events = orders.filter(a =>console.log(new Date(a.returnDate) ));
+return events.length;
+}
+
+
+}
+getTodaysAppointment = ()=>{
+  // e.preventDefault()
+  const { appointment} = this.props;
+if(appointment){
+
+ let events = appointment.filter(a => new Date(a.end) - new Date == 0);
+ return events.length;
+
+}
+}
+  render() {
+    const { shop } = this.props;
     const { user } = this.props.auth; 
-console.log(user)
+  console.log(this.props)
+if(user && user.type == "User") {
+      if(shop){
+      let openShop = shop[0]
+       if(openShop && openShop.status === "off"){
+        localStorage.clear();
+        this.props.history.push("/");
+        window.location.reload();
+        setAlert("Shop is closed", "danger", 5000);
+       }
+    };
+    }
     return (
 <React.Fragment>
   <Loader />
@@ -46,87 +106,86 @@ console.log(user)
  <div className="main-panel">
         <div className="main-content">
           <div className="content-wrapper">
-            <div className="row">
-            <div className="col-xl-3 col-lg-6 col-md-6 col-12">
-              <div className="card bg-primary">
-                <div className="card-content">
-                  <div className="card-body pt-2 pb-0">
-                
-                    <div className="media">
-                      
-                      <div className="media-body white text-left">
-                        <h3 className="font-large-1 mb-0">$15,678</h3>
-                        <span>Total Cost</span>
-                      </div>
-                      <div className="media-right white text-right">
-                        <i className="icon-bulb font-large-1"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="Widget-line-chart" className="height-75 WidgetlineChart WidgetlineChartShadow mb-3">
-                  </div>
-                </div>
-              </div>
+          <div class="row">
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card gradient-blackberry">
+      <div class="card-content">
+        <div class="card-body pt-2 pb-0">
+          <div class="media">
+            <div class="media-body white text-left">
+    <h3 class="font-large-1 mb-0">{this.getPendingOrder()}</h3>
+              <span>Pending Orders</span>
             </div>
-            <div className="col-xl-3 col-lg-6 col-md-6 col-12">
-              <div className="card bg-warning">
-                <div className="card-content">
-                  <div className="card-body pt-2 pb-0">
-                    <div className="media">
-                      <div className="media-body white text-left">
-                        <h3 className="font-large-1 mb-0">$2156</h3>
-                        <span>Total Tax</span>
-                      </div>
-                      <div className="media-right white text-right">
-                        <i className="icon-pie-chart font-large-1"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="Widget-line-chart2" className="height-75 WidgetlineChart WidgetlineChartShadow mb-3">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-xl-3 col-lg-6 col-md-6 col-12">
-              <div className="card bg-success">
-                <div className="card-content">
-                  <div className="card-body pt-2 pb-0">
-                    <div className="media">
-                      <div className="media-body white text-left">
-                        <h3 className="font-large-1 mb-0">$45,668</h3>
-                        <span>Total Sales</span>
-                      </div>
-                      <div className="media-right white text-right">
-                        <i className="icon-graph font-large-1"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="Widget-line-chart3" className="height-75 WidgetlineChart WidgetlineChartShadow mb-3">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-xl-3 col-lg-6 col-md-6 col-12">
-              <div className="card bg-danger">
-                <div className="card-content">
-                  <div className="card-body pt-2 pb-0">
-                    <div className="media">
-                      <div className="media-body white text-left">
-                        <h3 className="font-large-1 mb-0">$32,454</h3>
-                        <span>Total Earning</span>
-                      </div>
-                      <div className="media-right white text-right">
-                        <i className="icon-wallet font-large-1"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="Widget-line-chart4" className="height-75 WidgetlineChart WidgetlineChartShadow mb-3">
-                  </div>
-                </div>
-              </div>
+            <div class="media-right white text-right">
+              <i class="icon-pie-chart font-large-1"></i>
             </div>
           </div>
+        </div>
+        <div id="Widget-line-chart" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card gradient-ibiza-sunset">
+      <div class="card-content">
+        <div class="card-body pt-2 pb-0">
+          <div class="media">
+            <div class="media-body white text-left">
+    <h3 class="font-large-1 mb-0">{this.getOverDueOrder()}</h3>
+              <span>Over Due Orders</span>
+            </div>
+            <div class="media-right white text-right">
+              <i class="icon-bulb font-large-1"></i>
+            </div>
+          </div>
+        </div>
+        <div id="Widget-line-chart1" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card gradient-green-tea">
+      <div class="card-content">
+        <div class="card-body pt-2 pb-0">
+          <div class="media">
+            <div class="media-body white text-left">
+              <h3 class="font-large-1 mb-0">{this.getTodaysAppointment()}</h3>
+              <span>Todays Appointment</span>
+            </div>
+            <div class="media-right white text-right">
+              <i class="icon-graph font-large-1"></i>
+            </div>
+          </div>
+        </div>
+        <div id="Widget-line-chart2" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card gradient-pomegranate">
+      <div class="card-content">
+        <div class="card-body pt-2 pb-0">
+          <div class="media">
+            <div class="media-body white text-left">
+              <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
+              <span>Return Orders</span>
+            </div>
+            <div class="media-right white text-right">
+              <i class="icon-wallet font-large-1"></i>
+            </div>
+          </div>
+        </div>
+        <div id="Widget-line-chart3" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
           {user && user.type === "Admin" ?
       <>
           <div className="row">
@@ -189,10 +248,7 @@ Dashboard.propTypes = {
   products: PropTypes.array,
   orders: PropTypes.array,
   rentedproducts:PropTypes.array,
-  shop: PropTypes.array
-//   deleteUser: PropTypes.func.isRequired,
-//   blockUser: PropTypes.func.isRequired,
- };
+  shop: PropTypes.array};
 
 const mapStateToProps = (state) => ({
   users: state.user.users,
@@ -201,8 +257,6 @@ const mapStateToProps = (state) => ({
   appointment: state.appointment.appointments,
   orders: state.order.orders,
   shop: state.dashboard.shop
-// rentedproducts:state.rentedproduct.rentedproducts,
-
 
 });
 export default connect(mapStateToProps, {

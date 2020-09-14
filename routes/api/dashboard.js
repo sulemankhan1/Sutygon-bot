@@ -35,7 +35,7 @@ router.get("/changeStatus/:status", auth,
   // @route   GET api/dashbaord/shops
 // @desc    Get all shops
 // @access  Private
-router.get("/shops", auth,
+router.get("/shops", 
 async (req, res) => {
   try {
     const shops = await Shop.find();
