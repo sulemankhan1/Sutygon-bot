@@ -23,9 +23,7 @@ const ProductSchema = new mongoose.Schema({
   availableQuantity: {
     type: String,
   },
-  rentedQuantity: {
-    type: String,
-  },
+ 
    date: {
     type: Date,
     default: Date.now,

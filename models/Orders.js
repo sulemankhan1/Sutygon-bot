@@ -47,8 +47,7 @@ const OrderSchema = new mongoose.Schema({
         // set: date => moment(date).format('DD MM YYYY')
     },
     status: {
-        type: String,
-       
+        type: String,  
         default: "new"
     },
    

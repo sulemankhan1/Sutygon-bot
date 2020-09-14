@@ -34,7 +34,6 @@ router.post(
         check("size", "Product Size Required").not().isEmpty(),
         check("fabric", "Product fabric Required").not().isEmpty(),
         check("availableQuantity", "Available Quantity Required").not().isEmpty(),
-        check("rentedQuantity", "Rented Quantity Required").not().isEmpty(),
 
     ],
     auth,
@@ -58,7 +57,6 @@ router.post(
                 fabric: body.fabric,
                 size: body.size,
                 availableQuantity: body.availableQuantity,
-                rentedQuantity: body.rentedQuantity,
               };
          
             let product = new Product(productBody);
@@ -84,21 +82,13 @@ router.post(
         check("color", "Product Color Required").not().isEmpty(),
         check("size", "Product Size Required").not().isEmpty(),
         check("fabric", "Product fabric Required").not().isEmpty(),
-        check("availableQuantity", "Available Quantity Required").not().isEmpty(),
-        check("rentedQuantity", "Rented Quantity Required").not().isEmpty(),    ],
+        check("availableQuantity", "Available Quantity Required").not().isEmpty()
+    ],
     auth,
     upload.single('image'),
     async (req, res) => {
         try {
-            // const errors = validationResult(req);
-            // if (!errors.isEmpty()) {
-            //     return res
-            //         .status(422)
-            //         .json({ errors: errors.array() });
-            
-            // }
-    const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
-
+           const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
     
             await Product.updateOne({ _id: req.params.id }, {
                 $set: {
@@ -107,8 +97,37 @@ router.post(
                     color: body.color,
                     fabric: body.fabric,
                     size: body.size,
-                    availableQuantity: body.availableQuantity,
-                    rentedQuantity: body.rentedQuantity,
+                    availableQuantity: body.availableQuantity
+                }
+            });
+            res
+                .json({ msg: "Product Updated Successfully" });
+        } catch (err) {
+            console.error(err.message);
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+        }
+    }
+);
+
+
+// @route  POST api/products/:id
+// @desc   Update a Product
+// @access Private
+router.post(
+    "/updateQty/:id",
+    [
+        check("availableQuantity", "Available Quantity Required").not().isEmpty()
+    ],
+    auth,
+    // upload.single('image'),
+    async (req, res) => {
+        try {
+           const body = req.body; // req.body = [Object: null prototype] { title: 'product' }
+            await Product.updateOne({ _id: req.params.id }, {
+                $set: {
+                    availableQuantity: body.availableQuantity
                 }
             });
             res

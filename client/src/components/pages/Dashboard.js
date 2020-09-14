@@ -31,9 +31,9 @@ class Dashboard extends Component {
     await this.props.getShop();
   }
   render() {
-    console.log('abc',this.props.shop);
- 
-    
+
+    const { user } = this.props.auth; 
+console.log(user)
     return (
 <React.Fragment>
   <Loader />
@@ -127,10 +127,13 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
+          {user && user.type === "Admin" ?
+      <>
           <div className="row">
             <div className="col-md-12">
             <div className="card">
               <div className="card-body">
+            
                   <div className="row">
                     <div className="col-md-7 txt-sep">
                       <h2>Shop was {this.props.shop[0] && (this.props.shop[0].status == "on" ? "Opened" : "Closed")} on</h2>
@@ -150,10 +153,13 @@ class Dashboard extends Component {
                       ))}
                     </div>
                   </div>
+
               </div>
             </div>
             </div>
-          </div>
+          </div> 
+          </> : " "}
+
           </div>
         </div>
       

@@ -31,7 +31,7 @@ class Orders extends Component {
       if (rentproducts.length === 0) {
         return (
           <tr>
-            <td colSpan={6} className="text-center">
+            <td colSpan={8} className="text-center">
               No orders Found
             </td>
           </tr>
@@ -45,7 +45,7 @@ class Orders extends Component {
 
           <td className="text-center">{order.customer ? order.customer.name : ""}</td>
           <td className="text-center">{order.product ?  order.product.name:""}</td>
-          <td className="text-center">{order.status}</td>
+          <td className="text-center"> <div className="badge badge-warning" >{this.getStatus(order.last)}</div></td>
 
           <td className="text-center">{moment(order.deliveryDate).format('DD/MMM/YYYY')}</td>
 
@@ -69,6 +69,23 @@ class Orders extends Component {
     }
   };
    
+  getStatus=(returnDate) =>{
+    var lastdate = moment(new Date(returnDate), "dd/MM/yyyy");
+    var currentdate = moment(new Date(), "dd/MM/yyyy");
+    var status;
+    console.log(lastdate);
+    console.log(currentdate)
+    if(moment(lastdate).isSameOrAfter(currentdate)){
+    status="Pending"
+  }
+  if(moment(lastdate).isSameOrBefore(currentdate)){
+     status = "Due"
+  }
+  if(moment(lastdate).isSame(currentdate)){
+     status = "Due Today"
+  }
+   return status;
+       };
   
   onDelete = (id) => {
     confirmAlert({

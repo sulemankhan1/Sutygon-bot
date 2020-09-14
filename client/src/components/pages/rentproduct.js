@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { addNewRentProduct,deleteRentedProduct } from "../../actions/rentproduct";
-import { getAllProducts, getProduct , updateProduct} from "../../actions/product";
+import { getAllProducts, getProduct , updateProduct,updateProductQty} from "../../actions/product";
 import { getAllCustomers } from "../../actions/customer";
 import Alert from "../layout/Alert";
 import Loader from "../layout/Loader";
@@ -91,15 +91,17 @@ class RentProduct extends Component {
           qty = result[0].availableQuantity - this.state.orderedQuantity;
         }
       }
+  
          const productQTY = {
        availableQuantity:qty,
       //  rentedQuantity:this.state.orderedQuantity
 
       };
+      
 
 this.setState({ saving: true });
 
-     await this.props.updateProduct(productQTY,result[0]._id);
+     await this.props.updateProductQty(productQTY,result[0]._id);
 
      this.setState({ saving: false });
      
@@ -336,7 +338,7 @@ RentProduct.propTypes = {
   getAllCustomers: PropTypes.func.isRequired,
   getAllProducts: PropTypes.func.isRequired,
   getProduct: PropTypes.func.isRequired,
-  updateProduct:PropTypes.func.isRequired,
+  updateProductQty:PropTypes.func.isRequired,
   auth: PropTypes.object,
   products: PropTypes.object,
   customers: PropTypes.object,
@@ -357,6 +359,6 @@ export default connect(mapStateToProps, {
   addNewRentProduct,
   deleteRentedProduct,
   getProduct,
-  updateProduct
+  updateProductQty
 })(RentProduct);
 

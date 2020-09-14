@@ -48,7 +48,13 @@ const RentedProductSchema = new mongoose.Schema({
         type: Date,
         // set: date => moment(date).format('DD MMM YYYY')
 
-    }
+    },
+    status: {
+        type: String,  
+        default: "new"
+    },
+   
+
 
 },
     {
