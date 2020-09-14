@@ -64,6 +64,34 @@ router.get("/",
         }
     });
 
+    
+// @route   GET api/orders
+// @desc    Get all orders
+// @access  Private
+router.get("/search/:search",
+//  auth,
+async (req, res) => {
+    try {
+        const search = req.params.val;
+        const orders = await User.find({
+            $or: [
+              {username: search},
+              {contactnumber: search},
+              {email: search},
+              {gender: search},
+              {accountStatus: search},
+            ]
+          }).populate("customer").populate("product");
+        res.json(orders);
+    } catch (err) {
+        console.log(err);
+        res
+        .statu(500)
+        .send("Server Error!");
+    }
+});
+
+
 // @route  GET api/orders/:id
 // @desc   Get Order by id (Search order by id)
 // @access Private

@@ -8,14 +8,23 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
+<<<<<<< HEAD
 import {getAllRentedProducts,deleteRentedProduct } from "../../../actions/rentproduct";
+=======
+import { deleteOrder,getAllOrders, findOrders } from "../../../actions/order";
+>>>>>>> ff6b8d1ba6cb881d77a1077d7d7b4cf1c338202f
 import { confirmAlert } from "react-confirm-alert";
 import * as moment from 'moment'
 
 import "react-confirm-alert/src/react-confirm-alert.css";
 class Orders extends Component {
+
   async componentDidMount() {
     await this.props.getAllRentedProducts();
+  }
+
+  state = {
+    search: ""
   }
    
  getTAble = () => {
@@ -44,10 +53,15 @@ class Orders extends Component {
 
           <td className="text-center">{moment(order.deliveryDate).format('DD/MMM/YYYY')}</td>
 
+<<<<<<< HEAD
           <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
           <td className="text-center">
+=======
+          <td className="text-center">{order.returnDate}</td>
+          <td className="text-d">
+>>>>>>> ff6b8d1ba6cb881d77a1077d7d7b4cf1c338202f
       
-       {/* <Link
+            {/* <Link
               to={{ pathname: `/orders/${order._id}` }}
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2"></i>
@@ -84,8 +98,21 @@ class Orders extends Component {
     });
   };
 
-   
-  
+  handleChange = (e, id = "") => {
+    this.setState({ 'search': e.target.value });
+  };
+
+  async searchTable() {
+        const searchVal = this.state.search;
+        if(searchVal) {
+            await this.props.findOrders(searchVal);
+        } else {
+            await this.props.getAllOrders();
+        }
+        
+    }
+
+    
   render() {
         const { auth   } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -107,7 +134,7 @@ class Orders extends Component {
                     <div className="main-panel">
 
                     <div className="main-content">
-  <div className="content-wrapper">
+<div className="content-wrapper">
   <section id="extended">
   <div className="row">
     <div className="col-sm-12">
@@ -146,12 +173,10 @@ class Orders extends Component {
 </div>
 </div>
                    
-                        <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
-                        </footer>
-
-
+                    <footer className="footer footer-static footer-light">
+                        <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
+                            <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                    </footer>
                 </div>
 
             </React.Fragment>
@@ -162,9 +187,16 @@ class Orders extends Component {
 
 Orders.propTypes = {
   auth: PropTypes.object,
+<<<<<<< HEAD
   getAllRentedProducts: PropTypes.func.isRequired,
   deleteRentedProduct: PropTypes.func.isRequired,
   rentproducts: PropTypes.array,
+=======
+  getAllOrders: PropTypes.func.isRequired,
+  deleteOrder: PropTypes.func.isRequired,
+  findOrders: PropTypes.func.isRequired,
+     orders: PropTypes.array,
+>>>>>>> ff6b8d1ba6cb881d77a1077d7d7b4cf1c338202f
   };
 
 const mapStateToProps = (state) => ({
@@ -173,6 +205,10 @@ const mapStateToProps = (state) => ({
 
 });
 export default connect(mapStateToProps, {
+<<<<<<< HEAD
   getAllRentedProducts,deleteRentedProduct
+=======
+  getAllOrders,deleteOrder, findOrders
+>>>>>>> ff6b8d1ba6cb881d77a1077d7d7b4cf1c338202f
 })(Orders);
 

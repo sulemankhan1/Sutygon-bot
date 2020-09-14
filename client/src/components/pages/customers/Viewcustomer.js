@@ -110,10 +110,15 @@ class ViewCustomer extends Component {
     <div className="col-sm-12">
       <div className="card">
         <div className="card-header">
-          <h4 className="card-title">View Customer</h4>
+          <h4 className="card-title">All Customers</h4>
         </div>
         <div className="card-content">
           <div className="card-body table-responsive">
+          <div className="row">
+            <div className="col-md-12">
+              <Link to="/customer/addcustomer" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New Customer</Link>
+            </div>
+          </div>
             <Alert />
             <table className="table text-center">
               <thead>

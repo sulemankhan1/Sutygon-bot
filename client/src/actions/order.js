@@ -63,6 +63,24 @@ export const getAllOrders = () => async (dispatch) => {
   }
 };
 
+ // Find users
+ export const findOrders = (searchVal) => async (dispatch) => {
+  dispatch({ type: ORDER_LOADING });
+  try {
+    const res = await axios.get(`/api/orders/search/${searchVal}`);
+
+    dispatch({
+      type: GET_ORDERS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: ORDERS_ERROR,
+      payload: err.response,
+    });
+  }
+};
+
 
 
 // Get User by ID

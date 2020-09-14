@@ -63,6 +63,25 @@ export const getAllProducts = () => async (dispatch) => {
   }
 };
 
+  // Find products
+  export const findProducts = (search) => async (dispatch) => {
+    dispatch({ type: PRODUCT_LOADING });
+    try {
+      console.log(search);
+      const res = await axios.get(`/api/products/search/${search}`);
+  
+      dispatch({
+        type: GET_PRODUCTS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: PRODUCTS_ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
 
 
 // Get User by ID
