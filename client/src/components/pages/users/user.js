@@ -75,7 +75,7 @@ const auth_user = auth.user;
             </Link>
             {auth_user && auth_user.type === "Admin" ?
                 <Link
-                  to={{ pathname: `/user/viewuser` }}
+                  to={{ pathname: `/user` }}
                   onClick={() => this.onBlock(user._id)}
                   className="info p-0">
                   <i className="ft-alert-triangle font-medium-3 mr-2" title="Block User"></i>
@@ -111,7 +111,6 @@ const auth_user = auth.user;
   
 
   onBlock = (id) => {
-    console.log(id)
     confirmAlert({
       title: "Block User",
       message: "Are you sure you want to block this user?",

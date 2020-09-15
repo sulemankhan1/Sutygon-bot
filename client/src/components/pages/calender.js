@@ -14,6 +14,25 @@ import { getAllAppointments } from "../../actions/appointment";
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 
+function EventAgenda({ event }) {
+    return <span>
+      <em style={{ color: 'magenta'}}>{event.title}</em>
+      <p>{ event.desc }</p>
+    </span>
+  }
+
+  function Event({ event }) {
+    return (
+      <span>
+        <strong>
+        {event.title}
+        </strong>
+        { event.desc && (':  ' + event.desc)}
+      </span>
+    )
+  }
+  
+
 class AppointmentCalendar extends Component {
     state = {
         id: "",
@@ -21,6 +40,7 @@ class AppointmentCalendar extends Component {
         end: "",
         title: ""
     }
+    
     async componentDidMount() {
         await this.props.getAllAppointments();
     }
@@ -69,11 +89,15 @@ class AppointmentCalendar extends Component {
                                                         localizer={localizer}
                                                         events={newEvents}
                                                         defaultDate={new Date()}
-                                                        defaultView='month'
+                                                        views={{
+                                                            month: true,
+                                                        week:true,
+                                                        day:true   
+                                                          }}               
                                                         startAccessor="start"
                                                         endAccessor="end"
                                                         style={{ height: 500 }}
-
+                                                        
                                                     />
                                                     : ""}
                                             </div>

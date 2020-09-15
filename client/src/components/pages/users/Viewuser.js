@@ -116,7 +116,6 @@ class ViewUser extends Component {
   
 
   onBlock = (id) => {
-    console.log(id)
     confirmAlert({
       title: "Block User",
       message: "Are you sure you want to block this user?",

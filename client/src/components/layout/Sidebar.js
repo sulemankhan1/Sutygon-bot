@@ -64,7 +64,7 @@ class Sidebar extends Component {
               {(user && (user.type === "Admin")) ? (
               <li className={this.getClassName("user")}>
               <Link
-                      to="/user/viewuser"
+                      to="/user"
                       onClick={() => this.handleClick("user")}
                     >
                       <i className="ft-users" /> Users
@@ -74,7 +74,7 @@ class Sidebar extends Component {
               }
                   <li className={this.getClassName("product")}>
                   <Link
-                      to="/product/viewproduct"
+                      to="/product"
                       onClick={() => this.handleClick("product")}
                     >
                       <i className="ft-box" /> Products
@@ -83,7 +83,7 @@ class Sidebar extends Component {
 
                   {/* customer/addcustomer */}
                   <li className={this.getClassName("customer")}>
-                    <Link to="/customer/viewcustomer"
+                    <Link to="/customer"
                         onClick={() => this.handleClick("customer")}
                       >
                         <i className="ft-user" /> Customers

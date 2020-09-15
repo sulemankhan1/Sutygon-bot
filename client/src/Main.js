@@ -51,16 +51,16 @@ const Main = () => {
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
           {/* users */}
           <PrivateRoute exact path="/user/adduser" component={AddUser} />
-          <PrivateRoute exact path="/user/viewuser" component={ViewUser} />
+          <PrivateRoute exact path="/user" component={ViewUser} />
           <PrivateRoute exact path="/user/edituser/:id" component={AddUser} />
           <PrivateRoute exact path="/user/view/:id" component={View} />
 
           {/* customers */}
           <PrivateRoute exact path="/customer/addcustomer" component={AddCustomer} />
-          <PrivateRoute exact path="/customer/viewcustomer" component={ViewCustomer} />
+          <PrivateRoute exact path="/customer" component={ViewCustomer} />
           {/* products */}
           <PrivateRoute exact path="/product/addproduct" component={AddProduct} />
-          <PrivateRoute exact path="/product/viewproduct" component={ViewProduct} />
+          <PrivateRoute exact path="/product" component={ViewProduct} />
           <PrivateRoute exact path="/product/editproduct/:id" component={AddProduct} />
           <PrivateRoute exact path="/product/viewproduct/:id" component={Product} />
 

@@ -56,10 +56,13 @@ if(user && user.type == "User") {
     if (this.props.AuthLoading === false && this.props.isAuthenticated){
     if( openShop.status == "on") {
       return <Redirect to="/dashboard" />;
-    }}
+    }
+  
     else if(openShop.status == "off"){
       setAlert("Shop is closed", "danger", 5000);
     }
+  }
+    
   }}
   }
     // if(user && user.type == "User") {

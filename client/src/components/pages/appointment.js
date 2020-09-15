@@ -60,9 +60,9 @@ const {user} = this.props.auth;
         }
 
         if (this.props.saved) {
-            return <Redirect to="/dashboard" />;
+            return <Redirect to="/calender" />;
           }
-          const {customer,product} = this.state;
+          const {customer} = this.state;
           const { customers } = this.props.customers;
          
         return (
