@@ -23,7 +23,7 @@ class AppointmentCalendar extends Component {
     }
     async componentDidMount() {
         await this.props.getAllAppointments();
-}
+    }
 
 
     render() {
@@ -34,10 +34,10 @@ class AppointmentCalendar extends Component {
         const { calendar } = this.props;
         let newEvents;
         if (calendar) {
-            
+
             newEvents = calendar.map(event => ({
                 title: event.title,
-                start:new Date(event.start),
+                start: new Date(event.start),
                 end: new Date(event.end)
             })
             );
@@ -64,16 +64,18 @@ class AppointmentCalendar extends Component {
                                             <Alert />
 
                                             <div className="card-body">
-{newEvents ? 
-                                            <Calendar
-      localizer={localizer}
-      events={newEvents}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: 500 }}
-    
-    />
-    :""}
+                                                {newEvents ?
+                                                    <Calendar
+                                                        localizer={localizer}
+                                                        events={newEvents}
+                                                        defaultDate={new Date()}
+                                                        defaultView='month'
+                                                        startAccessor="start"
+                                                        endAccessor="end"
+                                                        style={{ height: 500 }}
+
+                                                    />
+                                                    : ""}
                                             </div>
                                         </div>
                                     </div>

@@ -4,18 +4,13 @@ import Header from "../layout/Header";
 import { addNewAppointment } from "../../actions/appointment";
 import { getAllProducts } from "../../actions/product";
 import { getAllCustomers } from "../../actions/customer";
-import { Link } from "react-router-dom";
 import Alert from "../layout/Alert";
 import Loader from "../layout/Loader";
-import moment from "moment"
-
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 class AddAppointment extends Component {
-  // let d1Start = moment().add(1, "hours").toDate();
-  // let d1End = moment(d1Start).add(1, "hours").toDate();
     state = {
         id: "",
         appointmentNumber: "",
@@ -69,8 +64,7 @@ const {user} = this.props.auth;
           }
           const {customer,product} = this.state;
           const { customers } = this.props.customers;
-          const { products } = this.props.products;
-          
+         
         return (
             <React.Fragment>
               <Loader />

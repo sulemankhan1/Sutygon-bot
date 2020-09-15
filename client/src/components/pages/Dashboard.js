@@ -16,7 +16,6 @@ import { setAlert } from "../../actions/alert";
 
 import "../../login.css"
 import "../../dashbaord.css"
-import { dateFnsLocalizer } from "react-big-calendar";
 
 class Dashboard extends Component {
 
@@ -34,38 +33,33 @@ class Dashboard extends Component {
   }
   getPendingOrder = ()=>{
     // e.preventDefault()
-    const { orders } = this.props;
-if(orders){
+    const { rentedproducts } = this.props;
+if(rentedproducts){
 
-  let events = orders.filter(a => (new Date(a.deliveryDate)).getTime() - (new Date()).getTime() > 0);
+  let events = rentedproducts.filter(a => (new Date(a.deliveryDate ))- (new Date()) > 0);
+
   return events.length;
 
   }
 }
 getOverDueOrder = ()=>{
-  // e.preventDefault()
-  const { orders } = this.props;
-  console.log(orders)
-if(orders){
-console.log(new Date)
+  // e.preventDefault() 
+  const { rentedproducts } = this.props;
+if(rentedproducts){
+  var currentdate = moment(new Date).format('MM/DD/YYYY');
 
- let events = orders.filter(a => (new Date(a.deliveryDate)).getTime()-  (new Date()).getTime()  < 0);
-return events.length;
+ let events = rentedproducts.filter(a => (moment(a.deliveryDate).isBefore(currentdate)) );
+ return events.length;
 
 }
 }
 getReturnOrder = ()=>{
- 
   // e.preventDefault()
-  const { orders } = this.props;
-  console.log(orders)
-if(orders){
-
-const date = new Date()
-
-let events = orders.filter(a =>console.log(new Date(a.returnDate) ));
-return events.length;
-}
+  const { rentedproducts } = this.props;
+if(rentedproducts){
+  var currentdate = moment(new Date).format('MM/DD/YYYY');
+let events = rentedproducts.filter(a => (moment(moment(a.returnDate).format('MM/DD/YYYY')).isSame(currentdate)));
+return events.length;}
 
 
 }
@@ -73,16 +67,18 @@ getTodaysAppointment = ()=>{
   // e.preventDefault()
   const { appointment} = this.props;
 if(appointment){
-
- let events = appointment.filter(a => new Date(a.end) - new Date == 0);
+  var currentdate = moment(new Date).format('MM/DD/YYYY');
+  let events = appointment.filter(a => (moment(moment(a.start).format('MM/DD/YYYY')).isSame(currentdate)));
  return events.length;
 
 }
 }
+
+
+
   render() {
     const { shop } = this.props;
     const { user } = this.props.auth; 
-  console.log(this.props)
 if(user && user.type == "User") {
       if(shop){
       let openShop = shop[0]
@@ -256,7 +252,8 @@ const mapStateToProps = (state) => ({
   products: state.product.products,
   appointment: state.appointment.appointments,
   orders: state.order.orders,
-  shop: state.dashboard.shop
+  shop: state.dashboard.shop,
+   rentedproducts:state.rentproduct.rentproducts
 
 });
 export default connect(mapStateToProps, {

@@ -70,9 +70,9 @@ class RentProduct extends Component {
       orderedQuantity:state.orderedQuantity,
       deliveryDate: state.deliveryDate,
       returnDate: state.returnDate,
-
       image: state.image
     };
+    console.log(product)
     await this.props.addNewRentProduct(product);
     this.getProductQTY(e);
 
