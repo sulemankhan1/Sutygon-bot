@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import { getUser } from "../../../actions/user";
-
-import { Link } from "react-router-dom";
-
-import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";

@@ -1,7 +1,6 @@
 import axios from "axios";
 import {
-    SHOP_STARTED,
-    SHOP_STOPPED,
+   
     DASHBOARD_LOADING,
     DASHBOARD_LOADED,
     DASHBOARD_ERROR,
@@ -10,7 +9,6 @@ import {
     SHOP_ERROR,
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
 
 // changeShopStatus
 export const changeShopStatus = (status) => async (dispatch) => {

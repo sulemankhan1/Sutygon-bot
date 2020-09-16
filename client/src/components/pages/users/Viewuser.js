@@ -70,14 +70,14 @@ class ViewUser extends Component {
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2 "  title="Edit User"></i>
             </Link>
-            <Link to="/user/viewuser"
+            <Link to="/user"
               onClick={() => this.onDelete(user._id)}
               className="danger p-0">
               <i className="ft-x font-medium-3 mr-2"  title="Delete"></i>
             </Link>
             {auth_user && auth_user.type === "Admin" ?
                 <Link
-                  to={{ pathname: `/user/viewuser` }}
+                  to={{ pathname: `/user` }}
                   onClick={() => this.onBlock(user._id)}
                   className="info p-0">
                   <i className="ft-alert-triangle font-medium-3 mr-2" title="Block User"></i>

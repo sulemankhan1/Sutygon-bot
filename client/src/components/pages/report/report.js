@@ -8,14 +8,10 @@ import { connect } from "react-redux";
 import { getReport } from "../../../actions/report";
 import { getAllUsers } from "../../../actions/user";
 import { getAllCustomers } from "../../../actions/customer";
-import moment from "moment"
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
-import report from "../../../reducers/report";
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
 
 
 
@@ -303,8 +299,13 @@ class Report extends Component {
                                                             <Link
                                                                 to={{
                                                                     pathname: "/report",
-                                                                    data: {report :this.props.report.reports,
-                                                                    reportType:this.state.reportType} // your data array of objects
+                                                                    data: {
+                                                                    report :this.props.report.reports,
+                                                                    reportType:this.state.reportType,
+                                                                    startDate:this.state.start,
+                                                                    endDate:this.state.end
+                                                                
+                                                                } // your data array of objects
                                                                 }}
                                                                 className="mb-2 mr-2 btn btn-raised btn-primary"
                                                             >
@@ -316,37 +317,7 @@ class Report extends Component {
 
                                                     </div>
                                                 </form>
-                                                {/* <div className="row" id="page">
-                                                    <div className="col-sm-12">
-                                                        <div className="card">
-                                                            <div className="card-header">
-                                                                <h4 className="card-title">Order Report</h4>
-                                                            </div>
-                                                            <div className="card-content">
-                                                                <div className="card-body table-responsive">
-                                                                    <table className="table text-center">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>#</th>
-                                                                                <th></th>
-                                                                                <th>Order Number</th>
-                                                                                <th>Customer</th>
-                                                                                <th>Product</th>
-                                                                                <th>User</th>
-                                                                                <th>Delivery Date</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            {this.getTAble()}
-
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div> */}
+                                          
                                             </div>
                                         </div>
                                     </div>

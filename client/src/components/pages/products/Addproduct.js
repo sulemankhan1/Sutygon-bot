@@ -84,7 +84,7 @@ class AddProduct extends Component {
         if (!auth.loading && !auth.isAuthenticated) {
           return <Redirect to="/" />;
         }
-
+console.log("saved",this.props.saved)
         if (this.props.saved) {
             return <Redirect to="/product" />;
           }

@@ -14,7 +14,6 @@ import {
 
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
 
 
 // Add new product
@@ -170,11 +169,7 @@ export const updateProductQty = (product, id) => async (dispatch) => {
   // Delete User
 export const deleteProduct = (id) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },  
-  };
+ 
 
    try {
 

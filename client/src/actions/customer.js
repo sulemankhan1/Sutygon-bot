@@ -14,7 +14,6 @@ import {
 
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
 
 
 // Add new product
@@ -121,12 +120,7 @@ export const updateCustomer = (product, id) => async (dispatch) => {
   // Delete User
 export const deleteCustomer = (id) => async (dispatch) => {
   dispatch({ type: CUSTOMERS_LOADING });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },  
-  };
-
+  
    try {
 
     const res = await axios.delete(`/api/customers/${id}`);

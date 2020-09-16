@@ -53,7 +53,7 @@ class ViewCustomer extends Component {
               className="success p-0">
               <i className="ft-edit-2 font-medium-3 mr-2"></i>
             </Link> */}
-            <Link to="/customer/viewcustomer"
+            <Link to="/customer"
               onClick={() => this.onDelete(customer._id)}
               className="danger p-0">
               <i className="ft-x font-medium-3 mr-2" title="Delete"></i>

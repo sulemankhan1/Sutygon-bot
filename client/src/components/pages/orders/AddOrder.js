@@ -4,11 +4,8 @@ import Header from "../../layout/Header";
 import { addNewOrder } from "../../../actions/order";
 import { getAllCustomers } from "../../../actions/customer";
 import { getAllProducts } from "../../../actions/product";
-
-import { Link } from "react-router-dom";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
-
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
