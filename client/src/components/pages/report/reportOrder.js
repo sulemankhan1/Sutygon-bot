@@ -1,17 +1,11 @@
 import React, { Component } from "react";
-import Sidebar from "../../layout/Sidebar";
-import Header from "../../layout/Header";
 // import { getReport} from "../../../actions/order";
-import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 import moment from 'moment';
-import { getUser } from "../../../actions/user";
 
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
@@ -41,7 +35,6 @@ class ReportOrder extends Component {
     // };
     getTAble = () => {
         const { data } = this.props.location;
-        const { user } = this.props.auth;
 
         let tbl_sno = 1;
         if (data) {
@@ -130,7 +123,7 @@ class ReportOrder extends Component {
         <div id="invoice-company-details" className="row">
           <div className="col-md-6 col-sm-12 text-center text-md-left">
             <div className="media" >
-              <img src="assets/img/logos/logo.png" alt="company logo" width="130" height="130" />
+              <img src="assets/img/logos/logo.png" alt="company logo" width="180" height="130" />
               <div className="media-body">
                 {/* <ul className="ml-2 px-0 list-unstyled">
                   <li className="text-bold-800">Pixinvent Creative Studio</li>
@@ -144,9 +137,9 @@ class ReportOrder extends Component {
 
           </div>
           <div className="col-md-6 col-sm-12 text-center text-md-right">
-            {/* <p><span className="text-muted">Starting Date :</span> {moment(data.deliveryDate).format("DD/MMM/YYYY")}</p> */}
+             <p><span className="text-muted">Starting Date :</span> {data ? moment(data.startDate).format("DD/MMM/YYYY"): ""}</p> 
             {/* <p><span className="text-muted">Terms :</span> Due on Receipt</p> */}
-            {/* <p><span className="text-muted">Ending Date :</span>{moment(data.deliveryDate).format("DD/MMM/YYYY")}</p> */}
+             <p><span className="text-muted">Ending Date :</span>{data ? moment(data.endDate).format("DD/MMM/YYYY") :""}</p>
             <p><span className="text-muted">User :</span> {user ? user.username:""}</p>
 
           </div>

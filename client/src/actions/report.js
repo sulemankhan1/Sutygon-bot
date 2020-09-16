@@ -7,9 +7,6 @@ import {
    
 
 } from "./types";
-import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
-
 
 // // Get User by ID
 // export const getReport = (name) => async (dispatch) => {

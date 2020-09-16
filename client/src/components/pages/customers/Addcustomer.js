@@ -3,7 +3,6 @@ import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import {addNewCustomer, getCustomer } from "../../../actions/customer";
 
-import { Link } from "react-router-dom";
 
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -11,8 +10,6 @@ import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
 class AddCustomer extends Component {
     state = {
         id: "",

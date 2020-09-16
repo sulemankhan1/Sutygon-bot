@@ -8,22 +8,30 @@ const ProductSchema = new mongoose.Schema({
   image: {
     type: String,
   },
-  color: {
-    type: Array,
-  },
-  size: {
-    type: Array,
-  },
-  fabric: {
-    type: String,
-  },
-  inStock: {
-    type: String,
-  },
-  availableQuantity: {
-    type: String,
-  },
- 
+  color: [{
+       colorname: {
+        type: String,
+        required: true,
+       },
+    sizes: [{
+       size: {
+        type: String,
+        required: true,
+       },
+      qty: {
+        type: String,
+        required: true,
+       },
+      price: {
+        type: String,
+        required: true,
+       },
+      barcode: {
+        type: String,
+        
+       },
+    }],
+  }],
    date: {
     type: Date,
     default: Date.now,

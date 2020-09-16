@@ -9,12 +9,10 @@ import {
   APPOINTMENTS_ERROR,
   APPOINTMENTS_LOADING,
   APPOINTMENT_DELETED,
-  APPOINTMENT_UPDATED
  
 
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
 
 
 // Add new product
@@ -89,13 +87,7 @@ export const getAppointment = (id) => async (dispatch) => {
   // Delete User
 export const deleteAppointment = (id) => async (dispatch) => {
   dispatch({ type: APPOINTMENTS_LOADING });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },  
-  };
-
-   try {
+    try {
 
     const res = await axios.delete(`/api/appointmnets/${id}`);
     dispatch({

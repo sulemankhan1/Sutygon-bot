@@ -2,9 +2,6 @@ import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import { addNewUser, updateUser, getUser } from "../../../actions/user";
-import axios, { post } from 'axios';
-import { Link } from "react-router-dom";
-
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 import { Redirect } from "react-router-dom";

@@ -14,8 +14,6 @@ import {
 
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
-
 
 // Add new user
 export const addNewUser = (user) => async (dispatch) => {
@@ -165,11 +163,6 @@ export const blockUser = (id) => async (dispatch) => {
   // Delete User
 export const deleteUser = (id) => async (dispatch) => {
   dispatch({ type: USERS_LOADING });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
 
    try {
 

@@ -14,25 +14,6 @@ import { getAllAppointments } from "../../actions/appointment";
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 
-function EventAgenda({ event }) {
-    return <span>
-      <em style={{ color: 'magenta'}}>{event.title}</em>
-      <p>{ event.desc }</p>
-    </span>
-  }
-
-  function Event({ event }) {
-    return (
-      <span>
-        <strong>
-        {event.title}
-        </strong>
-        { event.desc && (':  ' + event.desc)}
-      </span>
-    )
-  }
-  
-
 class AppointmentCalendar extends Component {
     state = {
         id: "",

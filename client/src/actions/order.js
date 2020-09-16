@@ -106,12 +106,7 @@ export const getOrder = (id) => async (dispatch) => {
   // Delete User
 export const deleteOrder = (id) => async (dispatch) => {
   dispatch({ type: ORDERS_LOADING });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },  
-  };
-
+  
    try {
 
     const res = await axios.delete(`/api/orders/${id}`);

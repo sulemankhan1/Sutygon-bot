@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { addNewRentProduct,deleteRentedProduct } from "../../actions/rentproduct";
-import { getAllProducts, getProduct , updateProduct,updateProductQty} from "../../actions/product";
+import { getAllProducts, getProduct , updateProductQty} from "../../actions/product";
 import { getAllCustomers } from "../../actions/customer";
 import Alert from "../layout/Alert";
 import Loader from "../layout/Loader";
