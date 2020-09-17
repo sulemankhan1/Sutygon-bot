@@ -36,7 +36,7 @@ class ViewProduct extends Component {
       if (products.length === 0) {
         return (
           <tr>
-            <td colSpan={6} className="text-center">
+            <td colSpan={10} className="text-center">
               No product Found
             </td>
           </tr>
@@ -122,12 +122,9 @@ class ViewProduct extends Component {
           return <Redirect to="/" />;
         }
         const { products } = this.props;
+        console.log(products);
         const { filter} = this.state;
-        if(products){
-          var filteredProduct = products.filter(function (product,k) {
-            return product.name.toLocaleLowerCase() == filter.toLocaleLowerCase();
-          });
-      }
+        
        
         return (
             <React.Fragment>
@@ -178,7 +175,7 @@ class ViewProduct extends Component {
                                         </tr>
                                       </thead>
                                       <tbody>
-                                  {this.getTAble()}  
+                                  {/* {this.getTAble()}   */}
                                   
                                       </tbody>
                                     </table>

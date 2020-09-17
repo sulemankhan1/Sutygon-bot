@@ -31,13 +31,13 @@ router.post(
         check("name", "Product Name Required").not().isEmpty(),
         check("image", "Product Image Required").not().isEmpty(),
         check("color", "Product Color Required").not().isEmpty(),
-        check("size", "Product Size Required").not().isEmpty(),
-        check("fabric", "Product fabric Required").not().isEmpty(),
-        check("availableQuantity", "Available Quantity Required").not().isEmpty(),
+        // check("size", "Product Size Required").not().isEmpty(),
+        // check("fabric", "Product fabric Required").not().isEmpty(),
+        // check("availableQuantity", "Available Quantity Required").not().isEmpty(),
 
     ],
-    auth,
-    upload.single('image'),
+    // auth,
+    // upload.single('image'),
     async (req, res) => {
         // const errors = validationResult(req);
         // if (!errors.isEmpty()) {
@@ -52,11 +52,11 @@ router.post(
         try {
             const productBody = {
                 name: body.name,
-                image: `/uploads/products/${req.file.originalname}`,
+                // image: `/uploads/products/${req.file.originalname}`,
                 color: body.color,
-                fabric: body.fabric,
+                // fabric: body.fabric,
                 size: body.size,
-                availableQuantity: body.availableQuantity,
+                // availableQuantity: body.availableQuantity,
               };
          
             let product = new Product(productBody);
