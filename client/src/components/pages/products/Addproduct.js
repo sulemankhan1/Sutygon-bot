@@ -174,14 +174,7 @@ this.setState({ color:[
     let value = e.target.value;
 
     if (name === "colorname" ) {
-      // get current subject
-      const colorIndex = this.state.color.findIndex(
-        (element) => element.id == id
-      );
-
-      let color = [...this.state.color];
-
-      color[colorIndex] = { ...color[colorIndex], [name]: value };
+      
       this.setState({ color });
     } else {
       this.setState({
