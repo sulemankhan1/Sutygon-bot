@@ -19,6 +19,7 @@ import ViewProduct from "./components/pages/products/Viewproduct";
 import Product from "./components/pages/products/Product";
 import RentProduct from "./components/pages/rentproduct";
 import Checkout from "./components/pages/checkout";
+import ReturnProduct from "./components/pages/returnproduct/returnproduct";
 
 import RentOrder from "./components/pages/rentOrder";
 import Report from "./components/pages/report/report";
@@ -69,6 +70,10 @@ const Main = () => {
           <PrivateRoute exact path="/rentproduct" component={RentProduct} />
           <PrivateRoute exact path="/checkout" component={Checkout} />
           <PrivateRoute exact path="/rentorder" component={RentOrder} />
+
+          {/* return product */}
+          <PrivateRoute exact path="/returnproduct" component={ReturnProduct} />
+
 
           {/* orders */}
           <PrivateRoute exact path="/orders" component={Orders} />

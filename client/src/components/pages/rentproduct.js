@@ -21,113 +21,129 @@ class RentProduct extends Component {
   };
   CutomerBox = () => {
     const { customer } = this.props;
-    return    <>
-   
-    
-    <div id="colors_box">
-   
-      <div className="row color-row">
-      <div class="row">
-                          <div class="col-md-12">
-                              <h3>Is this the One</h3>
-                          </div>
-                        </div> 
-        <div className="col-md-12">
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control mm-input"
-              style={{ 'color': '#495057' }}
-              value={customer[0] ? customer[0].name : "No Customer Found"}
-              readonly />
-          </div>
+    return <>
 
 
+      <div id="colors_box">
 
-        </div>
-        <div className="col-md-12">
-          <div id="sizes_box">
-            <div className="row text-center">
-              <div className="left">
-                <button
-                  type="button"
-                  className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                  id="btnSize" ><i className="ft-rotate-cw"></i> Try Again</button>
-
-                <button
-                  type="button"
-                  className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                  id="btnSize1"><i className="ft-user"></i> New Customer</button>
-              </div>
+        <div className="row color-row">
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Is this the One</h3>
             </div>
           </div>
-        </div>
-      </div>
-
-      {customer[0] ?
-        <div className="row color-row">
           <div className="col-md-12">
             <div className="form-group">
-              <h3>Customer is on-File</h3>
+              <input
+                type="text"
+                id="customer"
+                className="form-control mm-input"
+                style={{ 'color': '#495057' }}
+                value={customer[0] ? customer[0].name : "No Customer Found"}
+                readonly />
             </div>
+
+
+
           </div>
           <div className="col-md-12">
             <div id="sizes_box">
-              <div className="row">
+              <div className="row text-center">
                 <div className="left">
-                  <input
-                    type="text"
-                    className="form-control mm-input "
-                    style={{ 'color': '#495057' }}
-                    value={customer[0].name}
-                    readonly />
-                </div>
-              </div>
-              <br />
-              <div className="row">
-                <div className="left">
-                  <input
-                    type="number"
-                    className="form-control mm-input "
-                    style={{ 'color': '#495057' }}
-                    value={customer[0].contactnumber}
-                    readonly />
-                </div>
-              </div>
-              <br />
-              <div className="row">
-                <div className="left">
-                  <textarea
-                    type="text"
-                    className="form-control mm-input "
-                    style={{ 'color': '#495057' }}
-                    value={customer[0].address}
-                    placeholder="Address"
-                    readonly></textarea>
-                </div>
-              </div>
-            </div>
-            <br />
-            <div className="row text-center">
-              <div className="col-md-12 btn-cont">
-                <div className="form-group">
-                  <Link
-                    to={{
-                      pathname: "/checkout",
-                      data: this.props.customer[0],
-                      // your data array of objects
-                    }}
+                  <button
                     type="button"
                     className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                    id="btnSize2" ><i className="ft-check"></i> Next</Link>
+                    onClick={(e) => this.tryAgain(e)}
+                    id="btnSize" ><i className="ft-rotate-cw"></i> Try Again</button>
+
+                  <Link to="/customer/addcustomer"
+                    type="button"
+                    target={"_blank"}
+
+                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                    id="btnSize1"><i className="ft-user"></i> New Customer</Link>
                 </div>
               </div>
             </div>
           </div>
-        </div> : ""
-      }
-    </div>
-</>
+        </div>
+
+        {customer[0] ?
+          <div className="row color-row">
+            <div className="col-md-12">
+              <div className="form-group">
+                <h3>Customer is on-File</h3>
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div id="sizes_box">
+                <div className="row">
+                  <div className="left">
+                    <input
+                      type="text"
+                      className="form-control mm-input "
+                      style={{ 'color': '#495057' }}
+                      value={customer[0].name}
+                      readonly />
+                  </div>
+                </div>
+                <br />
+                <div className="row">
+                  <div className="left">
+                    <input
+                      type="number"
+                      className="form-control mm-input "
+                      style={{ 'color': '#495057' }}
+                      value={customer[0].contactnumber}
+                      readonly />
+                  </div>
+                </div>
+                <br />
+                <div className="row">
+                  <div className="left">
+                    <textarea
+                      type="text"
+                      className="form-control mm-input "
+                      style={{ 'color': '#495057' }}
+                      value={customer[0].address}
+                      placeholder="Address"
+                      readonly></textarea>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div className="row text-center">
+                <div className="col-md-12 btn-cont">
+                  <div className="form-group">
+                    <Link
+                      to={{
+                        pathname: "/checkout",
+                        data: this.props.customer[0],
+                        // your data array of objects
+                      }}
+                      type="button"
+                      className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                      id="btnSize2" ><i className="ft-check"></i> Next</Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> : ""
+        }
+      </div>
+    </>
+  }
+
+  tryAgain = (e) => {
+    e.preventDefault();
+
+    var contactnumber = document.getElementById("number");
+    var contact = document.getElementById("customer");
+
+    contactnumber.focus();
+    contactnumber.value = "";
+    contact.value = "";
+
   }
 
   onSubmitCustomer = async (e) => {
@@ -135,9 +151,7 @@ class RentProduct extends Component {
     this.setState({ saving: true });
 
     const state = { ...this.state };
-    console.log(state.customer)
     await this.props.getCustomer(state.customer);
-    // this.CutomerBox();
     this.setState({ saving: false });
   };
 
@@ -181,7 +195,11 @@ class RentProduct extends Component {
                                   type="number"
                                   placeholder="Search"
                                   className="form-control round"
+                                  id="number"
                                   min="0"
+                                  // max="10"
+                                  ref="contactnumber"
+
                                   onChange={(e) => this.handleChange(e)}
 
                                 />
@@ -212,12 +230,12 @@ class RentProduct extends Component {
                 </section>
 
               </div>
-         
+
             </div>
             <footer className="footer footer-static footer-light">
-                <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                  <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
-              </footer>
+              <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
+                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+            </footer>
 
           </div>
         </div>

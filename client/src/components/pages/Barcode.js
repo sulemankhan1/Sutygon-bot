@@ -20,57 +20,57 @@ class Barcode extends Component {
 
 
     async componentDidMount() {
-        await this.props.getAllProducts();
+        // await this.props.getAllProducts();
 
     };
 
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
     };
-    getTAble = () => {
-        const { products } = this.props;
+    // getTAble = () => {
+    //     const { products } = this.props;
 
 
-        let tbl_sno = 1;
-        if (products) {
-            if (products.length === 0) {
-                return (
-                    <tr>
-                        <td colSpan={10} className="text-center">
-                            No product Found
-            </td>
-                    </tr>
-                );
-            }
-            return products.map((product, i) => {
-                return <tr key={i}>
+    //     let tbl_sno = 1;
+    //     if (products) {
+    //         if (products.length === 0) {
+    //             return (
+    //                 <tr>
+    //                     <td colSpan={10} className="text-center">
+    //                         No product Found
+    //         </td>
+    //                 </tr>
+    //             );
+    //         }
+    //         return products.map((product, i) => {
+    //             return <tr key={i}>
 
-                    {/* {product.color.map((color, j) => {
-                      console.log(color)
-                            // return `${product.name}${" | "}${color.colorname}${" | "}${color.sizes.size}`
+    //                 {/* {product.color.map((color, j) => {
+    //                   console.log(color)
+    //                         // return `${product.name}${" | "}${color.colorname}${" | "}${color.sizes.size}`
 
-                    })
-                    } */}
-                    {product.color.map((colors, j) => {
-                        return `${colors.sizes.map((size, j) => {
-                            {
-                                for (var i = 0; i <= size.qty; i++) {
+    //                 })
+    //                 } */}
+    //                 {product.color.map((colors, j) => {
+    //                     return `${colors.sizes.map((size, j) => {
+    //                         {
+    //                             for (var i = 0; i <= size.qty; i++) {
 
-                                    for (var k = 0; k>= colors; k++) {
-                                            console.log(size[colors])
+    //                                 for (var k = 0; k>= colors; k++) {
+    //                                         console.log(size[colors])
 
-                                    }
-                                }
-                            }
-                        })}`
-                    }
-                    )}
-                </tr>
-            })
+    //                                 }
+    //                             }
+    //                         }
+    //                     })}`
+    //                 }
+    //                 )}
+    //             </tr>
+    //         })
 
 
-        };
-    }
+    //     };
+    // }
     render() {
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -111,7 +111,8 @@ class Barcode extends Component {
                                                         name="dataType"
                                                         className="custom-control-input"
                                                         onChange={(e) => this.handleChange(e)}
-                                                        checked={this.state.dataType === "withBarcode"} />
+                                                        // checked={this.state.dataType === "withBarcode"} 
+                                                        />
                                                     <label
                                                         className="custom-control-label"
                                                         htmlFor="customRadioInline1">Items Without Barcode</label>
@@ -123,7 +124,7 @@ class Barcode extends Component {
                                                         name="dataType"
                                                         className="custom-control-input"
                                                         onChange={(e) => this.handleChange(e)}
-                                                        checked={this.state.dataType === "withoutBarcode"}
+                                                        checked
                                                     />
                                                     <label
                                                         className="custom-control-label"
@@ -134,13 +135,249 @@ class Barcode extends Component {
                                                 <table className="table text-center">
                                                     <thead>
                                                         <tr>
-                                                            <th>Product</th>
-                                                            <th></th>
-                                                            <th></th>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>     <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>     <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>     <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>     <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>     <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>     <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>     <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
+                                                        </tr>     <tr>
+                                                            <td> <div className="form-group">
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control mm-input"
+                                                                    style={{ 'color': '#495057' }}
+                                                                    value={"DRESS ABC | YELLOW | XS"} />
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Generate &amp;	 PRINT
+                                          random barcode</button>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="button"
+                                                                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                                                    id="btnSize2" >Scan an existing
+                                          barcode</button>
+
+                                                            </td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {this.getTAble()}
 
                                                     </tbody>
                                                 </table>
