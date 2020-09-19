@@ -32,7 +32,7 @@ router.get("/changeStatus/:status", auth,
     }
   });
 
-  // @route   GET api/dashbaord/shops
+// @route   GET api/dashbaord/shops
 // @desc    Get all shops
 // @access  Private
 router.get("/shops", 

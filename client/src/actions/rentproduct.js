@@ -9,7 +9,7 @@ import {
   RENTPRODUCTS_ERROR,
   RENTPRODUCTS_LOADING,
   RENTPRODUCT_DELETED,
-  RENTPRODUCT_UPDATED,
+  RENTPRODUCT_UPDATED,GET_CUSTOMER,CUSTOMER_LOADING,CUSTOMER_ERROR
 } from "./types";
 import { setAlert } from "./alert";
 
@@ -142,6 +142,33 @@ export const deleteRentedProduct = (id) => async (dispatch) => {
     }
     dispatch({
       type: RENTPRODUCTS_ERROR,
+    });
+  }
+};
+
+
+
+
+// Get Customer
+export const getCustomer = (number) => async (dispatch) => {
+  dispatch({ type:CUSTOMER_LOADING });
+
+    try { 
+ 
+    const res = await axios.get(`/api/rentedproducts/search`, {
+      params: {
+        "number": number,
+      } }
+    )
+ 
+      dispatch({
+      type: GET_CUSTOMER,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type:CUSTOMER_ERROR,
+      payload: err.response,
     });
   }
 };

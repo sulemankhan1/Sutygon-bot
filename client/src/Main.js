@@ -7,20 +7,20 @@ import setAuthToken from "./utils/setAuthToken";
 import PrivateRoute from "./routing/PrivateRoute";
 import AddUser from "./components/pages/users/Adduser";
 import View from "./components/pages/users/view";
-
 import ViewUser from "./components/pages/users/Viewuser";
 import AddCustomer from "./components/pages/customers/Addcustomer";
 import AddProduct from "./components/pages/products/Addproduct";
 import Orders from "./components/pages/orders/orders";
 import AddOrder from "./components/pages/orders/AddOrder";
-
 import Calender from "./components/pages/calender";
 import AddAppointment from "./components/pages/appointment";
 import ViewCustomer from "./components/pages/customers/Viewcustomer";
 import ViewProduct from "./components/pages/products/Viewproduct";
-
 import Product from "./components/pages/products/Product";
 import RentProduct from "./components/pages/rentproduct";
+import Checkout from "./components/pages/checkout";
+
+import RentOrder from "./components/pages/rentOrder";
 import Report from "./components/pages/report/report";
 import ReportOrder from "./components/pages/report/reportOrder";
 
@@ -30,6 +30,7 @@ import ReportOrder from "./components/pages/report/reportOrder";
 // Redux
 import { Provider } from "react-redux";
 import store from "./store";
+import Barcode from "./components/pages/Barcode";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -44,7 +45,7 @@ const Main = () => {
     <Provider store={store}>
       <Router>
         <Switch>
-        
+
           <Route exact path="/" component={Login} />
           <Route exact path="/Login" component={Login} />
           {/* Dashboard */}
@@ -64,23 +65,27 @@ const Main = () => {
           <PrivateRoute exact path="/product/editproduct/:id" component={AddProduct} />
           <PrivateRoute exact path="/product/viewproduct/:id" component={Product} />
 
-{/* rent product */}
+          {/* rent product */}
           <PrivateRoute exact path="/rentproduct" component={RentProduct} />
+          <PrivateRoute exact path="/checkout" component={Checkout} />
+          <PrivateRoute exact path="/rentorder" component={RentOrder} />
 
-{/* orders */}
-<PrivateRoute exact path="/orders" component={Orders} />
+          {/* orders */}
+          <PrivateRoute exact path="/orders" component={Orders} />
           <PrivateRoute exact path="/orders/addorder" component={AddOrder} />
 
-{/* appointment */}
-<PrivateRoute exact path="/appointments" component={AddAppointment} />
+          {/* appointment */}
+          <PrivateRoute exact path="/appointments" component={AddAppointment} />
 
-{/* calender */}
-<PrivateRoute exact path="/calender" component={Calender} />
+          {/* calender */}
+          <PrivateRoute exact path="/calender" component={Calender} />
 
-{/* report */}
-<PrivateRoute exact path="/reports" component={Report} />
-<PrivateRoute exact path="/report" component={ReportOrder} />
+          {/* report */}
+          <PrivateRoute exact path="/reports" component={Report} />
+          <PrivateRoute exact path="/report" component={ReportOrder} />
 
+          {/* barcode */}
+          <PrivateRoute exact path="/barcode" component={Barcode} />
 
 
         </Switch>

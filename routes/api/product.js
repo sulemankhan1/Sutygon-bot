@@ -30,14 +30,14 @@ router.post(
     [
         check("name", "Product Name Required").not().isEmpty(),
         check("image", "Product Image Required").not().isEmpty(),
-        check("color", "Product Color Required").not().isEmpty(),
+        check("color", "Product Color Required").isArray().not().isEmpty(),
         // check("size", "Product Size Required").not().isEmpty(),
         // check("fabric", "Product fabric Required").not().isEmpty(),
         // check("availableQuantity", "Available Quantity Required").not().isEmpty(),
 
     ],
-    // auth,
-    // upload.single('image'),
+    auth,
+    upload.single('image'),
     async (req, res) => {
         // const errors = validationResult(req);
         // if (!errors.isEmpty()) {
@@ -45,17 +45,15 @@ router.post(
         //         .status(422)
         //         .json({ errors: errors.array() });
         // }
-
     const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
-
+    console.log(body);
     
         try {
             const productBody = {
                 name: body.name,
-                // image: `/uploads/products/${req.file.originalname}`,
-                color: body.color,
+                image: `/uploads/products/${req.file.originalname}`,
+                color: JSON.parse(req.body.color),
                 // fabric: body.fabric,
-                size: body.size,
                 // availableQuantity: body.availableQuantity,
               };
          

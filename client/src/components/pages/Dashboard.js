@@ -86,7 +86,9 @@ if(user && user.type == "User") {
         localStorage.clear();
         this.props.history.push("/");
         window.location.reload();
-        setAlert("Shop is closed", "danger", 5000);
+        console.log("Shop is closed")
+
+        // setAlert("Shop is closed", "danger", 5000);
        }
     };
     }
@@ -192,7 +194,7 @@ if(user && user.type == "User") {
                   <div className="row">
                     <div className="col-md-7 txt-sep">
                       <h2>Shop was {this.props.shop[0] && (this.props.shop[0].status == "on" ? "Opened" : "Closed")} on</h2>
-                      <h1> <span className="badge badge-info">{this.props.shop[0] && moment(this.props.shop[0].shopStartTime).format('HH:mm a')}</span></h1>
+                      <h1> <span className="badge badge-info">{this.props.shop[0] && moment(this.props.shop[0].shopStartTime).format('hh:mm a')}</span></h1>
                       <p><span className="badge badge-pill badge-light">{this.props.shop[0] && moment(this.props.shop[0].shopStartTime).format('DD-MMM-YY')}</span> </p>
                     </div>
                     <div className="col-md-3 txt-sep">

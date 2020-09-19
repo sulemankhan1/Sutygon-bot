@@ -80,6 +80,13 @@ class Sidebar extends Component {
                       <i className="ft-box" /> Products
                 </Link>
                   </li>
+                  <li className={this.getClassName("barcode")}>
+                    <Link to="/barcode"
+                        onClick={() => this.handleClick("barcode")}
+                      >
+                        <i className="fa fa-barcode"/> Barcode
+                  </Link>
+                  </li>
 
                   {/* customer/addcustomer */}
                   <li className={this.getClassName("customer")}>

@@ -10,6 +10,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import shortid from "shortid";
 
+import "../../../custom.css"
+// import c from "config";
+
 
 class AddProduct extends Component {
   state = {
@@ -21,19 +24,11 @@ class AddProduct extends Component {
         id: shortid.generate(),
         colorname: "",
         sizes: [],
-        // {
-        //   id: shortid.generate(),
-        //   size: "",
-        //   qty: "",
-        //   price: "",
-        //   barcode: ""
-        // },
-      },
+
+      }
     ],
     saving: false,
   };
-
-
 
   async componentDidMount() {
     // check form is to Add or Edit
@@ -45,6 +40,7 @@ class AddProduct extends Component {
         this.setState({
           id: id,
           name: product.name,
+          image:product.image,
           color: product.color.map((color) => {
             color.id = shortid.generate();
             return { ...product };
@@ -55,80 +51,119 @@ class AddProduct extends Component {
     }
   }
 
-  addAnotherSize = () => {
-    // const { color } = this.state;
-    let color = [...this.state.color];
-color.push({
-//   sizes:[{
-//     size:"",
-//     price:"",
-//     qty:"",
-//   },
-// ],
-colorname:this.state.colorname
-})
-console.log(color);
-this.setState({ color:[
-  ...this.state.color
-] });
- 
+
+  addColorBox = (id) => {
+  let { color } = this.state; // get all colors
+    color.push({
+      id: shortid.generate(),
+      colorname: "",
+      sizes: []
+    })
+    this.setState({color });
+  }
+
+
+  addSizeRow = (color_id) => {
+    let { color } = this.state; // get all colors
+    let color_obj = color.filter((color) => color.id == color_id); // get current color obj
+
+    // get index of color i all colors object
+    const index = color.findIndex(
+      (color_obj) => color_obj.id == color_id
+    );
+
+    color_obj[0].sizes.push({
+      id: shortid.generate(),
+      size: "",
+      price: "",
+      qty: "",
+    })
+
+    color[index] = color_obj[0];
+
+    this.setState({ color: color });
+
 
   }
-  removeSizebox = (id) => {
+  removeSizeRow = (color_id, size_id) => {
     let { color } = this.state;
-    color = color.filter((color) => color.id !== id);
-    this.setState({ color });
-  };
+    let color_obj = color.filter((color) => color.id == color_id); // get current color obj
+    if (size_id != '') {
+      let { sizes } = color_obj[0];
+      const sizeIndex = sizes.findIndex(
+        (size) => size.id == size_id
+      );
+      sizes.splice(sizeIndex, 1)
 
+      this.setState({
+        ...sizes
+      })
+    }
+  }
+  removeColorBox = (color_id) => {
+    let { color } = this.state;
+    color= color.filter((color) => color.id !== color_id); // get current color obj
+    this.setState({ color });
+  }
   getColors = () => {
     let { color } = this.state;
     return color.map((color) => (
-    <div className="row color-row"  key={color.id || color._id}>
-      <div className="col-md-12">
-        <div className="form-group">
-          <input
-            type="text"
-            className="form-control mm-input "
-            placeholder="Color"
-            value={color.colorname}
-            name="colorname"
-            onChange={(e) => this.handleChange(e,color.id)} />
-        </div>
-      </div>
-      <div className="col-md-12">
-        {this.getSizeboxes(color.id)}
-      </div>
-      <div class="row">
-        <div class="col-md-12 btn-cont">
-          <div class="form-group mb-0">
-            <button
+      <div className="row color-row" key={color.id || color._id}>
+       <div className="left" style={{ 'width': '95%', 'paddingLeft': '25px','paddingRight':'10px' }}>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control mm-input "
+              placeholder="Color"
+              value={color.colorname}
+              name="colorname"
+              onChange={(e) => this.handleChange(e, color.id)} />
+              </div>
+
+</div>             
+ <div className="right text-center" style={{'paddingRight': '0px' }}>
+
+          <button
               type="button"
-              onClick={() => this.addAnotherSize()}
-              class="btn "><i class="fa fa-plus"></i> Add another
+              onClick={() => this.removeColorBox(color.id)}
+              className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
+              <i className="fa fa-minus"></i>
+            </button>
+          </div>
+        <div className="col-md-12">
+          {this.getSizeboxes(color.id)}
+        </div>
+        <div className="row">
+          <div className="col-md-12 btn-cont">
+            <div className="form-group mb-0">
+
+              <button
+                type="button"
+                onClick={() => this.addSizeRow(color.id)}
+                className="btn "><i className="fa fa-plus"></i> Add another
               Size</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     ))
   }
 
-  getSizeboxes = (id) => {
-    let { color } = this.state;
-    color = color.filter((color) => color.id !== id);
- console.log(color)
- return;
-    let { size } = this.state;
-    return size.map((size) => (
+  getSizeboxes = (color_id) => {
+    let { color } = this.state; // get all colors
+    let color_obj = color.filter((color) => color.id == color_id); // get current color obj
+
+    return color_obj[0].sizes.map((size) => (
       <div className="sizes_box" key={size.id || size._id}>
         <div className="row">
-          <div className="col-md-12">
+
+          <div className="left" style={{ 'width': '95%', 'paddingLeft': '40px','paddingRight':'10px' }}>
             <input
               type="text"
               name="size"
               className="form-control mm-input s-input"
               placeholder="Size"
-              onChange={(e) => this.handleChange(e, color.id)}
+              onChange={(e) => this.handleChange(e, color_id, size.id)}
             //  value={color.sizes.size}
             />
             <input
@@ -136,7 +171,7 @@ this.setState({ color:[
               name="qty"
               className="form-control mm-input s-input"
               placeholder="Quantity"
-              onChange={(e) => this.handleChange(e, color.id)}
+              onChange={(e) => this.handleChange(e, color_id, size.id)}
             //  value={color.sizes.qty}
 
             />
@@ -145,20 +180,21 @@ this.setState({ color:[
               name="price"
               className="form-control mm-input s-input"
               placeholder="Price"
-              onChange={(e) => this.handleChange(e, color.id)}
+              onChange={(e) => this.handleChange(e, color_id, size.id)}
             // value={color.sizes.price}
 
             />
-            <div className="right">
-
-              <button
-                type="button"
-                onClick={() => this.removeSizebox(color.id)}
-                className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
-                <i className="fa fa-minus"></i>
-              </button>
-            </div>
           </div>
+          <div className="right">
+
+            <button
+              type="button"
+              onClick={() => this.removeSizeRow(color_id, size.id)}
+              className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
+              <i className="fa fa-minus"></i>
+            </button>
+          </div>
+
         </div>
       </div>
     ))
@@ -169,45 +205,68 @@ this.setState({ color:[
     this.setState({ [e.target.name]: e.target.files[0] });
   }
 
-  handleChange = (e, id = "") => {
+  handleChange = (e, color_id = "", size_id = "") => {
     let name = e.target.name;
     let value = e.target.value;
 
-    if (name === "colorname" ) {
-      
-      this.setState({ color });
+    // get all colors
+    let { color } = this.state;
+
+
+    // get current color obj
+    let color_obj = color.filter((color) => color.id == color_id)[0]; // get current color obj
+
+    // get index of color obj in all colors
+    const colorIndex = color.findIndex(
+      (color) => color.id == color_id
+    );
+
+    if (size_id != '') {
+      // get all sizes
+      let { sizes } = color_obj;
+
+      // find current size obj in current color obj
+      let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
+
+      // get index of size obj in all sizes 
+      const sizeIndex = sizes.findIndex(
+        (size) => size.id == size_id
+      );
+
+      // update value inside size object
+      size_obj[name] = value;
+
+      // update sizes arr
+      sizes[sizeIndex] = size_obj;
+
+      // update curernt color obj
+      color[colorIndex].sizes = sizes;
     } else {
-      this.setState({
-        [name]: value,
-      });
+      color[colorIndex][name] = value;
     }
+
+
+    // update state
+    this.setState({ color });
   };
 
-  
 
+  handleChangeName = (e) => {
+    this.setState({
+      name: e.target.value
+    });
+  }
   onSubmit = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
-
     const state = { ...this.state };
     const formData = new FormData();
     formData.append('name', state.name)
     formData.append('image', state.image)
-    formData.append('color', state.color)
-
-    
-    //   color: state.color.map((color) => {
-    //     let c = {};
-    //     c._id = color._id;
-    //     c.colorname = color.subjectTitle;
-    //     return c;
-    //   }),
-    // };
-
-
+    formData.append('color', JSON.stringify(state.color))
 
     if (state.id === "") {
-      await this.props.addNewProduct(formData);
+        await this.props.addNewProduct(formData);
 
     } else {
       await this.props.updateProduct(formData, state.id);
@@ -222,6 +281,7 @@ this.setState({ color:[
     if (this.props.saved) {
       return <Redirect to="/product" />;
     }
+    console.log(this.state)
 
 
     return (
@@ -278,7 +338,7 @@ this.setState({ color:[
                               placeholder="Product Name"
                               value={this.state.name}
                               name="name"
-                              onChange={(e) => this.handleChange(e)} />
+                              onChange={(e) => this.handleChangeName(e)} />
 
                           </div>
 
@@ -295,7 +355,17 @@ this.setState({ color:[
                           <br />
                           <br />
 
-
+                          <div className="row">
+                            <div className="col-md-12 btn-cont">
+                              <div className="form-group mb-0">
+                                <button
+                                  type="button"
+                                  onClick={() => this.addColorBox(this.state.id)}
+                                  className="btn"><i className="fa fa-plus"></i> Add another
+              Color</button>
+                              </div>
+                            </div>
+                          </div>
                           <div className="form-actions top">
                             {this.state.id === ""
                               ? <>
@@ -385,4 +455,3 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   addNewProduct, getProduct, updateProduct
 })(AddProduct);
-
