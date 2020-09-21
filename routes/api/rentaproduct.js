@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const RentedProduct = require("../../models/RentedProducts");
+const Customer = require("../../models/Customer");
 
 const Order = require("../../models/Orders");
 const { check, validationResult } = require("express-validator");
@@ -104,65 +105,66 @@ router.get("/",auth,
 // @route  GET api/rentedproducts/:id
 // @desc   Get Product by id
 // @access Private
-router.get("/:id",auth,
-    async (req, res) => {
-        try {
-            const rentedProduct = await RentedProduct.findById(req.params.id);
+// router.get("/:id",
+// // auth,
+//     async (req, res) => {
+//         try {
+//             const rentedProduct = await RentedProduct.findById(req.params.id);
 
-            if (!rentedProduct) {
-                return res
-                    .status(404)
-                    .json({ msg: "No Order found" });
-            }
+//             if (!rentedProduct) {
+//                 return res
+//                     .status(404)
+//                     .json({ msg: "No Order found" });
+//             }
 
-            res.json(rentedProduct);
-        } catch (err) {
-            console.error(err.message);
-            // Check if id is not valid
-            if (err.kind === "ObjectId") {
-                return res
-                    .status(404)
-                    .json({ msg: "No Order found" });
-            }
-            res
-                .status(500)
-                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
-        }
-    });
+//             res.json(rentedProduct);
+//         } catch (err) {
+//             console.error(err.message);
+//             // Check if id is not valid
+//             if (err.kind === "ObjectId") {
+//                 return res
+//                     .status(404)
+//                     .json({ msg: "No Order found" });
+//             }
+//             res
+//                 .status(500)
+//                 .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+//         }
+//     });
 
 
 
-// @route  GET api/rentedproducts/search/trackingNumber/:trackingNumber
-// @desc   Get Product (Search for Product by trackingNumber)
-// @access Private
-router.get("/search/trackingNumber/:trackingNumber",auth,
+// // @route  GET api/rentedproducts/search/trackingNumber/:trackingNumber
+// // @desc   Get Product (Search for Product by trackingNumber)
+// // @access Private
+// router.get("/search/trackingNumber/:trackingNumber",auth,
 
-async (req, res) => {
-    try {
-        const rentedProduct = await RentedProduct.findOne({
-            trackingNumber: { $eq: req.params.trackingNumber },
-                 });
+// async (req, res) => {
+//     try {
+//         const rentedProduct = await RentedProduct.findOne({
+//             trackingNumber: { $eq: req.params.trackingNumber },
+//                  });
 
-        if (!rentedProduct) {
-            return res
-                .status(404)
-                .json({ msg: "No Order found" });
-        }
+//         if (!rentedProduct) {
+//             return res
+//                 .status(404)
+//                 .json({ msg: "No Order found" });
+//         }
 
-        res.json(rentedProduct);
-    } catch (err) {
-        console.error(err.message);
-        // Check if id is not valid
-        if (err.kind === "ObjectId") {
-            return res
-                .status(404)
-                .json({ msg: "No Order found" });
-        }
-        res
-            .status(500)
-            .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
-    }
-});
+//         res.json(rentedProduct);
+//     } catch (err) {
+//         console.error(err.message);
+//         // Check if id is not valid
+//         if (err.kind === "ObjectId") {
+//             return res
+//                 .status(404)
+//                 .json({ msg: "No Order found" });
+//         }
+//         res
+//             .status(500)
+//             .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+//     }
+// });
 
 // @route  DELETE api/rentedproducts/:id
 // @desc   Delete a Product
@@ -194,5 +196,41 @@ router.delete("/:id",
                 .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
         }
     });
+
+
+
+// @route  GET api/rentproducts/search
+// @desc   Get Cutomer (Search for Customer by number)
+// @access Private
+router.get('/search',
+//  auth,
+    async (req, res) => {
+        try {
+          
+            const result = await Customer.find({
+                contactnumber: { $eq: req.query.number }
+                           })
+        if (!result) {
+                return res
+                    .status(404)
+                    .json({ msg: "No Customer found" });
+            }
+            return res.json(result);
+
+        } catch (err) {
+            console.error(err.message);
+            // Check if id is not valid
+            if (err.kind === "ObjectId") {
+                return res
+                    .status(404)
+                    .json({ msg: "No Customer found" });
+            }
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+        }
+    });
+
+
 
 module.exports = router;

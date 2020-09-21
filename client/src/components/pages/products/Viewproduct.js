@@ -51,8 +51,10 @@ class ViewProduct extends Component {
             <img className="media-object round-media" src={`${product.image}`} alt="Generic placeholder image" height={75} />
           </td>
           <td className="text-center">{product.name}</td>
-          <td className="text-center">{product.color}</td>
-          <td className="text-center">{product.size}</td>
+          <td className="text-center">{product.color[0].colorname}</td>
+          <td className="text-center">{(product) && ((product.color[0]) && (product.color[0].sizes[0].size))}</td>
+
+          {/* <td className="text-center">{product.size}</td>
           <td className="text-center">{product.fabric}</td>
           <td className="text-center">
             {product.availableQuantity > 0 ? (
@@ -62,7 +64,7 @@ class ViewProduct extends Component {
           }
           </td> 
               <td className="text-center">{product.availableQuantity}</td> 
-           <td className="text-center">{product.rentedQuantity}</td>
+           <td className="text-center">{product.rentedQuantity}</td> */}
           <td className="text-center">
             <Link 
            to={{ pathname: `/product/viewproduct/${product._id}` }}
@@ -86,26 +88,6 @@ class ViewProduct extends Component {
     }
   };
 
-
-  onDelete = (id) => {
-    confirmAlert({
-      title: "Delete Product",
-      message: "Are you sure you want to delete this record?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            this.props.deleteProduct(id);
-          },
-        },
-        {
-          label: "No",
-          onClick: () => { },
-        },
-      ],
-    });
-  };
-
   async searchTable() {
     const searchVal = this.state.search;
     if(searchVal) {
@@ -122,7 +104,6 @@ class ViewProduct extends Component {
           return <Redirect to="/" />;
         }
         const { products } = this.props;
-        console.log(products);
         const { filter} = this.state;
         
        
@@ -163,19 +144,14 @@ class ViewProduct extends Component {
                                           <th>#</th>
                                           <th></th>
                                           <th>Image</th>
-
                                           <th>Name</th>
                                           <th>Color</th>
                                           <th>Size</th>
-                                          <th>Fabric</th>
-                                          <th>In-Stock</th>
-                                          <th>Available Quantity</th>
-                                          <th>Rented Quantity</th>
                                           <th>Actions</th>
                                         </tr>
                                       </thead>
                                       <tbody>
-                                  {/* {this.getTAble()}   */}
+                                   {this.getTAble()}   
                                   
                                       </tbody>
                                     </table>

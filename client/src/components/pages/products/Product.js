@@ -82,7 +82,7 @@ class Product extends Component {
                                                                         />
                                                                     </div>
                                                                     <div className="form-group col-12 mb-2">
-                                                                        <label htmlFor="projectinput3">fabric</label>
+                                                                        <label htmlFor="projectinput3">Fabric</label>
                                                                         <input type="text"
                                                                             id="projectinput3"
                                                                             className="form-control"

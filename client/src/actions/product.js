@@ -14,6 +14,7 @@ import {
 
 } from "./types";
 import { setAlert } from "./alert";
+import { ReactReduxContext } from "react-redux";
 
 
 // Add new product
@@ -24,7 +25,7 @@ export const addNewProduct = (product) => async (dispatch) => {
           'content-type': 'multipart/form-data'
       }
   }
-    try {
+  try {
       const res = await axios.post("/api/products/add", product, config);
   
       dispatch({

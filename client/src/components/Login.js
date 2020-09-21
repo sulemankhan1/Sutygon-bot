@@ -6,14 +6,7 @@ import { login } from "../actions/auth";
 // import "../login.css";
 import Alert from "./layout/Alert";
 import {getShop} from "../actions/dashboard";
-import { setAlert } from "../actions/alert";
 
-
-const styles = {
-  'padding': '0 !important',
-  'padding-right': '0 !important',
-  'padding-left': '0 !important',
-}
 
 
 class Login extends Component {
@@ -59,7 +52,8 @@ if(user && user.type == "User") {
     }
   
     else if(openShop.status == "off"){
-      setAlert("Shop is closed", "danger", 5000);
+      console.log("Shop is closed")
+      // setAlert("Shop is closed", "danger", 5000);
     }
   }
     
@@ -89,10 +83,10 @@ if(user && user.type == "User") {
 
       <div className="wrapper menu-collapsed">
         <div className="main-panel">
-          <div className="" style={styles} >
-            <div className="" style={styles}>
-              <section id="login" style={styles} >
-                <div className="container-fluid" style={styles}>
+          <div className=""  >
+            <div className="" >
+              <section id="login"  >
+                <div className="container-fluid" >
                   <div className="row full-height-vh m-0">
                     <div className="col-12 d-flex align-items-center justify-content-center">
                       <div className="card mx-5">
