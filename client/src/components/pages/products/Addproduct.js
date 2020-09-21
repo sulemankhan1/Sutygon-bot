@@ -11,7 +11,6 @@ import { connect } from "react-redux";
 import shortid from "shortid";
 
 import "../../../custom.css"
-// import c from "config";
 
 
 class AddProduct extends Component {
@@ -24,7 +23,6 @@ class AddProduct extends Component {
         id: shortid.generate(),
         colorname: "",
         sizes: [],
-
       }
     ],
     saving: false,
@@ -51,6 +49,25 @@ class AddProduct extends Component {
     }
   }
 
+ addSizeRow = (color_id) => {
+    let { color } = this.state; // get all colors
+    let color_obj = color.filter((color) => color.id == color_id); // get current color obj
+
+    // get index of color i all colors object
+    const index = color.findIndex(
+      (color_obj) => color_obj.id == color_id
+    );
+    
+    color_obj[0].sizes.push({
+      id: shortid.generate(),
+      size: "",
+      price: "",
+      qty: "",
+    })
+
+    color[index] = color_obj[0];
+    
+    this.setState({ color: color });
 
   addColorBox = (id) => {
   let { color } = this.state; // get all colors
@@ -108,7 +125,7 @@ class AddProduct extends Component {
   getColors = () => {
     let { color } = this.state;
     return color.map((color) => (
-      <div className="row color-row" key={color.id || color._id}>
+ <div className="row color-row" key={color.id || color._id}>
        <div className="left" style={{ 'width': '95%', 'paddingLeft': '25px','paddingRight':'10px' }}>
           <div className="form-group">
             <input
@@ -156,8 +173,7 @@ class AddProduct extends Component {
     return color_obj[0].sizes.map((size) => (
       <div className="sizes_box" key={size.id || size._id}>
         <div className="row">
-
-          <div className="left" style={{ 'width': '95%', 'paddingLeft': '40px','paddingRight':'10px' }}>
+            <div className="left" style={{ 'width': '95%', 'paddingLeft': '40px','paddingRight':'10px' }}>
             <input
               type="text"
               name="size"
@@ -184,7 +200,7 @@ class AddProduct extends Component {
             // value={color.sizes.price}
 
             />
-          </div>
+                </div>
           <div className="right">
 
             <button
@@ -194,7 +210,6 @@ class AddProduct extends Component {
               <i className="fa fa-minus"></i>
             </button>
           </div>
-
         </div>
       </div>
     ))
@@ -211,8 +226,6 @@ class AddProduct extends Component {
 
     // get all colors
     let { color } = this.state;
-
-
     // get current color obj
     let color_obj = color.filter((color) => color.id == color_id)[0]; // get current color obj
 
@@ -220,8 +233,7 @@ class AddProduct extends Component {
     const colorIndex = color.findIndex(
       (color) => color.id == color_id
     );
-
-    if (size_id != '') {
+    if(size_id != '') {
       // get all sizes
       let { sizes } = color_obj;
 
@@ -235,16 +247,13 @@ class AddProduct extends Component {
 
       // update value inside size object
       size_obj[name] = value;
-
-      // update sizes arr
+// update sizes arr
       sizes[sizeIndex] = size_obj;
-
       // update curernt color obj
       color[colorIndex].sizes = sizes;
     } else {
       color[colorIndex][name] = value;
     }
-
 
     // update state
     this.setState({ color });
