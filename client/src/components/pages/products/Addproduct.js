@@ -49,7 +49,7 @@ class AddProduct extends Component {
     }
   }
 
- addSizeRow = (color_id) => {
+  addSizeRow = (color_id) => {
     let { color } = this.state; // get all colors
     let color_obj = color.filter((color) => color.id == color_id); // get current color obj
 
@@ -68,6 +68,7 @@ class AddProduct extends Component {
     color[index] = color_obj[0];
     
     this.setState({ color: color });
+  }
 
   addColorBox = (id) => {
   let { color } = this.state; // get all colors
@@ -102,6 +103,7 @@ class AddProduct extends Component {
 
 
   }
+
   removeSizeRow = (color_id, size_id) => {
     let { color } = this.state;
     let color_obj = color.filter((color) => color.id == color_id); // get current color obj
@@ -117,11 +119,13 @@ class AddProduct extends Component {
       })
     }
   }
+
   removeColorBox = (color_id) => {
     let { color } = this.state;
     color= color.filter((color) => color.id !== color_id); // get current color obj
     this.setState({ color });
   }
+
   getColors = () => {
     let { color } = this.state;
     return color.map((color) => (
@@ -265,6 +269,7 @@ class AddProduct extends Component {
       name: e.target.value
     });
   }
+
   onSubmit = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
@@ -282,6 +287,7 @@ class AddProduct extends Component {
     }
     this.setState({ saving: false });
   }
+
   render() {
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
@@ -445,6 +451,7 @@ class AddProduct extends Component {
     );
   }
 }
+
 
 AddProduct.propTypes = {
   saved: PropTypes.bool,

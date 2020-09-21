@@ -45,7 +45,7 @@ export const getShop = () => async (dispatch) => {
         type: SHOP_LOADED,
         payload: res.data,
       });
-      dispatch(setAlert(res.data.msg, "success"));
+      // dispatch(setAlert(res.data.msg, "success"));
   
     } catch (err) {
       const errors = err.response.data.errors;
