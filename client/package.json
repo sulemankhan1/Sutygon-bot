@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.2.1",
     "loadjs": "^4.2.0",
     "react": "^16.13.1",
+    "react-barcode": "^1.4.0",
     "react-data-table-component": "^6.11.3",
     "react-dom": "^16.13.1",
     "react-moment": "^0.9.7",
