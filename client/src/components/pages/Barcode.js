@@ -6,10 +6,17 @@ import Loader from "../layout/Loader";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import "../../custom.css";
 import shortid from "shortid";
+import { OCAlertsProvider } from '@opuscapita/react-alerts';
+import { OCAlert } from '@opuscapita/react-alerts';
+
+
+
+import "../../custom.css";
+
 var JsBarcode = require('jsbarcode');
 var { createCanvas } = require("canvas");
+
 
 class Barcode extends Component {
   state = {
@@ -164,6 +171,9 @@ class Barcode extends Component {
     // empty barcode input
     e.target[0].value = '';
     this.saveBarCode(barcode, product_id, color_id, size_id);
+    // success message
+    OCAlert.alertSuccess('Barcode Scanned and Added Successfully!');
+
   }
 
   // generate and print random bar code
@@ -172,6 +182,7 @@ class Barcode extends Component {
     let barcode = shortid.generate();
     this.saveBarCode(barcode, product_id, color_id, size_id);
     this.printBarcode(barcode);
+    OCAlert.alertSuccess('Barcode Generated and Saved Successfully!');
   }
 
   // change existing barcode in size object and correct index
@@ -179,7 +190,8 @@ class Barcode extends Component {
     // generate randome barcode
     let barcode = shortid.generate();
     this.saveBarCode(barcode, product_id, color_id, size_id, 'update', barcodeIndex);
-    this.printBarcode(barcode);
+    // this.printBarcode(barcode);
+    OCAlert.alertSuccess('Barcode is being Changed');
   }
 
   printBarcode = (barcode) => {
@@ -331,6 +343,8 @@ class Barcode extends Component {
             </footer>
           </div>
         </div>
+        {/* Alerts */}
+        <OCAlertsProvider />
       </React.Fragment>
     );
   }
