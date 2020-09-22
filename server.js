@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 
 const connectDB = require("./config/db");
@@ -7,6 +8,7 @@ connectDB();
 
 // Middlewares
 app.use(express.json({ extended: false }));
+app.use(express.static(path.join(__dirname, "/public")));
 
 // Routes
 app.use("/api/dashboard", require("./routes/api/dashboard"));

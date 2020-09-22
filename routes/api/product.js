@@ -69,6 +69,34 @@ router.post(
     }
 );
 
+
+
+// @route  POST api/products/barcode_update/:id
+// @desc   Update a Product for Barcode
+// @access Private
+router.post(
+    "/barcode_update/:id",
+    auth,
+    async (req, res) => {
+        try {
+           const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+    
+            await Product.updateOne({ _id: req.params.id }, {
+                $set: {
+                    color: body.color,
+                }
+            });
+            res
+                .json({ msg: "Barcode Added Successfully" });
+        } catch (err) {
+            console.error(err.message);
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+        }
+    }
+);
+
 // @route  POST api/products/:id
 // @desc   Update a Product
 // @access Private
