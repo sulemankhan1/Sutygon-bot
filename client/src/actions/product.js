@@ -83,6 +83,26 @@ export const getAllProducts = () => async (dispatch) => {
   };
 
 
+  // Find products
+  export const searchBarcode = (search) => async (dispatch) => {
+    dispatch({ type: PRODUCT_LOADING });
+    try {
+      console.log(search);
+      const res = await axios.get(`/api/products/searchBarcode/${search}`);
+  
+      dispatch({
+        type: GET_PRODUCTS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: PRODUCTS_ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
+
 
 export const getProduct = (name) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });

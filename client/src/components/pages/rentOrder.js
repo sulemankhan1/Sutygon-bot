@@ -4,39 +4,162 @@ import Header from "../layout/Header";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Alert from "../layout/Alert";
 import { Link } from "react-router-dom";
 import Loader from "../layout/Loader";
+import { searchBarcode, getAllProducts } from "../../actions/product";
+// import c from "config";
 
 class RentOrder extends Component {
   state = {
     id: "",
-    customer: "",
+    customer_id: "",
+    product_id:"",
+    total_amt:"",
+    rentDate:"",
+    returnDate:"",
     saving: false,
   };
 
+
   async componentDidMount() {
-    // this.props.getAllProducts();
-    // this.props.getAllCustomers();
+    await this.props.getAllProducts();
+    const { data } = this.props.location;
+        if (data) {
+            this.setState({
+                // id: id,
+                customer: data.customer.id,
+               
 
+            });
+        }
+
+}
+
+  // return sorted products for barcodes / without barcodes
+  getSortedData = (products) => {
+    // looping through prducts
+    let rows = [];
+    products.forEach((product, p_index) => {
+      let product_name = product.name;
+      let product_id = product._id;
+
+      // looping through each color of current product
+      if (product.color) {
+        product.color.forEach((color, c_index) => {
+          let color_name = color.colorname;
+          let color_id = color._id;
+
+          // looping through sizes of current color
+          if (color.sizes) {
+            color.sizes.forEach((size, s_index) => {
+              let size_name = size.size;
+              let size_id = size.id;
+              let price = size.price
+
+              let length;
+              // show sizes with barcode
+              if (size.barcodes) {
+                length = size.barcodes.length;
+              } else {
+                length = 0;
+              }
+
+              let i;
+              for (i = 0; i < length; i++) {
+                let row = {
+
+                  product_id: product_id,
+                  color_id: color_id,
+                  size_id: size_id,
+                  title: product_name,
+                  barcodes: (size.barcodes) ? size.barcodes : [],
+                  price: price
+                };
+                rows.push(row);
+              }
+
+            });
+          }
+        });
+      }
+    }); // products foreach ends here
+    return rows;
+
+  };
+
+
+
+
+  getBarcodeRecord() {
+    let productarray;
+    const { data } = this.props.location;
+    const { products } = this.props;
+    let barcode = data.barcode // get all barcode
+    if (data) {
+      if (products) {
+        let sortedAray = this.getSortedData(this.props.products);
+        if (sortedAray) {
+          sortedAray.forEach((array, c_index) => {
+            for (var a = 0; a <= array.barcodes.length; a++) {
+              const arr = sortedAray.filter(product =>
+                product.barcodes[a].barcode = data.barcode[0].barcode)
+            
+                productarray = arr[a];
+              return productarray
+            }
+
+          })
+
+        }
+      }
+   
+    }
+    if (barcode) {
+      return barcode.map((barcode) => (
+
+        <div id="sizes_box" key={barcode.id || barcode._id}>
+          <div className="row">
+            <div className="left" >
+              <input
+                type="text"
+                className="form-control mm-input s-input"
+                placeholder="Barcode"
+                name="barcode"
+                id="widthBr"
+                style={{ 'width': '60%' }}
+                value={productarray && productarray.title}
+              />
+
+              <input
+                type="text"
+                className="form-control mm-input s-input"
+                placeholder="Price"
+                id="setSize"
+                value={productarray && productarray.price}
+                 />
+            </div>
+            <div className="right">
+              <button
+                type="button"
+                onClick={() => this.removeBarcodeRow(barcode.id)}
+                className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
+                <i className="fa fa-minus"></i>
+              </button>
+            </div>
+            <div className="right">
+              <button
+                type="button"
+                className="btn btn-raised btn-sm btn-success mt-1" ><i className="=ft ft-edit"></i></button>
+            </div>
+          </div>
+
+
+        </div>
+      ))
+    }
   }
-  //   handleChange = (e, id = "") => {
-  //     this.setState({ [e.target.name]: e.target.value });
-  //   };
-
-  // getRentedQuantity = () => {
-  //   const { products } = this.props.products;
-  //   if (this.state.product) {
-  //     const result = products.filter(record => record._id === this.state.product)
-  //     if (result) {
-  //       return result[0].rentedQuantity
-  //     }
-  //   }
-  // }
-
 
   render() {
-    console.log("data", this.props.location.data)
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
@@ -45,7 +168,7 @@ class RentOrder extends Component {
     if (this.props.saved) {
       return <Redirect to="/orders" />;
     }
-
+    const { customer } = this.props.location.data;
     return (
       <React.Fragment>
         <Loader />
@@ -71,114 +194,18 @@ class RentOrder extends Component {
                               <div className="row color-row">
                                 <div className="col-md-12">
                                   <div className="form-group">
-                                    <h3>SAM M.SIMTH #123456789</h3>
+                                    <h3>{customer && customer.name} {`${"#"}${customer && customer.contactnumber}`}</h3>
                                   </div>
                                 </div>
                                 <div className="col-md-12">
                                   <div id="sizes_box">
-                                    <div className="row">
-                                      <div className="left">
-                                        <input
-                                          type="text"
-                                          className="form-control mm-input s-input"
-                                          placeholder="Barcode"
-                                          style={{ 'width': '60%' }}
-                                          id="setSize1" />
-
-                                        <input
-                                          type="text"
-                                          className="form-control mm-input s-input"
-                                          placeholder="Price"
-                                          id="setSize"
-                                          value="$" />
-                                      </div>
-                                      <div className="right">
-                                        <button
-                                          type="button"
-                                          className="btn btn-raised btn-sm btn-icon btn-danger mt-1"
-                                        ><i className="fa fa-minus"></i>
-                                        </button>
-                                      </div>
-                                      <div className="right">
-                                        <button
-                                          type="button"
-                                          className="btn btn-raised btn-sm btn-success mt-1" >
-                                          <i className="=ft ft-edit"></i>
-                                        </button>
-                                      </div>
-                                    </div>
-
-                                    <div className="row">
-                                      <div className="left">
-                                        <input
-                                          type="text"
-                                          className="form-control mm-input s-input"
-                                          style={{ 'width': '60%' }}
-                                          placeholder="Barcode"
-                                          id="setSize1" />
-
-                                        <input
-                                          type="text"
-                                          className="form-control mm-input s-input"
-                                          placeholder="Price"
-                                          id="setSize"
-                                          value="$" />
-                                      </div>
-                                      <div className="right">
-                                        <button
-                                          type="button"
-                                          className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
-                                          <i className="fa fa-minus"></i>
-                                        </button>
-                                      </div>
-                                      <div className="right">
-                                        <button
-                                          type="button"
-                                          className="btn btn-raised btn-sm btn-success mt-1" >
-                                          <i className="=ft ft-edit"></i>
-                                        </button>
-                                      </div>
-                                    </div>
-
-                                    <div className="row">
-                                      <div className="left">
-                                        <input
-                                          type="text"
-                                          className="form-control mm-input s-input"
-                                          placeholder="Barcode"
-                                          style={{ 'width': '60%' }}
-
-                                          id="setSize1" />
-
-                                        <input
-                                          type="text"
-                                          className="form-control mm-input s-input"
-                                          placeholder="Price"
-                                          id="setSize"
-                                          value="$" />
-                                      </div>
-                                      <div className="right">
-                                        <button
-                                          type="button"
-                                          className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
-                                          <i className="fa fa-minus"></i>
-                                        </button>
-                                      </div>
-                                      <div className="right">
-                                        <button
-                                          type="button"
-                                          className="btn btn-raised btn-sm btn-success mt-1" >
-                                          <i className="=ft ft-edit"></i>
-                                        </button>
-                                      </div>
-                                    </div>
-
-                                    <Link to="/product/addproduct"       
-                                                                   className="btn "><i className="fa fa-plus"></i>
+                                    {this.getBarcodeRecord()}
+                                    <Link to="/product/addproduct"
+                                      className="btn "><i className="fa fa-plus"></i>
                                  Go Back To Add Products
                                  </Link>
 
-                                 <br />
+                                    <br />
 
                                     <div className="row">
                                       <div className="col-md-12">
@@ -195,7 +222,7 @@ class RentOrder extends Component {
                                               placeholder="Total"
                                               id="setSizeFloat"
                                               value="$" />
-                                          </div> 
+                                          </div>
                                           <br />
                                         </div> </div>
                                     </div>
@@ -252,7 +279,7 @@ class RentOrder extends Component {
                                               placeholder="Total"
                                               id="setSizeFloat"
                                               value="$" />
-                                          </div> 
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -386,15 +413,15 @@ class RentOrder extends Component {
 
 RentOrder.propTypes = {
   saved: PropTypes.bool,
-  //   addNewRentProduct: PropTypes.func.isRequired,
+  searchBarcode: PropTypes.func.isRequired,
   //   getAllCustomers: PropTypes.func.isRequired,
-  //   getAllProducts: PropTypes.func.isRequired,
+  getAllProducts: PropTypes.func.isRequired,
   //   getProduct: PropTypes.func.isRequired,
   //   getCustomer: PropTypes.func.isRequired,
 
   //   updateProductQty: PropTypes.func.isRequired,
   auth: PropTypes.object,
-  //   products: PropTypes.object,
+  products: PropTypes.array,
   //   customers: PropTypes.object,
   //   product: PropTypes.object,
   //   customer: PropTypes.array,
@@ -405,11 +432,11 @@ const mapStateToProps = (state) => ({
   //   product: state.product.product,
   saved: state.rentproduct.saved,
   auth: state.auth,
-  //   products: state.product,
+  products: state.product.products,
   //   customers: state.customer,
   //   customer: state.customer.customer
 });
 export default connect(mapStateToProps, {
-
+  searchBarcode, getAllProducts
 })(RentOrder);
 
