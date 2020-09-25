@@ -11,7 +11,7 @@ router.post(
     "/add",
     [
         check("name", "Customer Name Required").not().isEmpty(),
-        check("contactnumber", "Contact Number Required").not().isEmpty(),
+        check("contactnumber", "Contact Number Required").isLength({ min: 10 }),
         check("email", "Email Required").not().isEmpty(),
         check("address", "Address Required").not().isEmpty(),
         check("noOfOrders", "No of Orders Required").not().isEmpty(),

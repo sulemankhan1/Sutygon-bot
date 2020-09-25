@@ -10,6 +10,7 @@ import Alert from "../layout/Alert";
 import shortid from "shortid";
 
 import Loader from "../layout/Loader";
+import { barcodeUpdateProduct } from "../../actions/product";
 
 class Checkout extends Component {
     state = {
@@ -17,15 +18,6 @@ class Checkout extends Component {
         barcode: [],
         saving: false,
     };
-
-    async componentDidMount() {
-        // this.props.getAllProducts();
-        // this.props.getAllCustomers();
-
-    }
-    //   handleChange = (e, id = "") => {
-    //     this.setState({ [e.target.name]: e.target.value });
-    //   };
 
     addBarcodeRow = () => {
         let { barcode } = this.state; // get all barcode
@@ -41,11 +33,30 @@ class Checkout extends Component {
         barcode = barcode.filter((barcode) => barcode.id !== id); // get current barode
         this.setState({ barcode });
     }
-    handleChange = (e) => {
-        this.setState({
-            name: e.target.value
-        });
+
+    // handleChange = (e, id = "") => {
+    //     this.setState({ [e.target.name]: e.target.value });
+    //   };
+
+
+    handleChange = (e, barcode_id = "") => {
+        let name = e.target.name;
+        let value = e.target.value;
+        let { barcode } = this.state;
+
+        let barcode_obj = barcode.filter((barcode) => barcode.id == barcode_id)[0];
+        const barcodeIndex = barcode.findIndex(
+            (barcode) => barcode.id == barcode_id
+        );
+        barcode_obj[name] = value;
+        barcode[barcodeIndex] = barcode_obj;
+
+        this.setState({ barcode });
+
     }
+
+
+
 
     getBarcodeRow = () => {
         let { barcode } = this.state; // get all barcode
@@ -61,7 +72,7 @@ class Checkout extends Component {
                             name="barcode"
                             id="widthBr"
                             style={{ 'width': '-webkit-fill-available' }}
-                            onChange={(e) => this.handleChange(e)} />
+                            onChange={(e) => this.handleChange(e, barcode.id)} />
 
                     </div>
                     <div className="right">
@@ -88,12 +99,12 @@ class Checkout extends Component {
         if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
         }
+        console.log(this.state)
 
         if (this.props.saved) {
             return <Redirect to="/orders" />;
         }
         const { data } = this.props.location;
-        console.log("data from props", data)
         return (
             <React.Fragment>
                 <Loader />

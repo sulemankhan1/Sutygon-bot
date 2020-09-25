@@ -312,4 +312,33 @@ router.delete("/:id",
         }
     });
 
-module.exports = router;
+
+
+// @route   GET api/products/search/search val
+// @desc    Search products
+// @access  Private
+router.get("/searchBarcode/:val", auth,
+
+async (req, res) => {
+    try {
+        const search = req.params.val;
+        console.log("search",search)
+        const products = await Product.find({
+            $or: [
+              {'color.sizes..barcodes..barcode': search},
+             ]
+          });
+          console.log("product",search)
+
+        res
+            .status(200)
+            .json(products);
+    } catch (err) {
+        console.log(err);
+        res
+            .status(500)
+            .send("Server Error!");
+    }
+});
+
+    module.exports = router;
