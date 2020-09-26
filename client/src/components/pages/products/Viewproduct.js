@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
-import { getAllProducts ,deleteProduct,getProduct, findProducts} from "../../../actions/product";
+import {
+  getAllProducts,
+  deleteProduct,
+  getProduct,
+  findProducts,
+} from "../../../actions/product";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { Link } from "react-router-dom";
@@ -11,27 +16,23 @@ import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 
-
 class ViewProduct extends Component {
-
   state = {
-    filter: ""
+    filter: "",
   };
 
   async componentDidMount() {
     await this.props.getAllProducts();
-   
-  };
+  }
 
   handleChange = (e, id = "") => {
     this.setState({ [e.target.name]: e.target.value });
-};
+  };
 
- getTAble = () => {
+  getTAble = () => {
     const { products } = this.props;
 
-
-    let tbl_sno=1;
+    let tbl_sno = 1;
     if (products) {
       if (products.length === 0) {
         return (
@@ -42,17 +43,25 @@ class ViewProduct extends Component {
           </tr>
         );
       }
-      return products.map((product,i) => (
+      return products.map((product, i) => (
         <tr key={i}>
-          
           <td className="text-center text-muted">{tbl_sno++}</td>
           <td className="text-center">{""}</td>
           <td className="text-center">
-            <img className="media-object round-media" src={`${product.image}`} alt="Generic placeholder image" height={75} />
+            <img
+              className="media-object round-media"
+              src={`${product.image}`}
+              alt="Generic placeholder image"
+              height={75}
+            />
           </td>
           <td className="text-center">{product.name}</td>
-          <td className="text-center">{product.color[0].colorname}</td>
-          <td className="text-center">{(product) && ((product.color[0]) && (product.color[0].sizes[0].size))}</td>
+          <td className="text-center">
+            {product.color && product.color[0].colorname}
+          </td>
+          <td className="text-center">
+            {product && product.color && product.color[0].sizes[0].size}
+          </td>
 
           {/* <td className="text-center">{product.size}</td>
           <td className="text-center">{product.fabric}</td>
@@ -66,23 +75,26 @@ class ViewProduct extends Component {
               <td className="text-center">{product.availableQuantity}</td> 
            <td className="text-center">{product.rentedQuantity}</td> */}
           <td className="text-center">
-            <Link 
-           to={{ pathname: `/product/viewproduct/${product._id}` }}
-              className="info p-0">
+            <Link
+              to={{ pathname: `/product/viewproduct/${product._id}` }}
+              className="info p-0"
+            >
               <i className="ft-eye font-medium-3 mr-2" title="View"></i>
             </Link>
             <Link
               to={{ pathname: `/product/editproduct/${product._id}` }}
-              className="success p-0">
+              className="success p-0"
+            >
               <i className="ft-edit-2 font-medium-3 mr-2" title="Edit"></i>
             </Link>
-            <Link to="/product"
+            <Link
+              to="/product"
               onClick={() => this.onDelete(product._id)}
-              className="danger p-0">
+              className="danger p-0"
+            >
               <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
             </Link>
           </td>
-
         </tr>
       ));
     }
@@ -90,95 +102,118 @@ class ViewProduct extends Component {
 
   async searchTable() {
     const searchVal = this.state.search;
-    if(searchVal) {
-        await this.props.findProducts(searchVal);
+    if (searchVal) {
+      await this.props.findProducts(searchVal);
     } else {
-        await this.props.getAllProducts();
+      await this.props.getAllProducts();
     }
-    
-}
+  }
 
-    render() {
-        const { auth } = this.props;
-        if (!auth.loading && !auth.isAuthenticated) {
-          return <Redirect to="/" />;
-        }
-        const { products } = this.props;
-        const { filter} = this.state;
-        
-       
-        return (
-            <React.Fragment>
-              <Loader />
-                <div className="wrapper menu-collapsed">
-                  <Header />
-                    <Sidebar location={this.props.location} />
-                    <div className="main-panel">
+  async onDelete(id) {
 
-                    <div className="main-content">
-                          <div className="content-wrapper">
-                            <section id="extended">
-                          <div className="row">
-                            <div className="col-sm-12">
-                              <div className="card">
-                                <div className="card-header">
-                                  <h4 className="card-title">All Products</h4>
-                                </div>
-                                <div className="card-content">
-                                  <div className="card-body table-responsive">
+    await this.props.deleteProduct(id);
+  }
+  
+  render() {
+    const { auth } = this.props;
+    if (!auth.loading && !auth.isAuthenticated) {
+      return <Redirect to="/" />;
+    }
+    const { products } = this.props;
+    const { filter } = this.state;
 
-                                  <div className="row">
-                                    <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
-                                    <div className="col-md-4">
-                                        <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
-                                    </div>
-                                    <div className="col-md-4">
-                                      <Link to="/product/addproduct" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New Product</Link>
-                                    </div>
-                                  </div>
-                                  <Alert />
-
-                                    <table className="table text-center">
-                                      <thead>
-                                        <tr>
-                                          <th>#</th>
-                                          <th></th>
-                                          <th>Image</th>
-                                          <th>Name</th>
-                                          <th>Color</th>
-                                          <th>Size</th>
-                                          <th>Actions</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                   {this.getTAble()}   
-                                  
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </div>
+    return (
+      <React.Fragment>
+        <Loader />
+        <div className="wrapper menu-collapsed">
+          <Header />
+          <Sidebar location={this.props.location} />
+          <div className="main-panel">
+            <div className="main-content">
+              <div className="content-wrapper">
+                <section id="extended">
+                  <div className="row">
+                    <div className="col-sm-12">
+                      <div className="card">
+                        <div className="card-header">
+                          <h4 className="card-title">All Products</h4>
+                        </div>
+                        <div className="card-content">
+                          <div className="card-body table-responsive">
+                            <div className="row">
+                              <div className="col-md-4">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="search"
+                                  onChange={(e) => this.handleChange(e)}
+                                />
+                              </div>
+                              <div className="col-md-4">
+                                <a
+                                  className="btn btn-success"
+                                  onClick={() => this.searchTable()}
+                                >
+                                  <i className="fa fa-search"></i> Search{" "}
+                                </a>
+                              </div>
+                              <div className="col-md-4">
+                                <Link
+                                  to="/product/addproduct"
+                                  className="btn btn-primary pull-right"
+                                >
+                                  {" "}
+                                  <i className="fa fa-plus"></i> New Product
+                                </Link>
                               </div>
                             </div>
+                            <Alert />
+
+                            <table className="table text-center">
+                              <thead>
+                                <tr>
+                                  <th>#</th>
+                                  <th></th>
+                                  <th>Image</th>
+                                  <th>Name</th>
+                                  <th>Color</th>
+                                  <th>Size</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>{this.getTAble()}</tbody>
+                            </table>
                           </div>
-                        </section>
                         </div>
-                        </div>
-                        </div>
-                   
-                        <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
-                        </footer>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
 
-
-                </div>
-
-            </React.Fragment>
-
-      );
-    }
+          <footer className="footer footer-static footer-light">
+            <p className="clearfix text-muted text-sm-center px-2">
+              <span>
+                Powered by &nbsp;{" "}
+                <a
+                  href="https://www.alphinex.com"
+                  id="pixinventLink"
+                  target="_blank"
+                  className="text-bold-800 primary darken-2"
+                >
+                  Alphinex Solutions{" "}
+                </a>
+                , All rights reserved.{" "}
+              </span>
+            </p>
+          </footer>
+        </div>
+      </React.Fragment>
+    );
+  }
 }
-
 
 ViewProduct.propTypes = {
   auth: PropTypes.object,
@@ -190,12 +225,12 @@ ViewProduct.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    products: state.product.products,
-    auth: state.auth,
-
-
+  products: state.product.products,
+  auth: state.auth,
 });
 export default connect(mapStateToProps, {
-  getAllProducts,deleteProduct,getProduct, findProducts
+  getAllProducts,
+  deleteProduct,
+  getProduct,
+  findProducts,
 })(ViewProduct);
-
