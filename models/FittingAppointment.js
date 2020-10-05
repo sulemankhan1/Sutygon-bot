@@ -6,11 +6,7 @@ const FittingAppointmentSchema = new mongoose.Schema({
     appointmentNumber: {
         type: Number
     },
-    trackingNumber: {
-        type: String,
-        unique: true,
-    },
-    start: {
+     start: {
         type: Date,
     },
     end: {

@@ -7,21 +7,18 @@ import { login } from "../actions/auth";
 import Alert from "./layout/Alert";
 import {getShop} from "../actions/dashboard";
 
-
-
 class Login extends Component {
-
-
   state = {
     formData: {
       email: "",
       password: "",
     },
   };
+
   async componentDidMount() {
     this.props.getShop();
-
   }
+
   onChange = (e) => {
     let { formData } = this.state;
     formData[e.target.name] = e.target.value;
@@ -32,8 +29,8 @@ class Login extends Component {
     e.preventDefault();
     const { login } = this.props;
 
-    const { email, password } = this.state.formData;
-    login(email, password);
+    const { username, password } = this.state.formData;
+    login(username, password);
 
   }
 
@@ -42,7 +39,7 @@ class Login extends Component {
     const { shop } = this.props;
     const { user } = this.props.auth; 
    
-if(user && user.type == "User") {
+if(user && user.type == "Employee") {
   if(shop){
     let openShop = shop[0]
     if(openShop){
@@ -110,13 +107,12 @@ if(user && user.type == "User") {
                   </p>
                                 <form onSubmit={(e) => this.onSubmit(e)}>
                                 <Alert/>
-                              
 
                                   <input type="text"
                                     className="form-control mb-3"
-                                    placeholder="Email"
+                                    placeholder="Username"
                                     onChange={(e) => this.onChange(e)}
-                                    name="email" />
+                                    name="username" />
                                   <input type="password"
                                     className="form-control mb-1"
                                     placeholder="Password"

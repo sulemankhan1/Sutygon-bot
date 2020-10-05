@@ -16,6 +16,7 @@ class AddUser extends Component {
         email: "",
         contactnumber: "",
         password: "",
+        type:"SuperAdmin",
         gender: "",
         avatar: "",
         saving: false,
@@ -36,13 +37,13 @@ class AddUser extends Component {
                     email: user.email,
                     contactnumber: user.contactnumber,
                     password: user.password,
+                    type:user.type,
                     gender: user.gender
 
                 });
             }
         }
     }
-
 
     _onChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.files[0] });
@@ -58,10 +59,11 @@ class AddUser extends Component {
         const formData = new FormData();
         formData.append('avatar',this.state.avatar)
         formData.append('username',this.state.username)
-        formData.append('fullname',this.state.username)
+        formData.append('fullname',this.state.fullname)
         formData.append('contactnumber',this.state.contactnumber)
         formData.append('email',this.state.email)
         formData.append('password',this.state.password)
+        formData.append('type',this.state.type)
         formData.append('gender',this.state.gender)
         
             if (this.state.id === "") {
@@ -79,8 +81,6 @@ class AddUser extends Component {
         if (this.props.saved) {
             return <Redirect to="/user" />;
         }
-               
-
         return (
             <React.Fragment>
                 <Loader />
@@ -121,29 +121,21 @@ class AddUser extends Component {
                                                             className="form-control-file"
                                                             id="projectinput8"
                                                             accept='image/*,.pdf,.jpg'
-
                                                             // accept='file_extension|image/*|media_type'
                                                             // value={this.state.avatar}
                                                             onChange={(e) => this._onChange(e)} />
-
-
-
                                                     </div>
 
                                                     <div className="form-group col-12 mb-2">
                                                         {/* <button
                                                             name=""
-value="submit"
+                                                            value="submit"
                                                             type="submit"
-                                                            
+
                                                             // accept='file_extension|image/*|media_type'
                                                             // value={this.state.avatar}
                                                         > Submit
                                                             </button> */}
-
-
-
-                                                   
                                                 </div> 
                                                  </div>
                                                 <div className="row">
@@ -170,7 +162,7 @@ value="submit"
                                                         />
                                                     </div>
                                                 </div>
-{/* </form> */}
+
                                                 <div className="row">
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput3">E-mail</label>
@@ -214,6 +206,18 @@ value="submit"
                                                         : ""}
 
                                                     <div className="form-group col-md-6 mb-2">
+                                                    <label htmlFor="projectinput6">Select Type</label>
+                                                    <select
+                                                        id="type"
+                                                        name="type"
+                                                        className="form-control"
+                                                        onChange={(e) => this.handleChange(e)} >
+                                                        <option selected = {"SuperAdmin" === this.state.type} value="SuperAdmin"> Super Admin </option>
+                                                        <option selected = {"Employee" === this.state.type} value="Employee"> Employee </option>
+
+                                                    </select>
+                                                    </div>
+                                                    <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput6">Gender</label><br></br>
                                                         <label className="radio-inline">
                                                             <input
@@ -224,7 +228,7 @@ value="submit"
                                                                 value="male"
 
                                                             />Male
-                       </label>
+                                                        </label>
                                                         <label className="radio-inline">
                                                             <input
                                                                 type="radio"
@@ -234,7 +238,7 @@ value="submit"
                                                                 checked={this.state.gender === "female"}
 
                                                             />Female
-                         </label>
+                                                        </label>
                                                         <label className="radio-inline">
                                                             <input
                                                                 type="radio"
@@ -244,13 +248,13 @@ value="submit"
                                                                 checked={this.state.gender === "other"}
 
                                                             />Others
-                       </label>
+                                                        </label>
                                                     </div>
                                                 </div>
 
                                                 <div className="form-actions top">
-              {this.state.id === ""
-                          ? <>
+                                                    {this.state.id === ""
+                                                        ? <>
                           
                           {this.state.saving ? (
                             <button
@@ -332,7 +336,6 @@ const mapStateToProps = (state) => ({
     saved: state.user.saved,
     auth: state.auth,
     user: state.user.profile,
-
 
 });
 export default connect(mapStateToProps, {

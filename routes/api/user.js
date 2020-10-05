@@ -37,29 +37,47 @@ const FILE_PATH = 'client/public/uploads/user';
 
 
 router.post("/add",
-  [
+    upload.single('avatar'),
+    [
     check("username", "User Name is Required").not().isEmpty(),
     check("fullname", "Full Name is Required").not().isEmpty(),
     check("email", "Please Enter a Valid Email").isEmail(),
     check("password", "Password is Required").not().isEmpty(),
     check("contactnumber", "Please Enter Contact Number").not().isEmpty(),
     check("gender", "Please select your Gender").not().isEmpty(),
-    check("password", "Please Enter a password with 6 or more characters").isLength({ min: 6 }),
+    check("password", "Please Enter a password with 6 or more characters").isLength({ min: 6 })
   ],
   auth,
-  upload.single('avatar'),
     async (req, res) => {
 
-    const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res
+                .status(422)
+                .json({ errors: errors.array() });
+        }
 
-    // Finds the validation errors in this request and wraps them in an object with handy functions
+    const body = JSON.parse(JSON.stringify(req.body));
+
     const salt = await bcrypt.genSalt(10);
-
     const password = await bcrypt.hash(body.password, salt);
 
     try {
-      // check if there is any record with same email
-      const rec = User.find({ email: body.email });
+
+      // check if there is any record with same email and username
+      const  userByEmail = await User.findOne({ email: body.email });
+      const  userByUsername = await User.findOne({ username: body.username });
+        if (userByEmail) {
+            return res
+                .status(422)
+                .json({errors: [{msg:"User with this Email already exists"} ]});
+        }
+        if (userByUsername) {
+            return res
+                .status(500)
+                .json({errors: [{msg:"User with this Username already exists"} ]});
+        }
+
       // save user record
       // const { avatar } = file.path;
       const avatar = gravatar.url(body.email, {
@@ -67,26 +85,28 @@ router.post("/add",
         r: "pg",
         d: "mm",
       });
-let userBody;
+        let userBody;
       if(req.file == undefined){
        userBody = {
           username: body.username,
-          fullname: body.username,
+          fullname: body.fullname,
           email: body.email,
           password: password,
           gender: body.gender,
           contactnumber: body.contactnumber,
-  avatar:avatar,
+          type: body.type,
+           avatar:avatar,
         };
       }
       else {
        userBody = {
         username: body.username,
-        fullname: body.username,
+        fullname: body.fullname,
         email: body.email,
         password: password,
         gender: body.gender,
         contactnumber: body.contactnumber,
+        type: body.type,
         avatar:`/uploads/user/${req.file.originalname}`,
       };
     }
@@ -96,16 +116,16 @@ let userBody;
       res
         .status(200)
         .json({user, msg: "User Added Successfully" });
-    } catch (err) {
+    }
+    catch (err) {
+      console.log("error from server");
       console.log(err);
       res
         .status(500)
-        .send("Server error");
+          .json({msg: err });
     }
-
 },
 )
-
 
 
 // @route   GET api/users
@@ -184,54 +204,83 @@ router.get("/:id", auth,
 // @desc   Update a user
 // @access Private
 router.post(
-  "/:id",
-  [
-    check("name", "Full Name Field Required").not().isEmpty(),
-    check("email", "Please Enter a Valid Email").isEmail(),
-    check("contactNumber", "Please Enter Contact Number").not().isEmpty(),
-    check("gender", "Please select your Gender").not().isEmpty(),
-
+  '/:id',
+    upload.single('avatar'),
+    [
+      check("username", "User Name is Required").not().isEmpty(),
+      check("fullname", "Full Name is Required").not().isEmpty(),
+      check("email", "Please Enter a Valid Email").isEmail(),
+      check("contactnumber", "Please Enter Contact Number").not().isEmpty(),
+      check("gender", "Please select your Gender").not().isEmpty()
   ],
-  auth,
-  upload.single('avatar'),
-  async (req, res) => {
-    try {
-      const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+    auth,
+    async (req, res) => {
+      const body = JSON.parse(JSON.stringify(req.body));
+      console.log("body params ");
+      console.log(body);
+
+      try {
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+              return res
+                  .status(422)
+                  .json({ errors: errors.array() });
+          }
+
+          // check if there is any record with same email and username of not this user
+          const  userByEmail = await User.findOne({ _id:{ $ne: req.params.id }, email: body.email });
+          const  userByUsername = await User.findOne({  _id:{ $ne: req.params.id }, username: body.username });
+          if (userByEmail) {
+              return res
+                  .status(422)
+                  .json({errors: [{msg:"User with this Email already exists"} ]});
+          }
+          if (userByUsername) {
+              return res
+                  .status(500)
+                  .json({errors: [{msg:"User with this Username already exists"} ]});
+          }
+
+
       const avatar = gravatar.url(body.email, {
         s: "200",
         r: "pg",
         d: "mm",
       });
-  
-      if(req.file== undefined){
-    await User.updateOne({ _id: req.params.id }, {
-      $set: {
-        username: body.username,
-        fullname: body.name,
-        email: body.email,
-        gender: body.gender,
-        contactnumber: body.contactnumber,
-avatar:avatar
-      }
+
+        if(req.file== undefined){
+        await User.updateOne({ _id: req.params.id }, {
+        $set: {
+          username: body.username,
+          fullname: body.fullname,
+          email: body.email,
+          gender: body.gender,
+          contactnumber: body.contactnumber,
+          type: body.type,
+          avatar:avatar
+        }
   })
   }
       else {
       await User.updateOne({ _id: req.params.id }, {
         $set: {
           username: body.username,
-          fullname: body.name,
+          fullname: body.fullname,
           email: body.email,
           gender: body.gender,
           contactnumber: body.contactnumber,
-  avatar:`/uploads/user/${req.file.originalname}`,
+          type: body.type,
+          avatar:`/uploads/user/${req.file.originalname}`,
         }
       });
       }
       res
         .status(200)
         .json({ msg: "User Updated Successfully" });
-    } catch (err) {
-      console.error(err.message);
+    }
+    catch (err) {
+      console.log("err message");
+      console.log(err.message);
       res
         .status(500)
         .json({ errors: [{ msg: "Server Error: Something went wrong" }] });

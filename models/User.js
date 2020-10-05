@@ -4,12 +4,16 @@ const Schema = mongoose.Schema;
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
+    unique: true,
+    required: true
   },
   fullname: {
     type: String,
+    required: true
   },
   contactnumber: {
     type: String,
+    required: true
   },
   email: {
     type: String,
@@ -32,7 +36,6 @@ const UserSchema = new mongoose.Schema({
   type: String,
   
   },
-  
   type: {
     type: String,
     default: "User",

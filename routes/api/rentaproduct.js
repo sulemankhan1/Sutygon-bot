@@ -3,8 +3,6 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const RentedProduct = require("../../models/RentedProducts");
 const Customer = require("../../models/Customer");
-
-const Order = require("../../models/Orders");
 const { check, validationResult } = require("express-validator");
 
 // @route   POST api/rentedproducts/add
@@ -14,27 +12,24 @@ router.post(
     "/add",
     [
         check("orderNumber", "Order Number Required").not().isEmpty(),
-        check("trackingNumber", "Tracking Number Required").not().isEmpty(),
-        check("customer", "Customer Name Required").not().isEmpty(),
-        check("product", "Product Name Required").not().isEmpty(),
-        check("orderedQuantity", "Quantity Required").not().isEmpty(),
-        check("orderedSize", "Size Required").not().isEmpty(),
+        check("rentDate", "Delivery Date Required").not().isEmpty(),
         check("returnDate", "Return Date Required").not().isEmpty(),
-        check("deliveryDate", "Delivery Date Required").not().isEmpty(),
-        // check("dateRented", "Return Date Required").not().isEmpty(),
     ],
     auth,
     async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-        }
-
         try {
-            let rentedProduct = new RentedProduct(req.body);
-            let order = new Order(req.body);
-            await order.save();
-            await rentedProduct.save();
+         RentedProduct.find().sort({ orderNumber: -1 }).limit(1).then(async (data) => {
+                                newOrderNumber = data[0].orderNumber + 1;
+                   var rentedProduct = new RentedProduct({
+                        barcodes: req.body.barcodes,
+                        orderNumber: newOrderNumber,
+                        customer: req.body.customer,
+                        rentDate: req.body.rentDate,
+                        returnDate: req.body.returnDate
+                    });
+            
+                    await rentedProduct.save();
+                })
 
             res.json({ msg: "Order Added Successfully" });
         } catch (err) {
@@ -50,16 +45,7 @@ router.post(
 router.post(
     "/:id",
     [
-        check("orderNumber", "Order Number Required").not().isEmpty(),
-        check("trackingNumber", "Tracking Number Required").not().isEmpty(),
-        check("customer", "Customer Name Required").not().isEmpty(),
-        check("customer", "Customer Name Required").not().isEmpty(),
         check("user", "User Name Required").not().isEmpty(),
-        check("orderedQuantity", "Quantity Required").not().isEmpty(),
-        check("orderedSize", "Size Required").not().isEmpty(),
-        // check("createdOn", "Created Date Required").not().isEmpty(),
-        check("returnDate", "Return Date Required").not().isEmpty(),
-        check("deliveryDate", "Delivery Date Required").not().isEmpty(),
     ],
     auth,
     async (req, res) => {
@@ -89,7 +75,7 @@ router.post(
 // @route   GET api/products
 // @desc    Get all RentedProduct
 // @access  Private
-router.get("/",auth,
+router.get("/", auth,
     async (req, res) => {
         try {
             const rentedProducts = await RentedProduct.find().populate("customer").populate("product").populate("user");
@@ -203,14 +189,14 @@ router.delete("/:id",
 // @desc   Get Cutomer (Search for Customer by number)
 // @access Private
 router.get('/search',
-//  auth,
+    //  auth,
     async (req, res) => {
         try {
-          
+
             const result = await Customer.find({
                 contactnumber: { $eq: req.query.number }
-                           })
-        if (!result) {
+            })
+            if (!result) {
                 return res
                     .status(404)
                     .json({ msg: "No Customer found" });

@@ -84,7 +84,6 @@ class ReportOrder extends Component {
                 <td className="text-center text-muted">{tbl_sno++}</td>
                 <td className="text-center">{""}</td>
                 <td className="">{record.appointmentNumber}</td>
-                <td className="text-center">{record.trackingNumber}</td>
 
                 <td className="text-center">{record.customer.name}</td>
                 {/* <td className="text-center">{record.status}</td> */}
