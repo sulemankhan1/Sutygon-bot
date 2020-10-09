@@ -6,18 +6,34 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import Alert from "../layout/Alert";
 import shortid from "shortid";
 
 import Loader from "../layout/Loader";
-import { barcodeUpdateProduct } from "../../actions/product";
+import { getCustomer } from "../../actions/customer";
 
 class Checkout extends Component {
     state = {
-        id: "",
         barcode: [],
-        saving: false,
+        customer_id: "",
     };
+    
+    async componentDidMount() {
+
+        const { data } = this.props.location;
+
+        if (data) {
+            this.setState({
+                // id: id,
+                customer_id: data.customer.id,
+
+
+            });
+        }
+        await this.props.getCustomer(this.state.customer_id);
+
+
+    }
+
 
     addBarcodeRow = () => {
         let { barcode } = this.state; // get all barcode
@@ -32,14 +48,10 @@ class Checkout extends Component {
         let { barcode } = this.state;
         barcode = barcode.filter((barcode) => barcode.id !== id); // get current barode
         this.setState({ barcode });
+
     }
 
-    // handleChange = (e, id = "") => {
-    //     this.setState({ [e.target.name]: e.target.value });
-    //   };
-
-
-    handleChange = (e, barcode_id = "") => {
+      handleChange = (e, barcode_id = "") => {
         let name = e.target.name;
         let value = e.target.value;
         let { barcode } = this.state;
@@ -99,12 +111,11 @@ class Checkout extends Component {
         if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
         }
-        console.log(this.state)
 
         if (this.props.saved) {
             return <Redirect to="/orders" />;
         }
-        const { data } = this.props.location;
+        const { customer } = this.props;
         return (
             <React.Fragment>
                 <Loader />
@@ -135,7 +146,7 @@ class Checkout extends Component {
 
                                                                 <div className="col-md-12">
                                                                     <div className="form-group">
-                                                                        <h3>{data && data.name} {`${"#"}${data && data.contactnumber}`}</h3>
+                                                                        <h3>{customer && customer[0].name} {`${"#"}${customer && customer[0].contactnumber}`}</h3>
                                                                     </div>
                                                                 </div>
                                                                 <div className="col-md-12">
@@ -161,7 +172,7 @@ class Checkout extends Component {
                                                                                     to={{
                                                                                         pathname: "/rentorder",
                                                                                         data: {
-                                                                                            customer: this.props.location.data,
+                                                                                            customer_id: customer[0]._id,
                                                                                             barcode: this.state.barcode,
                                                                                         }
                                                                                     }}
@@ -193,7 +204,6 @@ class Checkout extends Component {
                                   <i className="ft-check" /> Add Product
                                 </button>
                               )}
-
                           </div> */}
                                                                 </div>
                                                             </div>
@@ -232,15 +242,17 @@ class Checkout extends Component {
 Checkout.propTypes = {
     saved: PropTypes.bool,
     auth: PropTypes.object,
+    customer: PropTypes.array,
 
 };
 
 const mapStateToProps = (state) => ({
     saved: state.rentproduct.saved,
     auth: state.auth,
+    customer: state.customer.customer
+
 
 });
 export default connect(mapStateToProps, {
-
+    getCustomer
 })(Checkout);
-

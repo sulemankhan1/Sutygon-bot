@@ -6,36 +6,92 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../layout/Loader";
-import { searchBarcode, getAllProducts } from "../../actions/product";
-// import c from "config";
+import { barcodeUpdateProduct, getAllProducts } from "../../actions/product";
+import { getCustomer } from "../../actions/customer";
+import { addNewRentProduct } from "../../actions/rentproduct";
+
 
 class RentOrder extends Component {
   state = {
     id: "",
+    orderNumber: "",
+    barcode_Array: [],
     customer_id: "",
-    product_id:"",
-    total_amt:"",
-    rentDate:"",
-    returnDate:"",
+    product_Array: "",
+    total_amt: "",
+    taxper: "",
+    tax: "",
+    insAmt: "",
+    rentDate: "",
+    returnDate: "",
+    total: "",
     saving: false,
   };
 
 
   async componentDidMount() {
     await this.props.getAllProducts();
+
     const { data } = this.props.location;
-        if (data) {
-            this.setState({
-                // id: id,
-                customer: data.customer.id,
-               
+    if (data) {
+      this.setState({
+        // id: id,
+        customer_id: data.customer_id,
+        barcode_Array: data.barcode
+      });
+    }
+    await this.props.getCustomer(this.state.customer_id);
 
-            });
-        }
 
-}
+  }
 
-  // return sorted products for barcodes / without barcodes
+
+  onSubmit = async (e) => {
+    e.preventDefault();
+    this.setState({ saving: true });
+
+    const state = { ...this.state };
+    const { user } = this.props.auth;
+
+    const { barcode_Array } = this.state;
+    let barcodeArr = [];
+    barcode_Array.forEach((element) => {
+      barcodeArr.push(element.barcode)
+    })
+
+
+    const product = {
+      orderNumber: state.orderNumber,
+      customer: state.customer_id,
+      user: user._id,
+      barcodes: barcodeArr,
+      total: state.total,
+      returnDate: state.returnDate,
+      rentDate: state.rentDate,
+    };
+    await this.props.addNewRentProduct(product);
+
+    
+    // loop through all selected barcodes
+  let { product_Array } = this.state;
+  let { products } = this.props;
+ // get product 
+if(product_Array){
+  product_Array.forEach((product,index)=>{
+    let product_id = product.product_id;
+      // products.forEach(())
+  })
+}     
+      // update product add rented: true to barcode
+    // save
+
+    this.setState({ saving: false });
+  };
+  onHandleChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  // return sorted products for barcodes 
   getSortedData = (products) => {
     // looping through prducts
     let rows = [];
@@ -55,7 +111,6 @@ class RentOrder extends Component {
               let size_name = size.size;
               let size_id = size.id;
               let price = size.price
-
               let length;
               // show sizes with barcode
               if (size.barcodes) {
@@ -71,7 +126,7 @@ class RentOrder extends Component {
                   product_id: product_id,
                   color_id: color_id,
                   size_id: size_id,
-                  title: product_name,
+                  title: product_name + " | " + color_name + " | " + size_name,
                   barcodes: (size.barcodes) ? size.barcodes : [],
                   price: price
                 };
@@ -89,75 +144,124 @@ class RentOrder extends Component {
 
 
 
+  removeBarcodeRow = (b_index, bbarcode) => {
+    let barcode_Array = this.state.product_Array;
+    let selectedBarcodes = this.state.barcode_Array;
+    selectedBarcodes.splice(b_index, 1);
+    barcode_Array.splice(b_index, 1);
+    this.setState({
+      product_Array: barcode_Array,
+      barcode_Array: selectedBarcodes
+    })
 
-  getBarcodeRecord() {
-    let productarray;
-    const { data } = this.props.location;
-    const { products } = this.props;
-    let barcode = data.barcode // get all barcode
-    if (data) {
-      if (products) {
-        let sortedAray = this.getSortedData(this.props.products);
-        if (sortedAray) {
-          sortedAray.forEach((array, c_index) => {
-            for (var a = 0; a <= array.barcodes.length; a++) {
-              const arr = sortedAray.filter(product =>
-                product.barcodes[a].barcode = data.barcode[0].barcode)
-            
-                productarray = arr[a];
-              return productarray
-            }
-
-          })
-
-        }
-      }
-   
-    }
-    if (barcode) {
-      return barcode.map((barcode) => (
-
-        <div id="sizes_box" key={barcode.id || barcode._id}>
-          <div className="row">
-            <div className="left" >
-              <input
-                type="text"
-                className="form-control mm-input s-input"
-                placeholder="Barcode"
-                name="barcode"
-                id="widthBr"
-                style={{ 'width': '60%' }}
-                value={productarray && productarray.title}
-              />
-
-              <input
-                type="text"
-                className="form-control mm-input s-input"
-                placeholder="Price"
-                id="setSize"
-                value={productarray && productarray.price}
-                 />
-            </div>
-            <div className="right">
-              <button
-                type="button"
-                onClick={() => this.removeBarcodeRow(barcode.id)}
-                className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
-                <i className="fa fa-minus"></i>
-              </button>
-            </div>
-            <div className="right">
-              <button
-                type="button"
-                className="btn btn-raised btn-sm btn-success mt-1" ><i className="=ft ft-edit"></i></button>
-            </div>
-          </div>
-
-
-        </div>
-      ))
-    }
   }
+  getBarcodeRecord() {
+    let productarray = [];
+    let { barcode_Array } = this.state;
+
+    const { products } = this.props;
+    console.log('before sorted: ', barcode_Array)
+    
+    if (products) {
+      let sortedAray = this.getSortedData(products);
+      if (sortedAray) {
+
+        barcode_Array.forEach((element => {
+          productarray.push(sortedAray.filter(f => f.barcodes.some(o => o.barcode === element.barcode)));
+          return productarray
+        }));
+        console.log(productarray);
+
+      }
+    }
+    this.state.product_Array = productarray;
+
+    return this.state.product_Array.map((barcode, b_index) => (
+      // <div id="sizes_box" key={barcode.id || barcode._id}>
+      <div id="sizes_box" key={b_index}>
+        <div className="row">
+          <div className="left" >
+            <input
+              type="text"
+              className="form-control mm-input s-input text-center"
+              placeholder="Barcode"
+              name="barcode"
+              id="widthBr"
+              style={{ 'width': '60%' }}
+              value={barcode && barcode[0].title && barcode[0].title + ' | ' + barcode_Array[b_index].barcode}
+            />
+
+            <input
+              type="text"
+              className="form-control mm-input s-input text-center"
+              placeholder="Price"
+              id="setSize"
+              name="total"
+
+              value={`${"$"}${barcode && barcode[0].price}`}
+
+            />
+          </div>
+          <div className="right">
+            <button
+              type="button"
+              onClick={() => this.removeBarcodeRow(b_index, barcode_Array[b_index].barcode)}
+              className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
+              <i className="fa fa-minus"></i>
+            </button>
+          </div>
+          <div className="right">
+            <button
+              type="button"
+              className="btn btn-raised btn-sm btn-success mt-1" ><i className="=ft ft-edit"></i></button>
+          </div>
+        </div>
+
+
+      </div>
+    ))
+
+  }
+
+
+  calculateTotalWithoutTax = () => {
+    let sum = 0;
+    let { product_Array } = this.state;
+    if (product_Array) {
+      for (var i = 0; i < product_Array.length; i++) {
+        sum += Number(product_Array[i][0].price);
+      }
+    }
+    this.state.total_amt = sum;
+    return sum;
+  }
+
+  calculateTax = () => {
+    var totalAmount = this.calculateTotalWithoutTax();
+    var { taxper } = this.state;
+    let amount;
+    if (taxper !== null) {
+      amount = totalAmount / taxper;
+    }
+    this.state.tax = amount
+    return amount;
+  }
+  calculateInsuranceAmt() {
+    var totalAmount = this.calculateTotalWithoutTax();
+    var insuranceAmt = totalAmount / 2;
+    this.state.insAmt = insuranceAmt;
+    return insuranceAmt;
+  }
+  calculateTotal = () => {
+    let sum = 0;
+    let { tax, insAmt, total_amt } = this.state;
+    sum = total_amt + tax + insAmt;
+    this.state.total = sum;
+    return sum;
+
+  }
+
+
 
   render() {
     const { auth } = this.props;
@@ -166,9 +270,9 @@ class RentOrder extends Component {
     }
 
     if (this.props.saved) {
-      return <Redirect to="/orders" />;
+      return <Redirect to="/RentInvoice" />;
     }
-    const { customer } = this.props.location.data;
+    const { customer } = this.props;
     return (
       <React.Fragment>
         <Loader />
@@ -189,14 +293,15 @@ class RentOrder extends Component {
                       <div className="card-content">
 
                         <div className="card-body table-responsive">
-                          <form className="" action="index.html" method="post">
-                            <div id="colors_box">
-                              <div className="row color-row">
-                                <div className="col-md-12">
-                                  <div className="form-group">
-                                    <h3>{customer && customer.name} {`${"#"}${customer && customer.contactnumber}`}</h3>
-                                  </div>
+                          <div id="colors_box">
+                            <div className="row color-row">
+                              <div className="col-md-12">
+                                <div className="form-group">
+                                  <h3>{customer && customer.name} {`${"#"}${customer && customer.contactnumber}`}</h3>
                                 </div>
+                              </div>
+                              <form onSubmit={(e) => this.onSubmit(e)}>
+
                                 <div className="col-md-12">
                                   <div id="sizes_box">
                                     {this.getBarcodeRecord()}
@@ -214,14 +319,19 @@ class RentOrder extends Component {
 
                                             <h4 id="padLeft">Total Without Tax</h4>
                                           </div>
-                                          <div style={{ 'paddingLeft': '500px' }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
                                               style={{ 'width': '65%' }}
                                               type="text"
-                                              className="form-control mm-input s-input"
+                                              className="form-control mm-input s-input text-center"
                                               placeholder="Total"
+                                              name="total_amt"
                                               id="setSizeFloat"
-                                              value="$" />
+                                              onChange={(e) => this.onHandleChange(e)}
+                                              value={this.state.product_Array ? `${"$"}${this.calculateTotalWithoutTax()}` : ""}
+
+
+                                            />
                                           </div>
                                           <br />
                                         </div> </div>
@@ -233,14 +343,18 @@ class RentOrder extends Component {
                                           <div style={{ 'float': 'left' }}>
                                             <h4 id="padLeft">Enter tax % <span className="text-muted">(enter 0 if no tax)</span></h4>
                                           </div>
-                                          <div style={{ 'paddingLeft': '500px' }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
                                               style={{ 'width': '65%' }}
+                                              name="taxper"
                                               type="text"
-                                              className="form-control mm-input s-input"
-                                              placeholder="Total"
+                                              className="form-control mm-input s-input text-center"
+                                              placeholder="Tax"
                                               id="setSizeFloat"
-                                              value="$" />
+                                              value={`${this.state.taxper}`}
+                                              onChange={(e) => this.onHandleChange(e)}
+
+                                            />
                                           </div>  </div>
                                       </div>
                                     </div>
@@ -251,14 +365,15 @@ class RentOrder extends Component {
                                         <div className="form-group">
 
                                           <h4 id="arowDown"><i className="ft-arrow-down"></i></h4>
-                                          <div style={{ 'paddingLeft': '500px' }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
                                               style={{ 'width': '65%' }}
                                               type="text"
-                                              className="form-control mm-input s-input"
-                                              placeholder="Total"
+                                              className="form-control mm-input s-input text-center"
+                                              placeholder="Tax Ammount"
                                               id="setSizeFloat"
-                                              value="$" />
+                                              value={(this.state.product_Array && this.state.taxper) ? `${"$"}${this.calculateTax()}` : ""}
+                                            />
                                           </div>                             </div>
                                       </div>
                                     </div>
@@ -271,14 +386,14 @@ class RentOrder extends Component {
 
                                             <h4 id="padLeft">Enter Insurance Amount</h4>
                                           </div>
-                                          <div style={{ 'paddingLeft': '500px' }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
                                               style={{ 'width': '65%' }}
                                               type="text"
-                                              className="form-control mm-input s-input"
-                                              placeholder="Total"
+                                              className="form-control mm-input s-input text-center"
+                                              placeholder="Insurance"
                                               id="setSizeFloat"
-                                              value="$" />
+                                              value={this.state.total_amt ? `${"$"}${this.calculateInsuranceAmt()}` : ""} />
                                           </div>
                                         </div>
                                       </div>
@@ -292,23 +407,23 @@ class RentOrder extends Component {
 
                                             <h4 id="padLeft">Leave ID</h4>
                                           </div>
-                                          <div style={{ 'float': 'right', 'padding-right': '170px' }}>
+                                          <div style={{ 'float': 'right', 'paddingRight': '170px' }}>
 
-                                            <div class="custom-radio">
+                                            <div className="custom-radio">
                                               <input
                                                 type="radio"
-                                                class="custom-control-input" />
+                                                className="custom-control-input" />
                                               <label
-                                                class="custom-control-label"
-                                                for="customRadioInline1">YES</label>
+                                                className="custom-control-label"
+                                                htmlFor="customRadioInline1">YES</label>
                                             </div>
-                                            <div class="custom-radio">
+                                            <div className="custom-radio">
                                               <input
                                                 type="radio"
-                                                class="custom-control-input" />
+                                                className="custom-control-input" />
                                               <label
-                                                class="custom-control-label"
-                                                for="customRadioInline2">NO</label>
+                                                className="custom-control-label"
+                                                htmlFor="customRadioInline2">NO</label>
                                             </div>                    </div>
                                         </div>
                                       </div>
@@ -316,41 +431,59 @@ class RentOrder extends Component {
 
                                     <br />
 
-                                    <div className="row text-center"
-                                      style={{ 'paddingRight': '50px', 'paddingLeft': '40px' }}>
-                                      <div className="col-md-12">
-                                        <div className="form-group">
-                                          <div
-                                            style={{ 'float': 'left', 'paddingLeft': '120px' }}>
 
-                                            <label
-                                              for="issueinput3">Rent Date</label>
-                                            <input
-                                              type="date"
-                                              id="issueinput3"
-                                              className="form-control round"
-                                              name="rentdate"
-                                              data-toggle="tooltip"
-                                              data-trigger="hover"
-                                              data-placement="top"
-                                              data-title="Rent Date" />
-                                          </div>
+                                    <div className="row" >
 
-                                          <div style={{ 'float': 'right', 'paddingRight': '160px' }}>
-                                            <label
-                                              id="setName">Return Date</label>
-                                            <input
-                                              type="date"
-                                              id="issueinput4"
-                                              className="form-control round"
-                                              name="returndate"
-                                              data-toggle="tooltip"
-                                              data-trigger="hover"
-                                              data-placement="top"
-                                              data-title="Return Date" /></div>
+                                      <div className="col-md-6 text-center">
+                                        <label
+                                          className="text-center"
+                                          id="setName">Rent Date</label>
 
-                                        </div>
                                       </div>
+
+                                      <div className="col-md-6 text-center">
+
+                                        <label className="text-center"
+                                          id="setName">Return Date</label>
+
+                                      </div>
+                                    </div>
+
+                                    <br />
+
+
+                                    <div className="row justify-content-center"  >
+
+                                      <div className="col-md-6">
+                                        <input
+                                          type="date"
+                                          id="issueinput3"
+                                          className="form-control round text-center"
+                                          name="rentDate"
+                                          data-toggle="tooltip"
+                                          data-trigger="hover"
+                                          data-placement="top"
+                                          data-title="Rent Date"
+                                          onChange={(e) => this.onHandleChange(e)}
+                                          value={this.state.rentDate} />
+                                      </div>
+
+                                      <div className="col-md-6">
+
+                                        <input
+                                          type="date"
+                                          id="issueinput4"
+                                          className="form-control round text-center"
+                                          name="returnDate"
+                                          data-toggle="tooltip"
+                                          data-trigger="hover"
+                                          data-placement="top"
+                                          data-title="Return Date"
+                                          onChange={(e) => this.onHandleChange(e)}
+                                          value={this.state.returnDate}
+                                        />
+                                      </div>
+
                                     </div>
 
                                     <br />
@@ -360,14 +493,19 @@ class RentOrder extends Component {
                                           <div style={{ 'float': 'left' }}>
                                             <h4 id="padLeft">Total</h4>
                                           </div>
-                                          <div style={{ 'paddingLeft': '500px' }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
                                               style={{ 'width': '65%' }}
                                               type="text"
-                                              className="form-control mm-input s-input"
+                                              className="form-control mm-input s-input text-center"
                                               placeholder="Total"
                                               id="setSizeFloat"
-                                              value="$" />
+                                              value={this.state.tax ? `${"$"}${this.calculateTotal()}` : ""}
+
+                                            // value={`${"Total: $"}${this.state.tax ? (this.calculateTotal()) : ""}`} 
+                                            />
+
+
                                           </div> </div>
                                       </div>
                                     </div>
@@ -376,18 +514,29 @@ class RentOrder extends Component {
                                   <div className="row text-center">
                                     <div className="col-md-12 btn-cont">
                                       <div className="form-group">
-                                        <button type="button"
+                                        <Link
+                                          to={{
+                                            pathname: "/RentInvoice",
+                                            data: {
+                                              data: this.state
+                                            }
+                                          }}
+                                          type="submit"
                                           className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                                          id="btnSize2" ><i className="ft-check"></i> Submit</button>
+                                          id="btnSize2" ><i className="ft-check"></i>
+                                                 Submit &amp; Get Invoice
+                                          </Link>
+
                                       </div>
                                     </div>
 
 
                                   </div>
                                 </div>
-                              </div>
+                              </form>
+
                             </div>
-                          </form>
+                          </div>
                         </div>
 
                       </div>
@@ -413,30 +562,22 @@ class RentOrder extends Component {
 
 RentOrder.propTypes = {
   saved: PropTypes.bool,
-  searchBarcode: PropTypes.func.isRequired,
-  //   getAllCustomers: PropTypes.func.isRequired,
   getAllProducts: PropTypes.func.isRequired,
-  //   getProduct: PropTypes.func.isRequired,
-  //   getCustomer: PropTypes.func.isRequired,
+  getCustomer: PropTypes.func.isRequired,
+  addNewRentProduct: PropTypes.func.isRequired,
 
-  //   updateProductQty: PropTypes.func.isRequired,
   auth: PropTypes.object,
   products: PropTypes.array,
-  //   customers: PropTypes.object,
-  //   product: PropTypes.object,
-  //   customer: PropTypes.array,
+  customer: PropTypes.array,
 
 };
 
 const mapStateToProps = (state) => ({
-  //   product: state.product.product,
   saved: state.rentproduct.saved,
   auth: state.auth,
   products: state.product.products,
-  //   customers: state.customer,
-  //   customer: state.customer.customer
+  customer: state.customer.customer
 });
 export default connect(mapStateToProps, {
-  searchBarcode, getAllProducts
+  getAllProducts, getCustomer, addNewRentProduct
 })(RentOrder);
-

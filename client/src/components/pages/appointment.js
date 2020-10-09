@@ -14,7 +14,6 @@ class AddAppointment extends Component {
     state = {
         id: "",
         appointmentNumber: "",
-        trackingNumber:`${"A"}${Date.now()}`,
         start:"",
         end:"",
         customer: "",
@@ -40,7 +39,6 @@ class AddAppointment extends Component {
 const {user} = this.props.auth;
    const appointment = {
             appointmentNumber: state.appointmentNumber,
-            trackingNumber:state.trackingNumber,
             start: state.start,
             end: state.start,
             customer:state.customer,

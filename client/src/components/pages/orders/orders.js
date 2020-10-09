@@ -25,7 +25,6 @@ class Orders extends Component {
    
  getTAble = () => {
     const { rentproducts } = this.props;
-    console.log(rentproducts)
         let tbl_sno=1;
     if (rentproducts) {
       if (rentproducts.length === 0) {
@@ -44,16 +43,16 @@ class Orders extends Component {
            <td className="text-center">{""}</td>
 
           <td className="text-center">{order.customer ? order.customer.name : ""}</td>
-          <td className="text-center">{order.product ?  order.product.name:""}</td>
-          <td className="text-center">{this.getStatus(order.deliveryDate) === "Pending"
+          <td className="text-center">{order.barcodes ?  "ProductName?":""}</td>
+          <td className="text-center">{this.getStatus(order.rentDate) === "Pending"
           ? <div className="badge badge-success">Pending</div>
-          : this.getStatus(order.deliveryDate) === "Due" 
+          : this.getStatus(order.rentDate) === "Due" 
           ? <div className="badge badge-warning">Over Due</div>
           :<div className="badge badge-danger">Due Today</div>
         
         }</td>
 
-          <td className="text-center">{moment(order.deliveryDate).format('DD/MMM/YYYY')}</td>
+          <td className="text-center">{moment(order.rentDate).format('DD/MMM/YYYY')}</td>
 
           <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
           <td className="text-center">
@@ -166,8 +165,8 @@ class Orders extends Component {
                                           <th>Customer</th>
                                           <th>Product</th>
                                           <th>Status</th>
-                                          <th>Start Date</th>
-                                          <th>End Date</th>
+                                          <th>Rent Date</th>
+                                          <th>Return Date</th>
                                           <th>Actions</th>
                                         </tr>
                                       </thead>

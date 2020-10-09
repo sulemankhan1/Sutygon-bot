@@ -11,7 +11,6 @@ router.post(
     "/add",
     [
         // check("appointmentNumber", "Appointment Number Required").not().isEmpty(),
-        check("trackingNumber", "Tracking Number Required").not().isEmpty(),
         check("customer", "Customer Name Required").not().isEmpty(),
         check("start", "Appointment Date Name Required").not().isEmpty(),
        

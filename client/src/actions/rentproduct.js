@@ -17,6 +17,7 @@ import { setAlert } from "./alert";
   // Add new product
 export const addNewRentProduct = (product) => async (dispatch) => {
     dispatch({ type: RENTPRODUCT_LOADING });
+
   
     const config = {
       headers: {

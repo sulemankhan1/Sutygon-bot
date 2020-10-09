@@ -14,7 +14,6 @@ class AddOrder extends Component {
     state = {
       id: "",
       orderNumber: `${"RP"}${Date.now()}`,
-      trackingNumber: "",
       customer: "",
       product: "",
       orderedQuantity: "",
@@ -85,7 +84,6 @@ class AddOrder extends Component {
   
       const order = {
         orderNumber: state.orderNumber,
-        trackingNumber: state.orderNumber,
         product: state.product,
         customer: state.customer,
         user: user._id,
