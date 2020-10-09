@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-var moment = require('moment');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 
 const RentedProductSchema = new mongoose.Schema({
@@ -9,7 +7,6 @@ const RentedProductSchema = new mongoose.Schema({
         type: Number,
         default:0
     },
-    
     user: {
         type: Schema.Types.ObjectId,
         ref: "user",

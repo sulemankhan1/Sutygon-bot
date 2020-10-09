@@ -95,7 +95,6 @@ class Barcode extends Component {
     let products = this.props.products;
     if(products) {
       let sortedProducts = this.getSortedData(products);
-      console.log('abc', sortedProducts)
     // let tbl_sno = 1;
     if (sortedProducts) {
       if (sortedProducts.length === 0) {

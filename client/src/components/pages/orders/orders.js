@@ -25,7 +25,6 @@ class Orders extends Component {
    
  getTAble = () => {
     const { rentproducts } = this.props;
-    console.log(rentproducts)
         let tbl_sno=1;
     if (rentproducts) {
       if (rentproducts.length === 0) {

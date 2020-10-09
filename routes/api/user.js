@@ -118,7 +118,6 @@ router.post("/add",
         .json({user, msg: "User Added Successfully" });
     }
     catch (err) {
-      console.log("error from server");
       console.log(err);
       res
         .status(500)
@@ -216,8 +215,6 @@ router.post(
     auth,
     async (req, res) => {
       const body = JSON.parse(JSON.stringify(req.body));
-      console.log("body params ");
-      console.log(body);
 
       try {
           const errors = validationResult(req);

@@ -48,7 +48,6 @@ class Checkout extends Component {
         let { barcode } = this.state;
         barcode = barcode.filter((barcode) => barcode.id !== id); // get current barode
         this.setState({ barcode });
-        console.log(this.state)
 
     }
 
@@ -117,7 +116,6 @@ class Checkout extends Component {
             return <Redirect to="/orders" />;
         }
         const { customer } = this.props;
-        console.log(this.state)
         return (
             <React.Fragment>
                 <Loader />

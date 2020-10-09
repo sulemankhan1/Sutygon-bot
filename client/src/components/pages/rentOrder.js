@@ -71,6 +71,12 @@ class RentOrder extends Component {
     };
     await this.props.addNewRentProduct(product);
 
+    
+    // loop through all selected barcodes
+      // get product 
+      // update product add rented: true to barcode
+    // save
+
     this.setState({ saving: false });
   };
   onHandleChange = (e) => {

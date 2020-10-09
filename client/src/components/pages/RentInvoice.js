@@ -32,7 +32,6 @@ class RentInvoice extends Component {
         await this.props.getAllProducts();
 
         const { data } = this.props.location.data;
-        console.log(data)
         if (data) {
             this.setState({
                 // id: id,

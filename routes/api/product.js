@@ -46,7 +46,6 @@ router.post(
         //         .json({ errors: errors.array() });
         // }
     const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
-    console.log(body);
     
         try {
             const productBody = {
@@ -322,13 +321,11 @@ router.get("/searchBarcode/:val", auth,
 async (req, res) => {
     try {
         const search = req.params.val;
-        console.log("search",search)
         const products = await Product.find({
             $or: [
               {'color.sizes..barcodes..barcode': search},
              ]
           });
-          console.log("product",search)
 
         res
             .status(200)

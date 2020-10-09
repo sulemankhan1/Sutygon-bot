@@ -296,7 +296,6 @@ class AddProduct extends Component {
     if (this.props.saved) {
       return <Redirect to="/product" />;
     }
-    console.log(this.state)
 
 
     return (

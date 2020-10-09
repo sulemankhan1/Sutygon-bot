@@ -30,7 +30,9 @@ router.post(
             
                     await rentedProduct.save();
                 })
+               
 
+                // await inventory.save();
             res.json({ msg: "Order Added Successfully" });
         } catch (err) {
             console.log(err);
