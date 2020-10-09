@@ -73,7 +73,15 @@ class RentOrder extends Component {
 
     
     // loop through all selected barcodes
-      // get product 
+  let { product_Array } = this.state;
+  let { products } = this.props;
+ // get product 
+if(product_Array){
+  product_Array.forEach((product,index)=>{
+    let product_id = product.product_id;
+      // products.forEach(())
+  })
+}     
       // update product add rented: true to barcode
     // save
 
@@ -152,6 +160,8 @@ class RentOrder extends Component {
     let { barcode_Array } = this.state;
 
     const { products } = this.props;
+    console.log('before sorted: ', barcode_Array)
+    
     if (products) {
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
@@ -160,6 +170,7 @@ class RentOrder extends Component {
           productarray.push(sortedAray.filter(f => f.barcodes.some(o => o.barcode === element.barcode)));
           return productarray
         }));
+        console.log(productarray);
 
       }
     }
