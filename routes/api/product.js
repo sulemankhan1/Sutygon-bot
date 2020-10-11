@@ -52,8 +52,6 @@ router.post(
                 name: body.name,
                 image: `/uploads/products/${req.file.originalname}`,
                 color: JSON.parse(req.body.color),
-                // fabric: body.fabric,
-                // availableQuantity: body.availableQuantity,
               };
          
             let product = new Product(productBody);

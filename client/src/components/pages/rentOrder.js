@@ -108,6 +108,7 @@ if(product_Array){
           // looping through sizes of current color
           if (color.sizes) {
             color.sizes.forEach((size, s_index) => {
+              console.log("color",color)
               let size_name = size.size;
               let size_id = size.id;
               let price = size.price
@@ -127,10 +128,11 @@ if(product_Array){
                   color_id: color_id,
                   size_id: size_id,
                   title: product_name + " | " + color_name + " | " + size_name,
-                  barcodes: (size.barcodes) ? size.barcodes : [],
+                  barcodes: size.barcodes[i],
                   price: price
                 };
                 rows.push(row);
+             console.log(rows)
               }
 
             });
