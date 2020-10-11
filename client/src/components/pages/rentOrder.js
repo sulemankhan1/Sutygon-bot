@@ -108,7 +108,6 @@ if(product_Array){
           // looping through sizes of current color
           if (color.sizes) {
             color.sizes.forEach((size, s_index) => {
-              console.log("color",color)
               let size_name = size.size;
               let size_id = size.id;
               let price = size.price
@@ -128,11 +127,10 @@ if(product_Array){
                   color_id: color_id,
                   size_id: size_id,
                   title: product_name + " | " + color_name + " | " + size_name,
-                  barcodes: size.barcodes[i],
+                  barcode: size.barcodes[i].barcode,
                   price: price
                 };
                 rows.push(row);
-             console.log(rows)
               }
 
             });
@@ -162,14 +160,14 @@ if(product_Array){
     let { barcode_Array } = this.state;
 
     const { products } = this.props;
-    console.log('before sorted: ', barcode_Array)
     
     if (products) {
       let sortedAray = this.getSortedData(products);
+      console.log("sortedAray",sortedAray)
       if (sortedAray) {
 
         barcode_Array.forEach((element => {
-          productarray.push(sortedAray.filter(f => f.barcodes.some(o => o.barcode === element.barcode)));
+          productarray.push(sortedAray.filter(f => f.barcode === element.barcode));
           return productarray
         }));
         console.log(productarray);
@@ -178,7 +176,7 @@ if(product_Array){
     }
     this.state.product_Array = productarray;
 
-    return this.state.product_Array.map((barcode, b_index) => (
+    return this.state.product_Array.map((product, b_index) => (
       // <div id="sizes_box" key={barcode.id || barcode._id}>
       <div id="sizes_box" key={b_index}>
         <div className="row">
@@ -190,7 +188,7 @@ if(product_Array){
               name="barcode"
               id="widthBr"
               style={{ 'width': '60%' }}
-              value={barcode && barcode[0].title && barcode[0].title + ' | ' + barcode_Array[b_index].barcode}
+              value={product && product[0].title && product[0].title + ' | ' + product[0].barcode}
             />
 
             <input
@@ -200,7 +198,7 @@ if(product_Array){
               id="setSize"
               name="total"
 
-              value={`${"$"}${barcode && barcode[0].price}`}
+              value={`${"$"}${product && product[0].price}`}
 
             />
           </div>
