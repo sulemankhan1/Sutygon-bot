@@ -42,7 +42,38 @@ class RentOrder extends Component {
     }
     await this.props.getCustomer(this.state.customer_id);
 
+    let { product_Array } = this.state;
+    let { products } = this.props;
+    // get product 
+    let array1 = [];
 
+    // if (product_Array) {
+    //   product_Array.forEach((product, index) => {
+    //     let product_id = product[0].product_id;
+    //     let color_id = product[0].color_id
+    //     let size_id = product[0].size_id
+    //     let barcodePro = product[0].barcode
+    //     console.log(product_id)
+    //     array1.push(products.filter(o => o._id === product_id))
+    //     let array2 = array1.slice()
+    //     console.log("array2", array2)
+    //     array2[0][0].color.forEach((color, c_index) => {
+    //       console.log(color._id, color_id)
+    //       let array3 = array2[0][0].color.filter(c => c._id === color_id)
+    //       array3[0].sizes.forEach((size, s_index) => {
+    //         let array4 = array3[0].sizes.filter(s => s.id === size_id)
+            
+    //           // barcodes.forEach((barcode,b_ind)=>{
+    //                let array5 =   array4[0].barcodes.filter(b =>b.barcode === barcodePro)
+    //                  array5.splice()
+    //           // })
+           
+    //         // console.log("array5",array5)
+
+    //       })
+    //     })
+    //   })
+    // }
   }
 
 
@@ -52,6 +83,7 @@ class RentOrder extends Component {
 
     const state = { ...this.state };
     const { user } = this.props.auth;
+    const { customer } = this.props;
 
     const { barcode_Array } = this.state;
     let barcodeArr = [];
@@ -63,6 +95,7 @@ class RentOrder extends Component {
     const product = {
       orderNumber: state.orderNumber,
       customer: state.customer_id,
+      customerContactNumber: state.customer.contactnumber,
       user: user._id,
       barcodes: barcodeArr,
       total: state.total,
@@ -71,18 +104,10 @@ class RentOrder extends Component {
     };
     await this.props.addNewRentProduct(product);
 
-    
+
     // loop through all selected barcodes
-  let { product_Array } = this.state;
-  let { products } = this.props;
- // get product 
-if(product_Array){
-  product_Array.forEach((product,index)=>{
-    let product_id = product.product_id;
-      // products.forEach(())
-  })
-}     
-      // update product add rented: true to barcode
+
+    // update product add rented: true to barcode
     // save
 
     this.setState({ saving: false });
@@ -160,10 +185,10 @@ if(product_Array){
     let { barcode_Array } = this.state;
 
     const { products } = this.props;
-    
+
     if (products) {
       let sortedAray = this.getSortedData(products);
-      console.log("sortedAray",sortedAray)
+      console.log("sortedAray", sortedAray)
       if (sortedAray) {
 
         barcode_Array.forEach((element => {
@@ -464,6 +489,7 @@ if(product_Array){
                                           data-trigger="hover"
                                           data-placement="top"
                                           data-title="Rent Date"
+                                          required
                                           onChange={(e) => this.onHandleChange(e)}
                                           value={this.state.rentDate} />
                                       </div>
@@ -479,6 +505,7 @@ if(product_Array){
                                           data-trigger="hover"
                                           data-placement="top"
                                           data-title="Return Date"
+                                          required
                                           onChange={(e) => this.onHandleChange(e)}
                                           value={this.state.returnDate}
                                         />
