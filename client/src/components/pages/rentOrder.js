@@ -160,7 +160,7 @@ if(product_Array){
     let { barcode_Array } = this.state;
 
     const { products } = this.props;
-    console.log('before sorted: ', barcode_Array)
+    console.log('abc: ', barcode_Array)
     
     if (products) {
       let sortedAray = this.getSortedData(products);
@@ -170,7 +170,7 @@ if(product_Array){
           productarray.push(sortedAray.filter(f => f.barcodes.some(o => o.barcode === element.barcode)));
           return productarray
         }));
-        console.log(productarray);
+        console.log('abc: ',productarray);
 
       }
     }
