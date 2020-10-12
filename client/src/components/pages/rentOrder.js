@@ -231,7 +231,6 @@ return;
     let { barcode_Array } = this.state;
 
     const { products } = this.props;
-
     if (products) {
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
