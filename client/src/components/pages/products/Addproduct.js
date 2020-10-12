@@ -276,7 +276,6 @@ class AddProduct extends Component {
     const state = { ...this.state };
     const formData = new FormData();
     formData.append('name', state.name)
-    formData.append('image', state.image)
     formData.append('color', JSON.stringify(state.color))
 
     if (state.id === "") {
