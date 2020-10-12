@@ -141,7 +141,6 @@ export const getProductById = (id) => async (dispatch) => {
 
 
 export const updateProduct = (product, id) => async (dispatch) => {
-console.log("456",product,id)
   dispatch({ type: PRODUCTS_LOADING });
   // const config = {
   //   headers: {

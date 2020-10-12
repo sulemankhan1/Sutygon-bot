@@ -31,7 +31,7 @@ class RentInvoice extends Component {
     async componentDidMount() {
         await this.props.getAllProducts();
 
-        const { data } = this.props.location.data;
+        const { data } = this.props.location;
         if (data) {
             this.setState({
                 // id: id,
@@ -51,8 +51,6 @@ class RentInvoice extends Component {
 
 
     }
-
-
 
     // return sorted products for barcodes 
     getSortedData = (products) => {
@@ -124,7 +122,7 @@ class RentInvoice extends Component {
                                 style={{ 'width': '60%' }}
                                 value={(barcode && barcode[0].title && barcode_Array) && barcode[0].title + ' | ' + barcode_Array[b_index].barcode}
                             />
- <div style={{ 'paddingLeft': '650px' }}>
+                            <div style={{ 'paddingLeft': '650px' }}>
                             <input
                                 style={{ 'width': '90%' }}
                                 type="text"

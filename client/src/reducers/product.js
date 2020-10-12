@@ -5,6 +5,7 @@ import {
    PRODUCT_SAVED,
     GET_PRODUCT,
    PRODUCT_DELETED,
+   PRODUCT_UPDATED,
   } from "../actions/types";
   const initialState = {
     product: null,
@@ -39,6 +40,7 @@ import {
           loading: false,
         };
   
+      case PRODUCT_UPDATED:
       case PRODUCT_SAVED:
         return {
           ...state,
