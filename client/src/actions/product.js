@@ -139,18 +139,25 @@ export const getProductById = (id) => async (dispatch) => {
 
 // Update product
 
-// Update User
-export const updateProduct = (product, id) => async (dispatch) => {
 
+export const updateProduct = (product, id) => async (dispatch) => {
+console.log("456",product,id)
+  dispatch({ type: PRODUCTS_LOADING });
+  // const config = {
+  //   headers: {
+  //       'content-type': 'multipart/form-data'
+  //   }
+  // }
   dispatch({ type: PRODUCTS_LOADING });
   const config = {
     headers: {
-        'content-type': 'multipart/form-data'
-    }
-  }
+      "Content-Type": "application/json",
+    },  
+  };
+  const body = JSON.stringify(product);
 
   try {
-    const res = await axios.post(`/api/products/${id}`,product, config);
+    const res = await axios.post(`/api/products/${id}`,body, config);
 
     dispatch({
       type: PRODUCT_UPDATED,

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../layout/Loader";
-import { barcodeUpdateProduct, getAllProducts } from "../../actions/product";
+import { barcodeUpdateProduct, getProductById, getAllProducts, updateProduct } from "../../actions/product";
 import { getCustomer } from "../../actions/customer";
 import { addNewRentProduct } from "../../actions/rentproduct";
 
@@ -43,54 +43,124 @@ class RentOrder extends Component {
     await this.props.getCustomer(this.state.customer_id);
 
 
+    // saves the barcode in specific item > color > size object
+
+
+    // get product 
+    
+
+
+
   }
 
 
+
   onSubmit = async (e) => {
+    console.log("working")
     e.preventDefault();
+    console.log("working")
+return;
     this.setState({ saving: true });
 
     const state = { ...this.state };
     const { user } = this.props.auth;
+    const { customer } = this.props;
 
     const { barcode_Array } = this.state;
     let barcodeArr = [];
     barcode_Array.forEach((element) => {
       barcodeArr.push(element.barcode)
     })
-
-
     const product = {
       orderNumber: state.orderNumber,
       customer: state.customer_id,
+      customerContactNumber: state.customer.contactnumber,
       user: user._id,
       barcodes: barcodeArr,
       total: state.total,
       returnDate: state.returnDate,
       rentDate: state.rentDate,
+      leaveId: true
     };
-    await this.props.addNewRentProduct(product);
+    // await this.props.addNewRentProduct(product);
 
-    
-    // loop through all selected barcodes
-  let { product_Array } = this.state;
-  let { products } = this.props;
- // get product 
-if(product_Array){
-  product_Array.forEach((product,index)=>{
-    let product_id = product.product_id;
-      // products.forEach(())
-  })
-}     
-      // update product add rented: true to barcode
-    // save
+    let { product_Array } = this.state;
+    let { products } = this.props;
+    console.log("before product_Array")
+    if (product_Array) {
+      console.log("product_Array",product_Array)
+      product_Array.forEach((product, index) => {
+        let product_id = product[0].product_id;
+        let color_id = product[0].color_id;
+        let size_id = product[0].size_id;
+        let barcodeIndex = product[0].barcodeIndex;
+        this.reserveProduct(product_id, color_id, size_id, barcodeIndex);
+      })
 
+    }
     this.setState({ saving: false });
   };
+    reserveProduct = async (product_id, color_id, size_id, barcodeIndex) => {
+      console.log("product_id",product_id)
+      console.log("color_id",color_id)
+      console.log("size_id",size_id)
+      console.log("barcodeIndex",barcodeIndex)
+      let array1 = [];
+      await this.props.getProductById(product_id);
+      const { product } = this.props;
+       array1 = array1.push(product)
+      console.log(array1)
+      if (array1) {
+    
+        array1.map(element =>
+     
+           element[0].color.forEach((color, c_index) => {
+     
+             // get right color obj
+             if (color._id == color_id) {
+               // get right size obj
+               if (color.sizes) {
+                 color.sizes.forEach((size, s_index) => {
+                   if (size.id == size_id) {
+     
+                     // check if current size obj contain barcodes or not
+                   if (size.barcodes) {
+     
+                       size.barcodes[barcodeIndex].isRented = true; // Add isRented
+                       const formData = new FormData();
+                       formData.append('name', element[0].name)
+                       formData.append('image', element[0].image)
+                       formData.append('color', JSON.stringify(element[0].color))
+                       console.log('abc',element[0]);
+                      // this.props.updateProduct(element[0], element[0]._id);
+     
+                     }
+                   }
+                 }
+                 )
+               }
+             }
+             // })
+           })
+           // update product for barcode only
+           // await this.props.barcodeUpdateProduct(product, product_id);
+           // return barcode;
+         )
+       }
+       
+    
+    }
+  
+    // loop through all selected barcodes
+
+    // update product add rented: true to barcode
+    // save
+
+    
   onHandleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
-
+ 
   // return sorted products for barcodes 
   getSortedData = (products) => {
     // looping through prducts
@@ -126,8 +196,9 @@ if(product_Array){
                   product_id: product_id,
                   color_id: color_id,
                   size_id: size_id,
+                  barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
                   title: product_name + " | " + color_name + " | " + size_name,
-                  barcodes: (size.barcodes) ? size.barcodes : [],
+                  barcode: size.barcodes[i].barcode,
                   price: price
                 };
                 rows.push(row);
@@ -160,23 +231,20 @@ if(product_Array){
     let { barcode_Array } = this.state;
 
     const { products } = this.props;
-    console.log('abc: ', barcode_Array)
-    
     if (products) {
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
 
         barcode_Array.forEach((element => {
-          productarray.push(sortedAray.filter(f => f.barcodes.some(o => o.barcode === element.barcode)));
+          productarray.push(sortedAray.filter(f => f.barcode === element.barcode));
           return productarray
         }));
-        console.log('abc: ',productarray);
 
       }
     }
     this.state.product_Array = productarray;
 
-    return this.state.product_Array.map((barcode, b_index) => (
+    return this.state.product_Array.map((product, b_index) => (
       // <div id="sizes_box" key={barcode.id || barcode._id}>
       <div id="sizes_box" key={b_index}>
         <div className="row">
@@ -188,7 +256,7 @@ if(product_Array){
               name="barcode"
               id="widthBr"
               style={{ 'width': '60%' }}
-              value={barcode && barcode[0].title && barcode[0].title + ' | ' + barcode_Array[b_index].barcode}
+              value={product && product[0].title && product[0].title + ' | ' + product[0].barcode}
             />
 
             <input
@@ -198,7 +266,7 @@ if(product_Array){
               id="setSize"
               name="total"
 
-              value={`${"$"}${barcode && barcode[0].price}`}
+              value={`${"$"}${product && product[0].price}`}
 
             />
           </div>
@@ -464,6 +532,7 @@ if(product_Array){
                                           data-trigger="hover"
                                           data-placement="top"
                                           data-title="Rent Date"
+                                          required
                                           onChange={(e) => this.onHandleChange(e)}
                                           value={this.state.rentDate} />
                                       </div>
@@ -479,6 +548,7 @@ if(product_Array){
                                           data-trigger="hover"
                                           data-placement="top"
                                           data-title="Return Date"
+                                          required
                                           onChange={(e) => this.onHandleChange(e)}
                                           value={this.state.returnDate}
                                         />
@@ -515,12 +585,12 @@ if(product_Array){
                                     <div className="col-md-12 btn-cont">
                                       <div className="form-group">
                                         <Link
-                                          to={{
-                                            pathname: "/RentInvoice",
-                                            data: {
-                                              data: this.state
-                                            }
-                                          }}
+                                          // to={{
+                                          //   pathname: "/RentInvoice",
+                                          //   data: {
+                                          //     data: this.state
+                                          //   }
+                                          // }}
                                           type="submit"
                                           className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
                                           id="btnSize2" ><i className="ft-check"></i>
@@ -565,7 +635,8 @@ RentOrder.propTypes = {
   getAllProducts: PropTypes.func.isRequired,
   getCustomer: PropTypes.func.isRequired,
   addNewRentProduct: PropTypes.func.isRequired,
-
+  getProductById: PropTypes.func.isRequired,
+  updateProduct: PropTypes.func.isRequired,
   auth: PropTypes.object,
   products: PropTypes.array,
   customer: PropTypes.array,
@@ -573,11 +644,13 @@ RentOrder.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
+  product: state.product.product,
   saved: state.rentproduct.saved,
   auth: state.auth,
   products: state.product.products,
   customer: state.customer.customer
 });
 export default connect(mapStateToProps, {
-  getAllProducts, getCustomer, addNewRentProduct
+  getAllProducts, getCustomer, addNewRentProduct, getProductById, updateProduct,
+
 })(RentOrder);

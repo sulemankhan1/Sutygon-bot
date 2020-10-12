@@ -52,8 +52,6 @@ router.post(
                 name: body.name,
                 image: `/uploads/products/${req.file.originalname}`,
                 color: JSON.parse(req.body.color),
-                // fabric: body.fabric,
-                // availableQuantity: body.availableQuantity,
               };
          
             let product = new Product(productBody);
@@ -114,15 +112,11 @@ router.post(
     async (req, res) => {
         try {
            const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
-    
+    console.log(body)
+    console.log(req.params.id)
             await Product.updateOne({ _id: req.params.id }, {
                 $set: {
-                    name: body.name,
-                    image: `/uploads/products/${req.file.originalname}`,
-                    color: body.color,
-                    fabric: body.fabric,
-                    size: body.size,
-                    availableQuantity: body.availableQuantity
+                    name: req.body.name,color: req.body.color
                 }
             });
             res

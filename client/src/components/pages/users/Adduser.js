@@ -192,12 +192,15 @@ class AddUser extends Component {
                                                         ?
                                                         <>
                                                             <div className="form-group col-6 mb-2">
-                                                                <label htmlFor="projectinput5">Password</label>
+                                                                <label htmlFor="projectinput5" >Password </label>
                                                                 <input type="password"
                                                                     id="projectinput5"
                                                                     className="form-control"
                                                                     placeholder="Password"
                                                                     name="password"
+                                                                    required 
+                                                                    data-validation-required-message="This field is required"
+                                                                    minLength="6" maxLength="10"
                                                                     onChange={(e) => this.handleChange(e)}
                                                                     value={this.state.password}
                                                                 />
@@ -227,7 +230,7 @@ class AddUser extends Component {
                                                                 checked={this.state.gender === "male"}
                                                                 value="male"
 
-                                                            />Male
+                                                            /> Male
                                                         </label>
                                                         <label className="radio-inline">
                                                             <input
@@ -237,7 +240,7 @@ class AddUser extends Component {
                                                                 onChange={(e) => this.handleChange(e)}
                                                                 checked={this.state.gender === "female"}
 
-                                                            />Female
+                                                            /> Female
                                                         </label>
                                                         <label className="radio-inline">
                                                             <input
@@ -247,7 +250,7 @@ class AddUser extends Component {
                                                                 onChange={(e) => this.handleChange(e)}
                                                                 checked={this.state.gender === "other"}
 
-                                                            />Others
+                                                            /> Others
                                                         </label>
                                                     </div>
                                                 </div>
