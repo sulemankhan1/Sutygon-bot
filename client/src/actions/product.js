@@ -67,7 +67,6 @@ export const getAllProducts = () => async (dispatch) => {
   export const findProducts = (search) => async (dispatch) => {
     dispatch({ type: PRODUCT_LOADING });
     try {
-      console.log(search);
       const res = await axios.get(`/api/products/search/${search}`);
   
       dispatch({
@@ -87,7 +86,6 @@ export const getAllProducts = () => async (dispatch) => {
   export const searchBarcode = (search) => async (dispatch) => {
     dispatch({ type: PRODUCT_LOADING });
     try {
-      console.log(search);
       const res = await axios.get(`/api/products/searchBarcode/${search}`);
   
       dispatch({

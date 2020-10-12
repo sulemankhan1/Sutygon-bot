@@ -28,34 +28,38 @@ router.get("/", auth, async (req, res) => {
 router.post(
   "/",
   [
-    check("email", "Please Enter a Valid Email").isEmail(),
+    check("username", "Username Required").exists(),
     check("password", "Password Required").exists(),
   ],
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
+   
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { username, password } = req.body;
     try {
       // check for existing user
-      let user = await User.findOne({ email });
+      let user = await User.findOne({ username });
 
       if (!user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "Invalid Email" }] });
+          .json({ errors: [{ msg: "Username does not exists" }] });
       }
-      
+      const salt = await bcrypt.genSalt(10);
+    const passwordEntered = await bcrypt.hash(password, salt);
+
+   
       // if(user.accountStatus === "block"){
       //   return res
       //   .status(400)
       //   .json({ errors: [{ msg: "Your account is blocked" }] });
       // }
       
-      const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
         return res

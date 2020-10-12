@@ -1,17 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-var moment = require('moment');
 
 
 const RentedProductSchema = new mongoose.Schema({
     orderNumber: {
-        type: String,
-        unique: true,
-
-    },
-    trackingNumber: {
-        type: String,
-        unique: true,
+        type: Number,
+        default:0
     },
     user: {
         type: Schema.Types.ObjectId,
@@ -21,45 +15,26 @@ const RentedProductSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "customer",
     },
-    product: {
-        type: Schema.Types.ObjectId,
-        ref: "product",
+    barcodes: {
+        type: Array
     },
-    orderedQuantity: {
-        type: String,
-        required: true,
-    },
-
-    orderedSize: {
-        type: String,
-        required: true,
-    },
-    dateRented: {
+    rentDate: {
         type: Date,
-        // set: date => moment(date).format('DD MMM YYYY')
-
-    },
-    deliveryDate: {
-        type: Date,
-        // set: date => moment(date).format('DD MMM YYYY')
 
     },
     returnDate: {
         type: Date,
-        // set: date => moment(date).format('DD MMM YYYY')
 
     },
     status: {
-        type: String,  
+        type: String,
         default: "new"
     },
-   
+
 
 
 },
-    {
-        timestamps: true
-    }
-);
 
+);
+// RentedProductSchema.plugin(AutoIncrement, { inc_field: 'orderNumber' });
 module.exports = RentedProduct = mongoose.model("rentedproduct", RentedProductSchema);

@@ -122,6 +122,14 @@ class Sidebar extends Component {
                       <i className="ft-activity" />  Add Fitting Appointment
                 </Link>
               </li>
+              <li className={"nav-item " + this.getClassName("returnproduct")}>
+              <Link
+                      to="/returnproduct"
+                      onClick={() => this.handleClick("returnproduct")}
+                    >
+                      <i className="ft-activity" />  Return Product
+                </Link>
+              </li>
               <li className={"nav-item " + this.getClassName("calender")}>
               <Link
                       to="/calender"

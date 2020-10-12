@@ -22,6 +22,8 @@ import Checkout from "./components/pages/checkout";
 import ReturnProduct from "./components/pages/returnproduct/returnproduct";
 
 import RentOrder from "./components/pages/rentOrder";
+import RentInvoice from "./components/pages/RentInvoice";
+
 import Report from "./components/pages/report/report";
 import ReportOrder from "./components/pages/report/reportOrder";
 
@@ -70,6 +72,7 @@ const Main = () => {
           <PrivateRoute exact path="/rentproduct" component={RentProduct} />
           <PrivateRoute exact path="/checkout" component={Checkout} />
           <PrivateRoute exact path="/rentorder" component={RentOrder} />
+          <PrivateRoute exact path="/rentinvoice" component={RentInvoice} />
 
           {/* return product */}
           <PrivateRoute exact path="/returnproduct" component={ReturnProduct} />

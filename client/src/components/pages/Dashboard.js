@@ -86,7 +86,6 @@ if(user && user.type == "User") {
         localStorage.clear();
         this.props.history.push("/");
         window.location.reload();
-        console.log("Shop is closed")
 
         // setAlert("Shop is closed", "danger", 5000);
        }

@@ -10,9 +10,7 @@ import Loader from "../layout/Loader";
 
 class RentProduct extends Component {
   state = {
-    id: "",
     customer: "",
-    saving: false,
   };
 
 
@@ -27,8 +25,8 @@ class RentProduct extends Component {
       <div id="colors_box">
 
         <div className="row color-row">
-          <div class="row">
-            <div class="col-md-12">
+          <div className="row">
+            <div className="col-md-12">
               <h3>Is this the One</h3>
             </div>
           </div>
@@ -40,7 +38,7 @@ class RentProduct extends Component {
                 className="form-control mm-input"
                 style={{ 'color': '#495057' }}
                 value={customer[0] ? customer[0].name : "No Customer Found"}
-                readonly />
+                readOnly />
             </div>
 
 
@@ -48,8 +46,7 @@ class RentProduct extends Component {
           </div>
           <div className="col-md-12">
             <div id="sizes_box">
-              <div className="row text-center">
-                <div className="left">
+              <div className="row justify-content-center">
                   <button
                     type="button"
                     className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
@@ -62,7 +59,6 @@ class RentProduct extends Component {
 
                     className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
                     id="btnSize1"><i className="ft-user"></i> New Customer</Link>
-                </div>
               </div>
             </div>
           </div>
@@ -81,10 +77,10 @@ class RentProduct extends Component {
                   <div className="left">
                     <input
                       type="text"
-                      className="form-control mm-input "
+                      className="form-control mm-input text-center"
                       style={{ 'color': '#495057' }}
                       value={customer[0].name}
-                      readonly />
+                      readOnly />
                   </div>
                 </div>
                 <br />
@@ -92,10 +88,10 @@ class RentProduct extends Component {
                   <div className="left">
                     <input
                       type="number"
-                      className="form-control mm-input "
+                      className="form-control mm-input text-center"
                       style={{ 'color': '#495057' }}
                       value={customer[0].contactnumber}
-                      readonly />
+                      readOnly />
                   </div>
                 </div>
                 <br />
@@ -103,29 +99,29 @@ class RentProduct extends Component {
                   <div className="left">
                     <textarea
                       type="text"
-                      className="form-control mm-input "
+                      className="form-control mm-input text-center"
                       style={{ 'color': '#495057' }}
                       value={customer[0].address}
                       placeholder="Address"
-                      readonly></textarea>
+                      readOnly></textarea>
                   </div>
                 </div>
               </div>
               <br />
-              <div className="row text-center">
-                <div className="col-md-12 btn-cont">
+              <div className="row justify-content-center">
+                {/* <div className="col-md-12 btn-cont"> */}
                   <div className="form-group">
                     <Link
                       to={{
                         pathname: "/checkout",
-                        data: this.props.customer[0],
+                        data: this.props.customer[0].id,
                         // your data array of objects
                       }}
                       type="button"
                       className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
                       id="btnSize2" ><i className="ft-check"></i> Next</Link>
                   </div>
-                </div>
+                {/* </div> */}
               </div>
             </div>
           </div> : ""
@@ -192,7 +188,7 @@ class RentProduct extends Component {
                               <div className="position-relative has-icon-right">
                                 <input
                                   name="customer"
-                                  type="number"
+                                  type="text"
                                   placeholder="Search"
                                   className="form-control round"
                                   id="number"
@@ -240,7 +236,7 @@ class RentProduct extends Component {
           </div>
         </div>
       </React.Fragment>
-
+  
     );
   }
 }

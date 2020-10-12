@@ -1,25 +1,22 @@
 import React, { Component } from "react";
 import Sidebar from "../layout/Sidebar";
 import Header from "../layout/Header";
-import {
-  getAllProducts,
-  updateProduct,
-  getProductById,
-  barcodeUpdateProduct,
-} from "../../actions/product";
+import { getAllProducts, updateProduct, getProductById, barcodeUpdateProduct } from "../../actions/product";
 import Loader from "../layout/Loader";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import shortid from "shortid";
-import { OCAlertsProvider } from "@opuscapita/react-alerts";
-import { OCAlert } from "@opuscapita/react-alerts";
-import { confirmAlert } from "react-confirm-alert";
+import { OCAlertsProvider } from '@opuscapita/react-alerts';
+import { OCAlert } from '@opuscapita/react-alerts';
+
+
 
 import "../../custom.css";
 
-var JsBarcode = require("jsbarcode");
+var JsBarcode = require('jsbarcode');
 var { createCanvas } = require("canvas");
+
 
 class Barcode extends Component {
   state = {
@@ -52,19 +49,17 @@ class Barcode extends Component {
               let size_id = size.id;
 
               let length;
-              if (this.state.dataType == "without_barcode") {
-                // show sizes without barcodes
-                // if we have some barcodes then skip that
+              if(this.state.dataType == "without_barcode") { // show sizes without barcodes
+                // if we have some barcodes then skip that 
                 // number of rows for the current size
-                if (size.barcodes) {
+                if(size.barcodes) {
                   // if barcodes availble then length should be qty - barcodes length
                   length = size.qty - size.barcodes.length;
                 } else {
                   length = size.qty;
                 }
-              } else {
-                // show sizes with barcode
-                if (size.barcodes) {
+              } else { // show sizes with barcode
+                if(size.barcodes) {
                   length = size.barcodes.length;
                 } else {
                   length = 0;
@@ -79,7 +74,7 @@ class Barcode extends Component {
                   size_id: size_id,
                   barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
                   title: product_name + " | " + color_name + " | " + size_name,
-                  barcodes: size.barcodes ? size.barcodes : [],
+                  barcodes: (size.barcodes) ? size.barcodes: []
                 };
                 rows.push(row);
               }
@@ -92,103 +87,79 @@ class Barcode extends Component {
   };
 
   handleChange = (type = "") => {
-    this.setState({ dataType: type });
+    this.setState({ 'dataType': type });
   };
 
   getTAbleRows = () => {
+    
     let products = this.props.products;
-    if (products) {
+    if(products) {
       let sortedProducts = this.getSortedData(products);
-      // let tbl_sno = 1;
-      if (sortedProducts) {
-        if (sortedProducts.length === 0) {
-          return (
-            <tr>
-              <td colSpan={10} className="text-center">
-                No products Found
-              </td>
-            </tr>
-          );
-        }
-        return sortedProducts.map((product, i) => {
-          return (
-            <tr key={i}>
-              <td>
-                <div className="form-group">
-                  <div className="">{product.title}</div>
-                </div>
-              </td>
-              <td>
-                {this.state.dataType == "without_barcode" ? (
-                  <button
-                    type="button"
-                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                    onClick={(e) =>
-                      this.genPrintRandBarcode(
-                        e,
-                        product.product_id,
-                        product.color_id,
-                        product.size_id
-                      )
-                    }
-                  >
-                    Generate &amp; PRINT random barcode
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                    onClick={(e) =>
-                      this.changeBarcode(
-                        e,
-                        product.product_id,
-                        product.color_id,
-                        product.size_id,
-                        product.barcodeIndex
-                      )
-                    }
-                  >
-                    Change Barcode
-                  </button>
-                )}
-              </td>
-              <td>
-                {this.state.dataType == "without_barcode" ? (
-                  <form
-                    onSubmit={(e) =>
-                      this.OnSubmitScanBarcode(
-                        e,
-                        product.product_id,
-                        product.color_id,
-                        product.size_id
-                      )
-                    }
-                  >
-                    <input
-                      type="text"
-                      className="form-control mm-input"
-                      placeholder={"Scan existing Barcode"}
-                    />
-                  </form>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                    onClick={(e) =>
-                      this.printBarcode(
-                        product.barcodes[product.barcodeIndex].barcode
-                      )
-                    }
-                  >
-                    Print Barcode
-                  </button>
-                )}
-              </td>
-            </tr>
-          );
-        });
+    // let tbl_sno = 1;
+    if (sortedProducts) {
+      if (sortedProducts.length === 0) {
+        return (
+          <tr>
+            <td colSpan={10} className="text-center">
+              No product Found
+            </td>
+          </tr>
+        );
       }
+      return sortedProducts.map((product, i) => {
+        return (
+          <tr key={i}>
+          <td>
+            <div className="form-group">
+              <div className="">
+                {product.title}
+              </div>
+            </div>
+          </td>
+          <td>
+            {(this.state.dataType == 'without_barcode') ? (
+              <button
+              type="button"
+              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+              onClick={(e) => this.genPrintRandBarcode(e, product.product_id, product.color_id, product.size_id)}
+            >
+              Generate &amp; PRINT random barcode
+            </button>
+            ) : (
+              <button
+              type="button"
+              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+              onClick={(e) => this.changeBarcode(e, product.product_id, product.color_id, product.size_id, product.barcodeIndex)}
+            >
+              Change Barcode
+            </button>
+            )}
+          </td>
+          <td>
+          {(this.state.dataType == 'without_barcode') ? (
+              <form onSubmit={(e) => this.OnSubmitScanBarcode(e, product.product_id, product.color_id, product.size_id)}>
+              <input
+                type="text"
+                className="form-control mm-input"
+                placeholder={"Scan existing Barcode"}
+              />
+            </form>
+            ) : (
+              <button
+              type="button"
+              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+              onClick={(e) => this.printBarcode(product.barcodes[product.barcodeIndex].barcode)}
+            >
+              Print Barcode
+            </button>
+            )}
+          </td>
+        </tr>
+        );
+      });
     }
+    }
+    
   };
 
   // runs when existing barcode is scanned
@@ -197,115 +168,64 @@ class Barcode extends Component {
     // get barcode input value
     let barcode = e.target[0].value;
     // empty barcode input
-    e.target[0].value = "";
+    e.target[0].value = '';
     this.saveBarCode(barcode, product_id, color_id, size_id);
     // success message
-    OCAlert.alertSuccess("Barcode Scanned and Added Successfully!");
-  };
+    OCAlert.alertSuccess('Barcode Scanned and Added Successfully!');
+
+  }
 
   // generate and print random bar code
-  genPrintRandBarcode = async (e, product_id, color_id, size_id) => {
+  genPrintRandBarcode = async  (e, product_id, color_id, size_id) => {
     // generate randome barcode
     let barcode = shortid.generate();
     this.saveBarCode(barcode, product_id, color_id, size_id);
     this.printBarcode(barcode);
-    OCAlert.alertSuccess("Barcode Generated and Saved Successfully!");
-  };
+    OCAlert.alertSuccess('Barcode Generated and Saved Successfully!');
+  }
 
   // change existing barcode in size object and correct index
   changeBarcode = async (e, product_id, color_id, size_id, barcodeIndex) => {
-    confirmAlert({
-      title: "Change Barcode",
-      message: "Are you sure you want to Change the Barcode?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            // generate randome barcode
-            let products = this.props.products;
-            // loop through product and remove barcode index
-            products.forEach((product, p_index) => {
-              if (product._id == product_id) {
-                // looping through each color of current product
-                if (product.color) {
-                  product.color.forEach((color, c_index) => {
-                    if (color._id == color_id) {
-                      // looping through sizes of current color
-                      if (color.sizes) {
-                        color.sizes.forEach((size, s_index) => {
-                          if (size.id == size_id) {
-                            let new_barcodes = [];
-                            size.barcodes.forEach((bc, bc_index) => {
-                              if (bc_index != barcodeIndex) {
-                                new_barcodes.push(bc);
-                              }
-                            });
-                            size.barcodes = new_barcodes;
-                            this.props.barcodeUpdateProduct(
-                              product,
-                              product_id
-                            );
-                            OCAlert.alertSuccess("Barcode is being Changed");
-                          }
-                        });
-                      }
-                    }
-                  });
-                }
-              }
-            }); // products foreach ends here
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-    });
-  };
+    // generate randome barcode
+    let barcode = shortid.generate();
+    this.saveBarCode(barcode, product_id, color_id, size_id, 'update', barcodeIndex);
+    // this.printBarcode(barcode);
+    OCAlert.alertSuccess('Barcode is being Changed');
+  }
 
   printBarcode = (barcode) => {
     var canvas = createCanvas();
 
     // convert barcode to image and open in new window and print
     JsBarcode(canvas, barcode);
-    let html = '<img src="' + canvas.toDataURL() + '" style="width: 100%" />';
-    let newWindow = window.open(
-      "",
-      "_blank",
-      "location=yes,height=570,width=720,scrollbars=yes,status=yes"
-    );
+    let html  = '<img src="' + canvas.toDataURL() + '" style="width: 100%" />';
+    let newWindow = window.open("", '_blank', 'location=yes,height=570,width=720,scrollbars=yes,status=yes');
     newWindow.document.write(html);
     newWindow.window.print();
     newWindow.document.close();
-  };
+  }
 
   // saves the barcode in specific item > color > size object
-  saveBarCode = async (
-    barcode,
-    product_id,
-    color_id,
-    size_id,
-    mode = "add",
-    barcodeIndex = ""
-  ) => {
+  saveBarCode = async (barcode, product_id, color_id, size_id, mode='add', barcodeIndex='') => {
+    
     // get product by id
     await this.props.getProductById(product_id);
     const { product } = this.props;
 
-    if (product && product.color) {
+    if(product && product.color) {
       // loop through product colors
       product.color.forEach((color, c_index) => {
         // get right color obj
-        if (color._id == color_id) {
+        if(color._id == color_id) {
           // get right size obj
-          if (color.sizes) {
+          if(color.sizes) {
             color.sizes.forEach((size, s_index) => {
-              if (size.id == size_id) {
+              if(size.id == size_id) {
                 // check if current size obj contain barcodes or not
-                if (size.barcodes) {
-                  if (mode == "add") {
-                    size.barcodes.push({ barcode }); // Add barcode
+                if(size.barcodes) {
+                  
+                  if(mode == 'add') {
+                    size.barcodes.push({barcode});  // Add barcode
                   } else {
                     size.barcodes[barcodeIndex].barcode = barcode; // Change barcode
                   }
@@ -313,19 +233,19 @@ class Barcode extends Component {
                   // create new barcode array
                   size.barcodes = [];
                   // and push this new barcode to it
-                  size.barcodes.push({ barcode });
+                  size.barcodes.push({barcode});
                 }
               }
-            });
+            })
           }
         }
-      });
+      })
 
       // update product for barcode only
       await this.props.barcodeUpdateProduct(product, product_id);
       return barcode;
     }
-  };
+  }
 
   render() {
     const { auth } = this.props;
@@ -336,6 +256,7 @@ class Barcode extends Component {
       return <Redirect to="/product" />;
     }
 
+    
     return (
       <React.Fragment>
         <Loader />
@@ -360,9 +281,7 @@ class Barcode extends Component {
                             id="customRadioInline1"
                             name="dataType"
                             className="custom-control-input"
-                            onChange={(e) =>
-                              this.handleChange("without_barcode")
-                            }
+                            onChange={(e) => this.handleChange("without_barcode")}
                             checked={this.state.dataType === "without_barcode"}
                           />
                           <label
@@ -393,7 +312,9 @@ class Barcode extends Component {
                         <br />
                         <br />
                         <table className="table text-center">
-                          <thead>{this.getTAbleRows()}</thead>
+                          <thead>
+                            {this.getTAbleRows()}
+                          </thead>
                           <tbody></tbody>
                         </table>
                       </div>
@@ -447,5 +368,5 @@ export default connect(mapStateToProps, {
   getAllProducts,
   updateProduct,
   getProductById,
-  barcodeUpdateProduct,
+  barcodeUpdateProduct
 })(Barcode);
