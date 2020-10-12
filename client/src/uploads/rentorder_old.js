@@ -6,14 +6,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../layout/Loader";
-import {
-  barcodeUpdateProduct,
-  getProductById,
-  getAllProducts,
-  updateProduct,
-} from "../../actions/product";
+import { barcodeUpdateProduct, getAllProducts } from "../../actions/product";
 import { getCustomer } from "../../actions/customer";
 import { addNewRentProduct } from "../../actions/rentproduct";
+
 
 class RentOrder extends Component {
   state = {
@@ -30,8 +26,8 @@ class RentOrder extends Component {
     returnDate: "",
     total: "",
     saving: false,
-    barcodesRented: false
   };
+
 
   async componentDidMount() {
     await this.props.getAllProducts();
@@ -41,15 +37,14 @@ class RentOrder extends Component {
       this.setState({
         // id: id,
         customer_id: data.customer_id,
-        barcode_Array: data.barcode,
+        barcode_Array: data.barcode
       });
     }
     await this.props.getCustomer(this.state.customer_id);
 
-    // saves the barcode in specific item > color > size object
 
-    // get product
   }
+
 
   onSubmit = async (e) => {
     e.preventDefault();
@@ -57,77 +52,46 @@ class RentOrder extends Component {
 
     const state = { ...this.state };
     const { user } = this.props.auth;
-    const { customer } = this.props;
 
     const { barcode_Array } = this.state;
     let barcodeArr = [];
     barcode_Array.forEach((element) => {
-      barcodeArr.push(element.barcode);
-    });
+      barcodeArr.push(element.barcode)
+    })
+
 
     const product = {
-      // orderNumber: state.orderNumber,
+      orderNumber: state.orderNumber,
       customer: state.customer_id,
-      customerContactNumber: customer.contactnumber,
       user: user._id,
       barcodes: barcodeArr,
       total: state.total,
       returnDate: state.returnDate,
       rentDate: state.rentDate,
-      leaveId: true,
     };
+    await this.props.addNewRentProduct(product);
 
-    // await this.props.addNewRentProduct(product);
-
-    let { product_Array } = this.state;
     
-    if (product_Array) {
-      let products = [];
-      let counter = 1;
+    // loop through all selected barcodes
+  let { product_Array } = this.state;
+  let { products } = this.props;
+ // get product 
+if(product_Array){
+  product_Array.forEach((product,index)=>{
+    let product_id = product.product_id;
+      // products.forEach(())
+  })
+}     
+      // update product add rented: true to barcode
+    // save
 
-      product_Array.forEach(async (pd, p_index) => {
-        await this.props.getProductById(pd[0].product_id); // <-- Error is here this should give updated product in every loop
-
-        let { product } = this.props;
-        counter++;
-        // console.log('got from db', product);
-        if (product) {
-          product.color.forEach((color, c_index) => {
-            // get right color obj
-            if (color._id == pd[0].color_id) {
-              // get right size obj
-              if (color.sizes) {
-                color.sizes.forEach((size, s_index) => {
-                  if (size.id == pd[0].size_id) {
-                    // check if current size obj contain barcodes or not
-                    if (size.barcodes) {
-                      // Add isRented
-                      size.barcodes[pd[0].barcodeIndex].isRented = true;
-                      this.props.updateProduct(product, pd[0].product_id);
-                    }
-                  }
-                });
-              }
-            }
-          });
-          products.push(product);
-          product = null;
-          
-        }
-      });
-
-    }
     this.setState({ saving: false });
-    // this.setState({
-    //   barcodesRented: true
-    // })
   };
-
   onHandleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  // return sorted products for barcodes
+  // return sorted products for barcodes 
   getSortedData = (products) => {
     // looping through prducts
     let rows = [];
@@ -146,7 +110,7 @@ class RentOrder extends Component {
             color.sizes.forEach((size, s_index) => {
               let size_name = size.size;
               let size_id = size.id;
-              let price = size.price;
+              let price = size.price
               let length;
               // show sizes with barcode
               if (size.barcodes) {
@@ -158,23 +122,27 @@ class RentOrder extends Component {
               let i;
               for (i = 0; i < length; i++) {
                 let row = {
+
                   product_id: product_id,
                   color_id: color_id,
                   size_id: size_id,
-                  barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
                   title: product_name + " | " + color_name + " | " + size_name,
-                  barcode: size.barcodes[i].barcode,
-                  price: price,
+                  barcodes: (size.barcodes) ? size.barcodes : [],
+                  price: price
                 };
                 rows.push(row);
               }
+
             });
           }
         });
       }
     }); // products foreach ends here
     return rows;
+
   };
+
+
 
   removeBarcodeRow = (b_index, bbarcode) => {
     let barcode_Array = this.state.product_Array;
@@ -183,44 +151,44 @@ class RentOrder extends Component {
     barcode_Array.splice(b_index, 1);
     this.setState({
       product_Array: barcode_Array,
-      barcode_Array: selectedBarcodes,
-    });
-  };
+      barcode_Array: selectedBarcodes
+    })
+
+  }
   getBarcodeRecord() {
     let productarray = [];
     let { barcode_Array } = this.state;
 
     const { products } = this.props;
+    console.log('abc: ', barcode_Array)
+    
     if (products) {
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
-        barcode_Array.forEach((element) => {
-          productarray.push(
-            sortedAray.filter((f) => f.barcode === element.barcode)
-          );
-          return productarray;
-        });
+
+        barcode_Array.forEach((element => {
+          productarray.push(sortedAray.filter(f => f.barcodes.some(o => o.barcode === element.barcode)));
+          return productarray
+        }));
+        console.log('abc: ',productarray);
+
       }
     }
     this.state.product_Array = productarray;
 
-    return this.state.product_Array.map((product, b_index) => (
+    return this.state.product_Array.map((barcode, b_index) => (
       // <div id="sizes_box" key={barcode.id || barcode._id}>
       <div id="sizes_box" key={b_index}>
         <div className="row">
-          <div className="left">
+          <div className="left" >
             <input
               type="text"
               className="form-control mm-input s-input text-center"
               placeholder="Barcode"
               name="barcode"
               id="widthBr"
-              style={{ width: "60%" }}
-              value={
-                product &&
-                product[0].title &&
-                product[0].title + " | " + product[0].barcode
-              }
+              style={{ 'width': '60%' }}
+              value={barcode && barcode[0].title && barcode[0].title + ' | ' + barcode_Array[b_index].barcode}
             />
 
             <input
@@ -229,32 +197,32 @@ class RentOrder extends Component {
               placeholder="Price"
               id="setSize"
               name="total"
-              value={`${"$"}${product && product[0].price}`}
+
+              value={`${"$"}${barcode && barcode[0].price}`}
+
             />
           </div>
           <div className="right">
             <button
               type="button"
-              onClick={() =>
-                this.removeBarcodeRow(b_index, barcode_Array[b_index].barcode)
-              }
-              className="btn btn-raised btn-sm btn-icon btn-danger mt-1"
-            >
+              onClick={() => this.removeBarcodeRow(b_index, barcode_Array[b_index].barcode)}
+              className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
               <i className="fa fa-minus"></i>
             </button>
           </div>
           <div className="right">
             <button
               type="button"
-              className="btn btn-raised btn-sm btn-success mt-1"
-            >
-              <i className="=ft ft-edit"></i>
-            </button>
+              className="btn btn-raised btn-sm btn-success mt-1" ><i className="=ft ft-edit"></i></button>
           </div>
         </div>
+
+
       </div>
-    ));
+    ))
+
   }
+
 
   calculateTotalWithoutTax = () => {
     let sum = 0;
@@ -266,7 +234,7 @@ class RentOrder extends Component {
     }
     this.state.total_amt = sum;
     return sum;
-  };
+  }
 
   calculateTax = () => {
     var totalAmount = this.calculateTotalWithoutTax();
@@ -275,9 +243,9 @@ class RentOrder extends Component {
     if (taxper !== null) {
       amount = totalAmount / taxper;
     }
-    this.state.tax = amount;
+    this.state.tax = amount
     return amount;
-  };
+  }
   calculateInsuranceAmt() {
     var totalAmount = this.calculateTotalWithoutTax();
     var insuranceAmt = totalAmount / 2;
@@ -290,7 +258,10 @@ class RentOrder extends Component {
     sum = total_amt + tax + insAmt;
     this.state.total = sum;
     return sum;
-  };
+
+  }
+
+
 
   render() {
     const { auth } = this.props;
@@ -298,7 +269,7 @@ class RentOrder extends Component {
       return <Redirect to="/" />;
     }
 
-    if (this.state.barcodesRented) {
+    if (this.props.saved) {
       return <Redirect to="/RentInvoice" />;
     }
     const { customer } = this.props;
@@ -306,8 +277,10 @@ class RentOrder extends Component {
       <React.Fragment>
         <Loader />
         <div className="wrapper menu-collapsed">
-          <Sidebar location={this.props.location}></Sidebar>
-          <Header></Header>
+          <Sidebar location={this.props.location} >
+          </Sidebar>
+          <Header>
+          </Header>
           <div className="main-panel">
             <div className="main-content">
               <div className="content-wrapper">
@@ -318,90 +291,71 @@ class RentOrder extends Component {
                         <h4 className="card-title">Rent a Product</h4>
                       </div>
                       <div className="card-content">
+
                         <div className="card-body table-responsive">
                           <div id="colors_box">
                             <div className="row color-row">
                               <div className="col-md-12">
                                 <div className="form-group">
-                                  <h3>
-                                    {customer && customer.name}{" "}
-                                    {`${"#"}${
-                                      customer && customer.contactnumber
-                                    }`}
-                                  </h3>
+                                  <h3>{customer && customer.name} {`${"#"}${customer && customer.contactnumber}`}</h3>
                                 </div>
                               </div>
                               <form onSubmit={(e) => this.onSubmit(e)}>
+
                                 <div className="col-md-12">
                                   <div id="sizes_box">
                                     {this.getBarcodeRecord()}
-                                    <Link
-                                      to="/product/addproduct"
-                                      className="btn "
-                                    >
-                                      <i className="fa fa-plus"></i>
-                                      Go Back To Add Products
-                                    </Link>
+                                    <Link to="/product/addproduct"
+                                      className="btn "><i className="fa fa-plus"></i>
+                                 Go Back To Add Products
+                                 </Link>
 
                                     <br />
 
                                     <div className="row">
                                       <div className="col-md-12">
                                         <div className="form-group">
-                                          <div style={{ float: "left" }}>
-                                            <h4 id="padLeft">
-                                              Total Without Tax
-                                            </h4>
+                                          <div style={{ 'float': 'left' }}>
+
+                                            <h4 id="padLeft">Total Without Tax</h4>
                                           </div>
-                                          <div style={{ paddingLeft: "650px" }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
-                                              style={{ width: "65%" }}
+                                              style={{ 'width': '65%' }}
                                               type="text"
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Total"
                                               name="total_amt"
                                               id="setSizeFloat"
-                                              onChange={(e) =>
-                                                this.onHandleChange(e)
-                                              }
-                                              value={
-                                                this.state.product_Array
-                                                  ? `${"$"}${this.calculateTotalWithoutTax()}`
-                                                  : ""
-                                              }
+                                              onChange={(e) => this.onHandleChange(e)}
+                                              value={this.state.product_Array ? `${"$"}${this.calculateTotalWithoutTax()}` : ""}
+
+
                                             />
                                           </div>
                                           <br />
-                                        </div>{" "}
-                                      </div>
+                                        </div> </div>
                                     </div>
 
                                     <div className="row">
                                       <div className="col-md-12">
                                         <div className="form-group">
-                                          <div style={{ float: "left" }}>
-                                            <h4 id="padLeft">
-                                              Enter tax %{" "}
-                                              <span className="text-muted">
-                                                (enter 0 if no tax)
-                                              </span>
-                                            </h4>
+                                          <div style={{ 'float': 'left' }}>
+                                            <h4 id="padLeft">Enter tax % <span className="text-muted">(enter 0 if no tax)</span></h4>
                                           </div>
-                                          <div style={{ paddingLeft: "650px" }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
-                                              style={{ width: "65%" }}
+                                              style={{ 'width': '65%' }}
                                               name="taxper"
                                               type="text"
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Tax"
                                               id="setSizeFloat"
                                               value={`${this.state.taxper}`}
-                                              onChange={(e) =>
-                                                this.onHandleChange(e)
-                                              }
+                                              onChange={(e) => this.onHandleChange(e)}
+
                                             />
-                                          </div>{" "}
-                                        </div>
+                                          </div>  </div>
                                       </div>
                                     </div>
                                     <br />
@@ -409,25 +363,18 @@ class RentOrder extends Component {
                                     <div className="row">
                                       <div className="col-md-12">
                                         <div className="form-group">
-                                          <h4 id="arowDown">
-                                            <i className="ft-arrow-down"></i>
-                                          </h4>
-                                          <div style={{ paddingLeft: "650px" }}>
+
+                                          <h4 id="arowDown"><i className="ft-arrow-down"></i></h4>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
-                                              style={{ width: "65%" }}
+                                              style={{ 'width': '65%' }}
                                               type="text"
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Tax Ammount"
                                               id="setSizeFloat"
-                                              value={
-                                                this.state.product_Array &&
-                                                this.state.taxper
-                                                  ? `${"$"}${this.calculateTax()}`
-                                                  : ""
-                                              }
+                                              value={(this.state.product_Array && this.state.taxper) ? `${"$"}${this.calculateTax()}` : ""}
                                             />
-                                          </div>{" "}
-                                        </div>
+                                          </div>                             </div>
                                       </div>
                                     </div>
                                     <br />
@@ -435,24 +382,18 @@ class RentOrder extends Component {
                                     <div className="row">
                                       <div className="col-md-12">
                                         <div className="form-group">
-                                          <div style={{ float: "left" }}>
-                                            <h4 id="padLeft">
-                                              Enter Insurance Amount
-                                            </h4>
+                                          <div style={{ 'float': 'left' }}>
+
+                                            <h4 id="padLeft">Enter Insurance Amount</h4>
                                           </div>
-                                          <div style={{ paddingLeft: "650px" }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
-                                              style={{ width: "65%" }}
+                                              style={{ 'width': '65%' }}
                                               type="text"
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Insurance"
                                               id="setSizeFloat"
-                                              value={
-                                                this.state.total_amt
-                                                  ? `${"$"}${this.calculateInsuranceAmt()}`
-                                                  : ""
-                                              }
-                                            />
+                                              value={this.state.total_amt ? `${"$"}${this.calculateInsuranceAmt()}` : ""} />
                                           </div>
                                         </div>
                                       </div>
@@ -462,69 +403,57 @@ class RentOrder extends Component {
                                     <div className="row">
                                       <div className="col-md-12">
                                         <div className="form-group">
-                                          <div style={{ float: "left" }}>
+                                          <div style={{ 'float': 'left' }}>
+
                                             <h4 id="padLeft">Leave ID</h4>
                                           </div>
-                                          <div
-                                            style={{
-                                              float: "right",
-                                              paddingRight: "170px",
-                                            }}
-                                          >
+                                          <div style={{ 'float': 'right', 'paddingRight': '170px' }}>
+
                                             <div className="custom-radio">
                                               <input
                                                 type="radio"
-                                                className="custom-control-input"
-                                              />
+                                                className="custom-control-input" />
                                               <label
                                                 className="custom-control-label"
-                                                htmlFor="customRadioInline1"
-                                              >
-                                                YES
-                                              </label>
+                                                htmlFor="customRadioInline1">YES</label>
                                             </div>
                                             <div className="custom-radio">
                                               <input
                                                 type="radio"
-                                                className="custom-control-input"
-                                              />
+                                                className="custom-control-input" />
                                               <label
                                                 className="custom-control-label"
-                                                htmlFor="customRadioInline2"
-                                              >
-                                                NO
-                                              </label>
-                                            </div>{" "}
-                                          </div>
+                                                htmlFor="customRadioInline2">NO</label>
+                                            </div>                    </div>
                                         </div>
                                       </div>
                                     </div>
 
                                     <br />
 
-                                    <div className="row">
-                                      <div className="col-md-6 text-center">
-                                        <label
-                                          className="text-center"
-                                          id="setName"
-                                        >
-                                          Rent Date
-                                        </label>
-                                      </div>
+
+                                    <div className="row" >
 
                                       <div className="col-md-6 text-center">
                                         <label
                                           className="text-center"
-                                          id="setName"
-                                        >
-                                          Return Date
-                                        </label>
+                                          id="setName">Rent Date</label>
+
+                                      </div>
+
+                                      <div className="col-md-6 text-center">
+
+                                        <label className="text-center"
+                                          id="setName">Return Date</label>
+
                                       </div>
                                     </div>
 
                                     <br />
 
-                                    <div className="row justify-content-center">
+
+                                    <div className="row justify-content-center"  >
+
                                       <div className="col-md-6">
                                         <input
                                           type="date"
@@ -535,14 +464,12 @@ class RentOrder extends Component {
                                           data-trigger="hover"
                                           data-placement="top"
                                           data-title="Rent Date"
-                                          onChange={(e) =>
-                                            this.onHandleChange(e)
-                                          }
-                                          value={this.state.rentDate}
-                                        />
+                                          onChange={(e) => this.onHandleChange(e)}
+                                          value={this.state.rentDate} />
                                       </div>
 
                                       <div className="col-md-6">
+
                                         <input
                                           type="date"
                                           id="issueinput4"
@@ -552,38 +479,34 @@ class RentOrder extends Component {
                                           data-trigger="hover"
                                           data-placement="top"
                                           data-title="Return Date"
-                                          onChange={(e) =>
-                                            this.onHandleChange(e)
-                                          }
+                                          onChange={(e) => this.onHandleChange(e)}
                                           value={this.state.returnDate}
                                         />
                                       </div>
+
                                     </div>
 
                                     <br />
                                     <div className="row">
                                       <div className="col-md-12">
                                         <div className="form-group">
-                                          <div style={{ float: "left" }}>
+                                          <div style={{ 'float': 'left' }}>
                                             <h4 id="padLeft">Total</h4>
                                           </div>
-                                          <div style={{ paddingLeft: "650px" }}>
+                                          <div style={{ 'paddingLeft': '650px' }}>
                                             <input
-                                              style={{ width: "65%" }}
+                                              style={{ 'width': '65%' }}
                                               type="text"
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Total"
                                               id="setSizeFloat"
-                                              value={
-                                                this.state.tax
-                                                  ? `${"$"}${this.calculateTotal()}`
-                                                  : ""
-                                              }
+                                              value={this.state.tax ? `${"$"}${this.calculateTotal()}` : ""}
 
-                                              // value={`${"Total: $"}${this.state.tax ? (this.calculateTotal()) : ""}`}
+                                            // value={`${"Total: $"}${this.state.tax ? (this.calculateTotal()) : ""}`} 
                                             />
-                                          </div>{" "}
-                                        </div>
+
+
+                                          </div> </div>
                                       </div>
                                     </div>
                                   </div>
@@ -591,73 +514,70 @@ class RentOrder extends Component {
                                   <div className="row text-center">
                                     <div className="col-md-12 btn-cont">
                                       <div className="form-group">
-                                        <button
+                                        <Link
+                                          to={{
+                                            pathname: "/RentInvoice",
+                                            data: {
+                                              data: this.state
+                                            }
+                                          }}
                                           type="submit"
                                           className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                                          id="btnSize2"
-                                        >
-                                          <i className="ft-check"></i>
-                                          Submit &amp; Get Invoice
-                                        </button>
+                                          id="btnSize2" ><i className="ft-check"></i>
+                                                 Submit &amp; Get Invoice
+                                          </Link>
+
                                       </div>
                                     </div>
+
+
                                   </div>
                                 </div>
                               </form>
+
                             </div>
                           </div>
                         </div>
+
                       </div>
-                    </div>
-                  </div>
+                    </div></div>
+
                 </section>
+
               </div>
+
             </div>
 
             <footer className="footer footer-static footer-light">
-              <p className="clearfix text-muted text-sm-center px-2">
-                <span>
-                  Powered by &nbsp;{" "}
-                  <a
-                    href="https://www.alphinex.com"
-                    id="pixinventLink"
-                    target="_blank"
-                    className="text-bold-800 primary darken-2"
-                  >
-                    Alphinex Solutions{" "}
-                  </a>
-                  , All rights reserved.{" "}
-                </span>
-              </p>
+              <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
+                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
             </footer>
           </div>
         </div>
       </React.Fragment>
+
     );
   }
 }
 
 RentOrder.propTypes = {
+  saved: PropTypes.bool,
   getAllProducts: PropTypes.func.isRequired,
   getCustomer: PropTypes.func.isRequired,
   addNewRentProduct: PropTypes.func.isRequired,
-  getProductById: PropTypes.func.isRequired,
-  updateProduct: PropTypes.func.isRequired,
+
   auth: PropTypes.object,
   products: PropTypes.array,
   customer: PropTypes.array,
+
 };
 
 const mapStateToProps = (state) => ({
-  product: state.product.product,
+  saved: state.rentproduct.saved,
   auth: state.auth,
   products: state.product.products,
-  customer: state.customer.customer,
+  customer: state.customer.customer
 });
 export default connect(mapStateToProps, {
-  getAllProducts,
-  getCustomer,
-  addNewRentProduct,
-  getProductById,
-  updateProduct,
+  getAllProducts, getCustomer, addNewRentProduct
 })(RentOrder);

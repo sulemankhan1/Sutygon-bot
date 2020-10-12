@@ -13,7 +13,10 @@ import { getCustomer } from "../../actions/customer";
 
 class Checkout extends Component {
   state = {
-    barcode: [],
+    barcode: [
+      {barcode: "LGtc-Utoc", id: "zO__kIg7v"},
+      {barcode: "NnsrmPzE_", id: "JHQo4N-gb"},
+    ],
     customer_id: "",
   };
 

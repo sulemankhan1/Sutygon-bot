@@ -112,11 +112,11 @@ router.post(
     async (req, res) => {
         try {
            const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
-    console.log(body)
-    console.log(req.params.id)
+           
             await Product.updateOne({ _id: req.params.id }, {
                 $set: {
-                    name: req.body.name,color: req.body.color
+                    name: req.body.name,
+                    color: req.body.color
                 }
             });
             res
