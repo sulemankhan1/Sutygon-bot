@@ -17,7 +17,6 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     await this.props.getAllAppointments();
-    await this.props.getAllOrders();
     await this.props.getAllRentedProducts();
     await this.props.getAllProducts();
     await this.props.getShop();
@@ -32,7 +31,7 @@ class Dashboard extends Component {
     const { rentedproducts } = this.props;
     if (rentedproducts) {
 
-      let events = rentedproducts.filter(a => (new Date(a.deliveryDate)) - (new Date()) > 0);
+      let events = rentedproducts.filter(a => (new Date(a.returnDate)) - (new Date()) > 0);
 
       return events.length;
 
@@ -43,11 +42,26 @@ class Dashboard extends Component {
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
+      console.log(currentdate)
+      let events = rentedproducts.filter(a => (moment(moment(a.rentDate).isBefore(currentdate))));
+    
+      console.log(events.length)
 
-      let events = rentedproducts.filter(a => (moment(a.deliveryDate).isBefore(currentdate)));
       return events.length;
 
     }
+  }
+  
+  getTodaysOrder = () => {
+    // e.preventDefault()
+    const { rentedproducts } = this.props;
+    if (rentedproducts) {
+      var currentdate = moment(new Date).format('MM/DD/YYYY');
+      let events = rentedproducts.filter(a => (moment(moment(a.returnDate).format('MM/DD/YYYY')).isSame(currentdate)));
+      return events.length;
+    }
+
+
   }
   getReturnOrder = () => {
     // e.preventDefault()
@@ -108,7 +122,8 @@ class Dashboard extends Component {
                           <div class="media">
                             <div class="media-body white text-left">
                               <h3 class="font-large-1 mb-0">{this.getTodaysAppointment()}</h3>
-                              <span>Today's Appointment</span>
+                         <a href="/calender" style={{'textDecoration':'none' , 'color':'white'}}>Today's Appointment
+                         </a>
                             </div>
                             <div class="media-right white text-right">
                               <i class="icon-pie-chart font-large-1"></i>
@@ -288,7 +303,7 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   products: state.product.products,
   appointment: state.appointment.appointments,
-  orders: state.order.orders,
+  // orders: state.order.orders,
   shop: state.dashboard.shop,
   rentedproducts: state.rentproduct.rentproducts
 

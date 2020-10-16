@@ -1,29 +1,37 @@
 import React, { Component } from "react";
-import Sidebar from "../layout/Sidebar";
-import Header from "../layout/Header";
+import Sidebar from "../../layout/Sidebar";
+import Header from "../../layout/Header";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import shortid from "shortid";
-import Loader from "../layout/Loader";
-import { getCustomer } from "../../actions/customer";
+import Loader from "../../layout/Loader";
+import { getCustomer } from "../../../actions/customer";
+import { OCAlertsProvider } from '@opuscapita/react-alerts';
+import { OCAlert } from '@opuscapita/react-alerts';
 
-class Checkout extends Component {
+class ScanBarcode extends Component {
   state = {
     barcode: [],
     customer_id: "",
+    order:"",
+    barcodeFromInput:"",
+    matchedBarcodes:[]
   };
 
   async componentDidMount() {
     const { data } = this.props.location;
-
+console.log("data",data)
     if (data) {
       this.setState({
         // id: id,
-        customer_id: data.customer.id,
+        customer_id: data.customer,
+        barcode:data.order[0].barcodes,
+        order:data.order
       });
     }
+    
     await this.props.getCustomer(this.state.customer_id);
   }
 
@@ -35,6 +43,9 @@ class Checkout extends Component {
     });
     this.setState({ barcode });
   };
+  handleChangeInput = (e, id = "") => {
+    this.setState({ [e.target.name]: e.target.value });
+};
 
   onScanBarcode = (e) => {
     
@@ -42,11 +53,28 @@ class Checkout extends Component {
       const bc = e.target[0].value;
       e.target[0].value = '';
       const { barcode } = this.state;
-      barcode.push({
-        id: shortid.generate(),
-        barcode: bc,
-      });
-      this.setState({ barcode });
+      let { barcodeFromInput } = this.state;
+      const { matchedBarcodes } = this.state;
+
+    //   if(matchedBarcodes.includes(barcodeFromInput))
+    //  { 
+    //   OCAlert.alertError(`This barcode is already scanned. Please try again!`); 
+    //   return;
+    // }
+      let isMatch=barcode.includes(barcodeFromInput)
+      if(isMatch===true){
+        matchedBarcodes.push({
+          barcode: barcodeFromInput,
+        });
+        this.setState({ matchedBarcodes , barcodeFromInput:"" });
+        
+      }
+      else {
+        OCAlert.alertError(`The barcode you enter does not match with any item
+        in this order. Please try again!`);
+
+      }
+     
   }
 
   removeBarcodeRow = (id) => {
@@ -71,9 +99,9 @@ class Checkout extends Component {
   };
 
   getBarcodeRow = () => {
-    let { barcode } = this.state; // get all barcode
-    if(barcode){
-    return barcode.map((barcode) => (
+    let { matchedBarcodes } = this.state; // get all barcode
+    if(matchedBarcodes){
+    return matchedBarcodes.map((barcode) => (
       <div id="sizes_box" key={barcode.id || barcode._id}>
         <div className="row">
           <div className="left">
@@ -81,30 +109,20 @@ class Checkout extends Component {
               type="text"
               className="form-control mm-input s-input"
               placeholder="Barcode"
-              name="barcode"
               id="widthBr"
               style={{ width: "-webkit-fill-available" }}
-              onChange={(e) => this.handleChange(e, barcode.id)}
               value={barcode.barcode}
             />
           </div>
           <div className="right">
             <button
               type="button"
-              onClick={() => this.removeBarcodeRow(barcode.id)}
-              className="btn btn-raised btn-sm btn-icon btn-danger mt-1"
+              className="btn btn-raised btn-sm btn-icon btn-default mt-1"
             >
-              <i className="fa fa-minus"></i>
+              <i className="fa fa-check fa-2x text-success"></i>
             </button>
           </div>
-          <div className="right">
-            <button
-              type="button"
-              className="btn btn-raised btn-sm btn-success mt-1"
-            >
-              <i className="=ft ft-edit"></i>
-            </button>
-          </div>
+      
         </div>
       </div>
     ));
@@ -134,7 +152,7 @@ class Checkout extends Component {
                   <div className="form-body">
                     <div className="card">
                       <div className="card-header">
-                        <h4 className="card-title">Rent a Product</h4>
+                        <h4 className="card-title">Return a Product</h4>
                       </div>
                       <div className="card-content">
                         <div className="card-body table-responsive">
@@ -143,7 +161,7 @@ class Checkout extends Component {
                               <div className="row color-row">
                                 <div className="col-md-12">
                                   <div className="form-group">
-                                    <h2>Scan Barcode To Add Items</h2>
+                                    <h2>Scan Barcode And Match Items</h2>
                                   </div>
                                 </div>
 
@@ -161,7 +179,14 @@ class Checkout extends Component {
                                 <div className="col-md-12">
                                     <div className="form-group">
                                         <form onSubmit={e => this.onScanBarcode(e)}>
-                                            <input className="form-control mm-input col-md-12" type="text" />
+                                            <input 
+                                            name="barcodeFromInput" 
+                                            className="form-control mm-input col-md-12" 
+                                            type="text"
+                                            value={this.state.barcodeFromInput}
+                                            onChange={(e) => this.handleChangeInput(e)}
+
+                                            />
                                         </form>
                                     </div>
                                 </div>
@@ -169,63 +194,30 @@ class Checkout extends Component {
                                 <div className="col-md-12">
                                   {this.getBarcodeRow()}
 
-                                  <div className="row">
-                                    <div className="col-md-12 btn-cont">
-                                      <div className="form-group mb-0">
-                                        <button
-                                          type="button"
-                                          onClick={() => this.addBarcodeRow()}
-                                          className="btn"
-                                        >
-                                          <i className="fa fa-plus"></i> Add
-                                          Barcode
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div className="row text-center ">
+                                 <div className="row text-center ">
                                     <div className="col-md-12 btn-cont">
                                       <div className="form-group">
                                         <Link
                                           to={{
-                                            pathname: "/rentorder",
+                                            pathname: "/matchbarcodes",
                                             data: {
-                                              customer_id: (customer) && customer[0]._id,
-                                              barcode: this.state.barcode,
+                                              customer:this.props.customer[0]._id,
+                                              barcodesArray: this.state.matchedBarcodes,
+                                              order:this.state.order,
+
                                             },
                                           }}
                                           type="button"
                                           className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
                                           id="btnSize2"
                                         >
-                                          <i className="ft-check"></i> Checkout
+                                          <i className="ft-check"></i> Next
                                         </Link>
                                       </div>
                                     </div>
                                   </div>
 
-                                  {/* <div className="form-actions top">
-                            {this.state.saving ? (
-                              <button
-                                type="button"
-                                className="mb-2 mr-2 btn btn-raised btn-primary"
-                              >
-                                <div
-                                  className="spinner-grow spinner-grow-sm "
-                                  role="status"
-                                ></div>
-                                &nbsp; Adding
-                              </button>
-                            ) : (
-                                <button
-                                  type="submit"
-                                  className="mb-2 mr-2 btn btn-raised btn-primary"
-                                >
-                                  <i className="ft-check" /> Add Product
-                                </button>
-                              )}
-                          </div> */}
+                              
                                 </div>
                               </div>
                             </div>
@@ -255,22 +247,23 @@ class Checkout extends Component {
             </footer>
           </div>
         </div>
+        <OCAlertsProvider />
       </React.Fragment>
     );
   }
 }
 
-Checkout.propTypes = {
+ScanBarcode.propTypes = {
   saved: PropTypes.bool,
   auth: PropTypes.object,
   customer: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
-  saved: state.rentproduct.saved,
+  saved: state.returnproduct.saved,
   auth: state.auth,
   customer: state.customer.customer,
 });
 export default connect(mapStateToProps, {
   getCustomer,
-})(Checkout);
+})(ScanBarcode);

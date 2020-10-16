@@ -111,11 +111,13 @@ if(user && user.type == "Employee") {
                                   <input type="text"
                                     className="form-control mb-3"
                                     placeholder="Username"
+                                    required
                                     onChange={(e) => this.onChange(e)}
                                     name="username" />
                                   <input type="password"
                                     className="form-control mb-1"
                                     placeholder="Password"
+                                    required
                                     onChange={(e) => this.onChange(e)}
                                     name="password" />
 

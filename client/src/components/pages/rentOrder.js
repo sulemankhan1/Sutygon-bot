@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../layout/Loader";
 import {
-  barcodeUpdateProduct,
+  
   getProductById,
   getAllProducts,
   updateProduct,
@@ -66,7 +66,7 @@ class RentOrder extends Component {
     });
 
     const product = {
-      // orderNumber: state.orderNumber,
+      orderNumber: state.orderNumber,
       customer: state.customer_id,
       customerContactNumber: customer.contactnumber,
       user: user._id,
@@ -75,9 +75,10 @@ class RentOrder extends Component {
       returnDate: state.returnDate,
       rentDate: state.rentDate,
       leaveId: true,
+      insuranceAmt:state.insAmt
     };
 
-    // await this.props.addNewRentProduct(product);
+     await this.props.addNewRentProduct(product);
 
     let { product_Array } = this.state;
     

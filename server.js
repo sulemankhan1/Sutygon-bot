@@ -20,7 +20,7 @@ app.use("/api/customers", require("./routes/api/customer"));
 app.use("/api/appointments", require("./routes/api/fittingappointments"));
 app.use("/api/rentedproducts", require("./routes/api/rentaproduct"));
 app.use("/api/reports", require("./routes/api/report"));
-// app.use("/api/returnproduct", require("./routes/api/re"));
+app.use("/api/returnproducts", require("./routes/api/returnproduct"));
 
 
 

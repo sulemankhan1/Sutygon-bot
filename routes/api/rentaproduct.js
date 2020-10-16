@@ -4,6 +4,7 @@ const auth = require("../../middleware/auth");
 const RentedProduct = require("../../models/RentedProducts");
 const Customer = require("../../models/Customer");
 const { check, validationResult } = require("express-validator");
+const shortid = require("shortid");
 
 // @route   POST api/rentedproducts/add
 // @desc    Add New Rented Product
@@ -18,21 +19,27 @@ router.post(
     auth,
     async (req, res) => {
         try {
-         RentedProduct.find().sort({ orderNumber: -1 }).limit(1).then(async (data) => {
-                                newOrderNumber = data[0].orderNumber + 1;
-                   var rentedProduct = new RentedProduct({
-                        barcodes: req.body.barcodes,
-                        orderNumber: newOrderNumber,
-                        customer: req.body.customer,
-                        rentDate: req.body.rentDate,
-                        returnDate: req.body.returnDate
-                    });
-            
-                    await rentedProduct.save();
-                })
-               
+            // RentedProduct.find().sort({ orderNumber: -1 }).limit(1).then(async (data) => {
+            //    if(data[0].orderNumber === undefined){
+            //        orderNumber = 0
+            //    }
+            //     newOrderNumber = data[0].orderNumber + 1;
+            //     console.log(newOrderNumber)
+                var rentedProduct = new RentedProduct({
+                    barcodes: req.body.barcodes,
+                    orderNumber: req.body.orderNumber,
+                    customer: req.body.customer,
+                    customerContactNumber: req.body.customerContactNumber,
+                    rentDate: req.body.rentDate,
+                    returnDate: req.body.returnDate,
+                    insuranceAmt:req.body.insuranceAmt
+                });
 
-                // await inventory.save();
+                await rentedProduct.save();
+            // })
+
+
+            // await inventory.save();
             res.json({ msg: "Order Added Successfully" });
         } catch (err) {
             console.log(err);
@@ -47,7 +54,7 @@ router.post(
 router.post(
     "/:id",
     [
-        check("user", "User Name Required").not().isEmpty(),
+        check("status", "Status Required").not().isEmpty(),
     ],
     auth,
     async (req, res) => {
@@ -58,13 +65,10 @@ router.post(
             }
             await RentedProduct.updateOne({ _id: req.params.id }, {
                 $set: {
-                    product: req.body.name,
-                    orderedQuantity: req.body.image,
-                    orderedSize: req.body.color,
-                    returnDate: req.body.size,
+                   status:req.body.status
                 }
             });
-            res.json({ msg: "Order Updated Successfully" });
+            res.json({ msg: "Order Completed Successfully" });
         } catch (err) {
             console.error(err.message);
             res
