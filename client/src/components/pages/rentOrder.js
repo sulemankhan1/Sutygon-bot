@@ -16,6 +16,9 @@ import {
 import { getCustomer } from "../../actions/customer";
 import { addNewRentProduct } from "../../actions/rentproduct";
 import * as moment from 'moment'
+
+import { OCAlertsProvider } from '@opuscapita/react-alerts';
+import { OCAlert } from '@opuscapita/react-alerts'
 import shortid from "shortid";
 
 class RentOrder extends Component {
@@ -43,17 +46,31 @@ class RentOrder extends Component {
     const { data } = this.props.location;
     if (data) {
       this.setState({
-        // id: id,
         customer_id: data.customer_id,
         barcode_Array: data.barcode,
       });
     }
     await this.props.getCustomer(this.state.customer_id);
-
-    // saves the barcode in specific item > color > size object
-
-    // get product
   }
+returnDateValidity = ()=>{
+  const {rentDate,returnDate} = this.state;
+ if(moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)){
+  OCAlert.alertError('Return Date should be after rent date');
+ }
+}
+
+rentDateValidity = ()=>{
+  const {rentDate} = this.state;
+  var currentdate = moment(new Date).format('MM/DD/YYYY');
+  console.log(moment(rentDate).format('MM/DD/YYYY'))
+  console.log(currentdate)
+
+ if(moment(moment(rentDate).format('MM/DD/YYYY')).isBefore(currentdate)){
+  OCAlert.alertError(`Rent Date should be after today's date`);
+
+ }
+
+}
 
   onSubmit = async (e) => {
     e.preventDefault();
@@ -130,6 +147,7 @@ class RentOrder extends Component {
 
   onHandleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
+    
   };
 
   // return sorted products for barcodes
@@ -580,6 +598,8 @@ class RentOrder extends Component {
                                             this.onHandleChange(e)
                                           }
                                           value={this.state.rentDate}
+                                          onInput={this.rentDateValidity()}
+
                                         />
                                       </div>
 
@@ -597,6 +617,7 @@ class RentOrder extends Component {
                                             this.onHandleChange(e)
                                           }
                                           value={this.state.returnDate}
+                                          onInput={this.returnDateValidity()}
                                         />
                                       </div>
                                     </div>
@@ -888,6 +909,8 @@ class RentOrder extends Component {
             </footer>
           </div>
         </div>
+        <OCAlertsProvider />
+
       </React.Fragment>
     );
   }
