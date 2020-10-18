@@ -7,6 +7,7 @@ import { updateRentedProduct } from "../../../actions/rentproduct";
 import Loader from "../../layout/Loader";
 import { Link } from "react-router-dom";
 import * as moment from 'moment'
+import shortid from "shortid";
 
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -110,6 +111,7 @@ class MatchBarcodes extends Component {
 
   finalInVoiceTotal = () => {
     const { totalPaid, insuranceAmt, missingItmCharges } = this.state;
+
     const finalInVoiceTotal = Number(totalPaid) - Number(insuranceAmt) + Number(missingItmCharges);
     return finalInVoiceTotal;
   }
@@ -142,16 +144,26 @@ class MatchBarcodes extends Component {
                 className="form-control mm-input s-input text-center text-dark"
                 placeholder="Barcode"
                 id="widthBr"
-                style={{ width: "-webkit-fill-available" }}
+                style={{ width: "inherit" }}
               />
             </div>
-            <div className="right">
+            {/* <div className="right">
               <button
                 type="button"
                 // onClick={}
                 className="btn btn-raised btn-sm btn-icon btn-default mt-1">
                 <i className="fa fa-check text-success fa-2x"></i>
               </button>
+            </div> */}
+            <div className="">
+              <input
+                type="text"
+                value={`${b[0].price}`}
+                className="form-control mm-input s-input text-center text-dark"
+                placeholder="Barcode"
+                id="widthBr"
+                style={{ width: "-webkit-fill-available" }}
+              />
             </div>
           </div>
         </div>
@@ -159,6 +171,46 @@ class MatchBarcodes extends Component {
       </>
     ))
   }
+
+  invoiceproductBox = () => {
+    const { product_Array } = this.state
+    return product_Array.map((b, b_index) => (
+      <>
+        <div id="sizes_box" key={b_index} >
+          <div className="row" style={{ 'alignContent': 'center' }} >
+
+            <div className="">
+              <input
+                type="text"
+                value={`${b[0].title} ${"|"} ${b[0].barcode}`}
+                className="form-control mm-input s-input text-center text-dark"
+                placeholder="Barcode"
+                id="widthBr"
+                style={{ width: "280px", color: 'black' }}
+              />
+            </div>
+
+            <input
+              type="text"
+              value={`${b[0].price}`}
+              className="form-control mm-input s-input text-center text-dark"
+              placeholder="Barcode"
+              id="widthBr"
+              style={{ color: 'black', width: '80px' }}
+            />
+          </div>
+        </div>
+
+      </>
+    ))
+  }
+
+  generateOrderBarcode = (id) => {
+    console.log(id)
+    let orderBarcode = shortid.generate();
+    return orderBarcode;
+  }
+
 
   onSubmit = async (e) => {
     e.preventDefault();
@@ -220,16 +272,15 @@ class MatchBarcodes extends Component {
 
         }
         const rentedProduct = {
-          status: "Completed"
+          status: "Completed",
+          // orderBarcode: this.generateOrderBarcode(order[0]._id)
         }
         // this.props.updateRentedProduct(rentedProduct, order[0]._id)
       });
 
     }
     this.setState({ saving: false });
-    // this.setState({
-    //   barcodesRented: true
-    // })
+
   };
 
   render() {
@@ -272,388 +323,375 @@ class MatchBarcodes extends Component {
                       </div>
 
                       <div className="card-body table-responsive">
-                        <div className="card-body table-responsive">
-                          <div id="colors_box">
-                            <div className="row color-row">
-                              <div className="col-md-12">
-                                <div className="text-center">
-                                  <h2>    Scan and match barcodes with all items    </h2>
+                        <div id="colors_box">
+                          <div className="row color-row">
+                            <div className="col-md-12">
+                              <div className="text-center">
+                                <h2>    Scan and match barcodes with all items    </h2>
+                                <br />
+                              </div>
+                              <div className="form-group">
+                                <div style={{ 'float': 'left' }}>
+
+                                  <h3>{(customer) ? `${customer[0].name}${"#"}${customer[0].contactnumber}` : ""}</h3>
                                   <br />
                                 </div>
-                                <div className="form-group">
-                                  <div style={{ 'float': 'left' }}>
+                                <div style={{ 'float': 'right' }}>
+                                  <h3>{(data) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h3>
 
-                                    <h3>{(customer) ? `${customer[0].name}${"#"}${customer[0].contactnumber}` : ""}</h3>
-                                    <br />
-                                  </div>
-                                  <div style={{ 'float': 'right' }}>
-                                    <h3>{(data) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h3>
-
-                                  </div>
                                 </div>
                               </div>
-                              <form onSubmit={(e) => this.onSubmit(e)}>
-
-                                <div className="col-md-12">
-                                  <div className="text-center">
-                                    <h3>    You are returning {(order && order.length > 0) ? `${barcodesArray.length}${"/"}${order[0].barcodes.length}` : `0`} products in this order </h3>
-                                    <br />
-                                  </div>
-                                  {this.productBox()}
-                                  <h3></h3>
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <div className="form-group">
-                                        <div style={{ 'float': 'left' }}>
-                                          <h4 id="padLeft">Enter total missing items charge</h4>
-                                        </div>
-                                        <div style={{ 'paddingLeft': '700px' }}>
-                                          <input
-                                            name="missingItmCharges"
-                                            style={{ 'width': '85%', 'color': 'black' }}
-                                            type="text"
-                                            className="form-control mm-input s-input text-center"
-                                            placeholder="Total"
-                                            id="setSizeFloat"
-                                            value={missingItmCharges}
-                                            onChange={(e) => this.handleChange(e)}
-                                          />
-                                        </div>  </div>
-                                    </div>
-                                  </div>
-                                  <br />
-
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <div className="form-group">
-                                        <div style={{ 'float': 'left' }}>
-
-                                          <h4 id="padLeft">Insurance return
-to customer</h4>
-                                        </div>
-                                        <div style={{ 'paddingLeft': '700px' }}>
-                                          <input
-                                            name="insuranceAmt"
-                                            style={{ 'width': '85%', 'color': 'black' }}
-                                            type="text"
-                                            className="form-control mm-input s-input text-center"
-                                            placeholder="Total"
-                                            id="setSizeFloat"
-                                            value={this.state.order ? `${"$"}${this.state.order[0].insuranceAmt}` : "$0"}
-                                            onChange={(e) => this.handleChange(e)}
-
-
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <br />
-
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <div className="form-group">
-                                        <div style={{ 'float': 'left' }}>
-
-                                          <h4 id="padLeft">Customer owe
-</h4>
-                                        </div>
-                                        <div style={{ 'paddingLeft': '700px' }}>
-                                          <input
-                                            name="customerOwe"
-                                            style={{ 'width': '85%', 'color': 'black' }}
-                                            type="text"
-                                            className="form-control mm-input s-input text-center"
-                                            placeholder="Total"
-                                            id="setSizeFloat"
-                                            value={customerOwe}
-                                            onChange={(e) => this.handleChange(e)}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <br />
-
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <div className="form-group">
-                                        <div style={{ 'float': 'left' }}>
-
-                                          <h4 id="padLeft">  Return customer
-</h4>
-                                        </div>
-                                        <div style={{ 'paddingLeft': '700px' }}>
-                                          <input
-                                            name="returnCustomer"
-                                            style={{ 'width': '85%', 'color': 'black' }}
-                                            type="text"
-                                            className="form-control mm-input s-input text-center"
-                                            placeholder=""
-                                            id="setSizeFloat"
-                                            value={(customerOwe && insuranceAmt && missingItmCharges) ? `${"$"}${this.returnAmt()}` : "$0"}
-                                            onChange={(e) => this.handleChange(e)}
-
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <br />
-
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <div className="form-group">
-                                        <div style={{ 'float': 'left' }}>
-
-                                          <h4 id="padLeft">Leave ID</h4>
-                                        </div>
-                                        <div style={{ 'float': 'right', 'paddingRight': '170px' }}>
-
-                                          <div className="">
-                                            <input
-                                              // className="custom-control-input"
-                                              type="radio"
-                                              name="leaveID"
-                                              value={true}
-                                              onChange={(e) => this.handleChange(e)}
-                                              checked={this.state.leaveID === "true"}
-                                            />
-                                            <label
-                                            // className="custom-control-label"
-                                            >YES</label>
-                                          </div>
-                                          <div className="">
-                                            <input
-                                              // className="custom-control-input"
-                                              type="radio"
-                                              name="leaveID"
-                                              value={false}
-                                              onChange={(e) => this.handleChange(e)}
-                                              checked={this.state.leaveID === "false"}
-                                            />
-                                            <label
-                                            // className="custom-control-label"
-                                            >NO</label>
-                                          </div>                    </div>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <br />
-                                  <div className="col-md-12">
-                                    <div id="sizes_box">
-                                      <div className="row text-center">
-                                        <div className="col-md-12 btn-cont">
-                                          <div className="form-group">
-                                            <button
-                                              type="submit"
-                                              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                                              id="btnSize2"
-                                              data-toggle="modal"
-                                              data-backdrop="false"
-                                              data-target="#primary"
-                                            ><i className="ft-check"></i> Submit &amp; Generate Invoice	</button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-
-
-
-                                </div>
-                              </form>
                             </div>
+                            <form onSubmit={(e) => this.onSubmit(e)}>
 
-                            {/* Invoice Modal */}
-                            <div class="modal fade text-left" id="primary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8"
-                              aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header bg-primary white">
-                                    <h4 class="modal-title text-center" id="myModalLabel8">Rent Invoice</h4>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
+                              <div className="col-md-12">
+                                <div className="text-center">
+                                  <h3>    You are returning {(order && order.length > 0) ? `${barcodesArray.length}${"/"}${order[0].barcodes.length}` : `0`} products in this order </h3>
+                                  <br />
+                                </div>
+                                {this.productBox()}
+                                <h3></h3>
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div className="form-group">
+                                      <div style={{ 'float': 'left' }}>
+                                        <h4 id="padLeft">Enter total missing items charge</h4>
+                                      </div>
+                                      <div style={{ 'paddingLeft': '700px' }}>
+                                        <input
+                                          name="missingItmCharges"
+                                          style={{ 'width': '85%', 'color': 'black' }}
+                                          type="text"
+                                          className="form-control mm-input s-input text-center"
+                                          placeholder="Total"
+                                          id="setSizeFloat"
+                                          value={missingItmCharges}
+                                          onChange={(e) => this.handleChange(e)}
+                                        />
+                                      </div>  </div>
                                   </div>
-                                  <div class="modal-body">
+                                </div>
+                                <br />
+
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div className="form-group">
+                                      <div style={{ 'float': 'left' }}>
+
+                                        <h4 id="padLeft">Insurance return
+to customer</h4>
+                                      </div>
+                                      <div style={{ 'paddingLeft': '700px' }}>
+                                        <input
+                                          name="insuranceAmt"
+                                          style={{ 'width': '85%', 'color': 'black' }}
+                                          type="text"
+                                          className="form-control mm-input s-input text-center"
+                                          placeholder="Total"
+                                          id="setSizeFloat"
+                                          value={this.state.order ? `${"$"}${this.state.order[0].insuranceAmt}` : "$0"}
+                                          onChange={(e) => this.handleChange(e)}
+
+
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div className="form-group">
+                                      <div style={{ 'float': 'left' }}>
+
+                                        <h4 id="padLeft">Customer owe
+</h4>
+                                      </div>
+                                      <div style={{ 'paddingLeft': '700px' }}>
+                                        <input
+                                          name="customerOwe"
+                                          style={{ 'width': '85%', 'color': 'black' }}
+                                          type="text"
+                                          className="form-control mm-input s-input text-center"
+                                          placeholder="Total"
+                                          id="setSizeFloat"
+                                          value={customerOwe}
+                                          onChange={(e) => this.handleChange(e)}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div className="form-group">
+                                      <div style={{ 'float': 'left' }}>
+
+                                        <h4 id="padLeft">  Return customer
+</h4>
+                                      </div>
+                                      <div style={{ 'paddingLeft': '700px' }}>
+                                        <input
+                                          name="returnCustomer"
+                                          style={{ 'width': '85%', 'color': 'black' }}
+                                          type="text"
+                                          className="form-control mm-input s-input text-center"
+                                          placeholder=""
+                                          id="setSizeFloat"
+                                          value={(customerOwe && insuranceAmt && missingItmCharges) ? `${"$"}${this.returnAmt()}` : "$0"}
+                                          onChange={(e) => this.handleChange(e)}
+
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div className="form-group">
+                                      <div style={{ 'float': 'left' }}>
+
+                                        <h4 id="padLeft">Leave ID</h4>
+                                      </div>
+                                      <div style={{ 'float': 'right', 'paddingRight': '170px' }}>
+
+                                        <div className="">
+                                          <input
+                                            // className="custom-control-input"
+                                            type="radio"
+                                            name="leaveID"
+                                            value={true}
+                                            onChange={(e) => this.handleChange(e)}
+                                            checked={this.state.leaveID === "true"}
+                                          />
+                                          <label
+                                          // className="custom-control-label"
+                                          >YES</label>
+                                        </div>
+                                        <div className="">
+                                          <input
+                                            // className="custom-control-input"
+                                            type="radio"
+                                            name="leaveID"
+                                            value={false}
+                                            onChange={(e) => this.handleChange(e)}
+                                            checked={this.state.leaveID === "false"}
+                                          />
+                                          <label
+                                          // className="custom-control-label"
+                                          >NO</label>
+                                        </div>                    </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <br />
+                                <div className="col-md-12">
+                                  <div id="sizes_box">
+                                    <div className="row text-center">
+                                      <div className="col-md-12 btn-cont">
+                                        <div className="form-group">
+                                          <button
+                                            type="submit"
+                                            className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                            id="btnSize2"
+                                            data-toggle="modal"
+                                            data-backdrop="false"
+                                            data-target="#primary"
+                                          ><i className="ft-check"></i> Submit &amp; Generate Invoice	</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+
+
+                              </div>
+                            </form>
+                          </div>
+
+                          {/* Invoice Modal */}
+                          <div class="modal fade text-left" id="primary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8"
+                            aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header bg-primary white">
+                                  <h4 class="modal-title text-center" id="myModalLabel8">Return Invoice</h4>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
                                   <hr />
+                                  <div id="colors_box">
 
-                                    <div id="colors_box">
+                                    <div className="row color-row">
+                                      <div className="col-md-12">
+                                        <div className="form-group">
+                                          <div style={{ 'float': 'left' }}>
 
-                                      <div className="row color-row">
-                                        <div className="col-md-12">
-                                          <div className="form-group">
-                                            <div style={{ 'float': 'left' }}>
+                                            <h4>{(customer) ? `${customer[0].name}${"#"}${customer[0].contactnumber}` : ""}</h4>
+                                          </div>
+                                          <div style={{ 'float': 'right' }}>
+                                            <h4>{(data) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4>
 
-                                              <h4>{(customer) ? `${customer[0].name}${"#"}${customer[0].contactnumber}` : ""}</h4>
-                                            </div>
-                                            <div style={{ 'float': 'right' }}>
-                                              <h4>{(data) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4>
-
-                                            </div>
                                           </div>
                                         </div>
-                                        <div className="col-md-12">
-                                          <div id="sizes_box">
-                                            {this.productBox()}
-                                            <hr />
+                                      </div>
+                                      <div className="col-md-12">
+                                        <div id="sizes_box">
+                                          {this.productBox()}
+                                          <hr />
 
-                                            <div className="row">
-                                              <div className="col-md-6"  style={{ 'float': 'left','color':'black' }}>
-                                                  <h6 id="padLeft">Tax amount</h6>
-                                                </div>
-                                                <div className="col-md-6" style={{ 'textAlign': 'center' ,'color':'black'}}>
+                                          <div className="row">
+                                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                                              <h6 id="padLeft">Tax amount</h6>
+                                            </div>
+                                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
 
-                                                  <h6 >
-                                                    {this.state.taxAmt}
-                                                  </h6>
-                                                </div>
+                                              <h6 >
+                                                {this.state.taxAmt}
+                                              </h6>
+                                            </div>
 
-                                              </div>
-
-
-                                            <div className="row">
-                                              <div className="col-md-6" style={{ 'float': 'left' ,'color':'black' }}>
-
-                                                  <h6 id="padLeft">Insurance amount</h6>
-</div>
-                                                <div  className="col-md-6"style={{ 'textAlign': 'center','color':'black' }}>
-                                                  <h6 >
-                                                    {this.state.insuranceAmt}
-                                                  </h6>
-                                                </div>
-                                              </div>
+                                          </div>
 
 
+                                          <div className="row">
+                                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
 
-                                            <div className="row justify-content-center">
-                                              <div className="form-group">
-
-                                                <div className="text-center" style={{ 'width': '300%' }}>
-                                                  <input
-                                                    type="text"
-
-                                                    className="form-control mm-input s-input text-center"
-                                                    placeholder="Total"
-                                                    style={{ 'color': 'black' }}
-
-                                                    id="setSizeFloat"
-                                                    value={`${"PAID TOTAL: $"}${this.state.insuranceAmt}`}
-
-                                                  />
+                                              <h6 id="padLeft">Insurance amount</h6>
+                                            </div>
+                                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                                              <h6 >
+                                                {this.state.insuranceAmt}
+                                              </h6>
+                                            </div>
+                                          </div>
 
 
-                                                </div>
+
+                                          <div className="row justify-content-center">
+                                            <div className="form-group">
+
+                                              <div className="text-center" style={{ 'width': '300%' }}>
+                                                <input
+                                                  type="text"
+
+                                                  className="form-control mm-input s-input text-center"
+                                                  placeholder="Total"
+                                                  style={{ 'color': 'black' }}
+
+                                                  id="setSizeFloat"
+                                                  value={`${"PAID TOTAL: $"}${this.state.insuranceAmt}`}
+
+                                                />
+
+
                                               </div>
                                             </div>
-                                            <div className="row">
-                                              <div className="col-md-6" style={{ 'float': 'left','color':'black' }}>
+                                          </div>
+                                          <div className="row">
+                                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
 
 
-                                                <h6 >Lost Items Charge
+                                              <h6 >Lost Items Charge
 </h6></div>
 
-                                              <div className="col-md-6 text-center" style={{'color':'black'}}>
+                                            <div className="col-md-6 text-center" style={{ 'color': 'black' }}>
 
 
 
-                                                <h6 >
-                                                  {this.state.missingItmCharges}
-                                                </h6>
+                                              <h6 >
+                                                {this.state.missingItmCharges}
+                                              </h6>
 
-                                              </div>
+                                            </div>
 
+                                          </div>
+
+
+
+
+                                          <div className="row">
+                                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+
+                                              <h6 id="padLeft">Amount Return to customer</h6>
+                                            </div>
+                                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                                              <h6 >
+
+                                                {(this.state.customerOwe && this.state.insuranceAmt && this.state.missingItmCharges) ? `${"$"}${this.returnAmt()}` : "$0"}
+                                              </h6>
                                             </div>
 
 
 
+                                          </div>
 
-                                            <div className="row">
-                                              <div className="col-md-6" style={{ 'float': 'left','color':'black' }}>
+                                          <br />
 
-                                                  <h6 id="padLeft">Amount Return to customer</h6>
-                                                </div>
-                                                <div className="col-md-6"style={{ 'textAlign': 'center' ,'color':'black'}}>
-                                                  <h6 >
 
-                                                    {(this.state.customerOwe && this.state.insuranceAmt && this.state.missingItmCharges) ? `${"$"}${this.returnAmt()}` : "$0"}
-                                                  </h6>
-                                                </div>
+                                          <div className="row">
+                                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
 
-                                              
 
+                                              <h6 id="padLeft">Leave ID</h6>
+                                            </div>
+                                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                                              <h6 >
+                                                {this.state.leaveID === "true" ? `${"Yes"}` : `${"No"}`}
+                                              </h6>
                                             </div>
 
-<br />
+                                          </div>
 
 
-                                            <div className="row">
-                                              <div className="col-md-6" style={{ 'float': 'left','color':'black' }}>
 
-                                               
-                                                  <h6 id="padLeft">Leave ID</h6>
-                                                </div>
-                                                <div className="col-md-6" style={{ 'textAlign': 'center','color':'black' }}>
-                                                  <h6 >
-                                                    {this.state.leaveID}
-                                                  </h6>
-                                                </div>
-
+                                          <div className="row">
+                                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                                              <h6 id="padLeft">Rent From</h6>
                                             </div>
+                                            <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
+                                              <h6>
+                                                {moment(this.state.rentDate).format('DD/MMM/YYYY')}
 
-
-
-                                            <div className="row">
-                                              <div className="col-md-6" style={{ 'float': 'left','color':'black' }}>
-                                                  <h6 id="padLeft">Rent From</h6>
-                                                </div>
-                                                <div style={{ 'textAlign': 'center' ,'color':'black'}}>
-                                                  <h6>
-                                                    {moment(this.state.rentDate).format('DD/MMM/YYYY')}
-
-                                                  </h6>
-                                                </div>
-                                            
-
+                                              </h6>
                                             </div>
 
 
-
-                                            <div className="row">
-                                              <div className="col-md-6" style={{ 'float': 'left','color':'black' }}>
-                                                  <h6 >Due Date</h6>
-                                                </div>
-
-                                                <div style={{ 'textAlign': 'center','color':'black' }}>
-                                                  <h6 >
-
-                                                    {moment(this.state.returnDate).format('DD/MMM/YYYY')}
-                                                  </h6>
-                                                </div>
+                                          </div>
 
 
-                                       </div>
+
+                                          <div className="row">
+                                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                                              <h6 >Due Date</h6>
+                                            </div>
+
+                                            <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
+                                              <h6 >
+
+                                                {moment(this.state.returnDate).format('DD/MMM/YYYY')}
+                                              </h6>
+                                            </div>
 
 
-                                            {/* <div className="row d-flex justify-content-center">
-                                              <div className="form-group">
-                                                <div className="col-md-12">
+                                          </div>
 
-                                                  <div className="text-center" style={{ 'color': 'black' }}>
-                                                    
-                                                  </div>
 
-                                                </div>
-                                              </div>
-                                            </div> */}
-                                            <div className="container">
+                                          <div className="container">
                                             <div class="row justify-content-md-center">
-                                            
+
                                               <div class="col-lg-auto">
                                                 <input
-                                                  style={{ 'color': 'black','width':'-webkit-fill-available' }}
+                                                  style={{ 'color': 'black', 'width': '-webkit-fill-available' }}
                                                   type="text"
                                                   className="form-control mm-input s-input text-center"
                                                   placeholder="Total"
@@ -666,52 +704,70 @@ to customer</h4>
 
                                                 />
                                               </div>
-                                             
+
                                             </div>
-                                            </div>
-                                            <div className="col-md-12">
-                                             
-                                               <table>
-                                                 <tr>
-                                                   <td style={{'backgroundColor':'white','textAlign' : 'center' ,'marginRight':'10px'}}>Order ID <br />
-                                                    {order[0]._id}
-                                                   </td>
-                                                   <td style={{textAlign : "center"}}> Authorized by <br />
+                                          </div>
+                                          <div className="col-md-12">
+
+                                            <table>
+                                              <tr>
+                                                <td style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '15px' }}>{`${order[0]._id}`}<br />
+                                                  {this.generateOrderBarcode(order[0]._id)}
+                                                </td>
+                                                <td style={{ 'textAlign': 'center', 'padding': '15px' }}> Authorized by <br />
                                                         Sutygon-Bot</td>
-                                                 </tr>
-                                               </table>
-                                            
+                                              </tr>
+                                            </table>
+
+
+                                          </div>
+                                          <div className="container">
+                                            <div class="row justify-content-md-center">
+
+                                              <div class="col-lg-auto">
+                                                <input
+                                                  style={{ 'color': 'black', 'width': '-webkit-fill-available' }}
+                                                  type="text"
+                                                  className="form-control mm-input s-input text-center"
+                                                  placeholder="Total"
+
+                                                  id="setSizeFloat"
+                                                  value=
+
+
+                                                  {`${"Order Completed"}`}
+
+                                                />
+                                              </div>
 
                                             </div>
-                                            <div className="row">
+                                          </div>
+                                          <div className="row">
                                             <p>For questions and contact information please check out
-www.sutygon.com </p>
-                                            </div>
-
-                                          
-
+                                              <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">www.sutygon-bot.com</a></p>
                                           </div>
-                                          </div>
+
+
 
                                         </div>
-
                                       </div>
+
                                     </div>
-                                    <hr />
 
                                   </div>
-                                  <div className="modal-footer">
-                                                
                                 </div>
+                                <hr />
+
                               </div>
+
                             </div>
                           </div>
-
-
-
-
-
                         </div>
+
+
+
+
+
                       </div>
                     </div>
 

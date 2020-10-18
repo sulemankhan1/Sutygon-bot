@@ -7,13 +7,16 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../layout/Loader";
 import {
-  
+
   getProductById,
   getAllProducts,
   updateProduct,
+  barcodeUpdateProduct,
 } from "../../actions/product";
 import { getCustomer } from "../../actions/customer";
 import { addNewRentProduct } from "../../actions/rentproduct";
+import * as moment from 'moment'
+import shortid from "shortid";
 
 class RentOrder extends Component {
   state = {
@@ -30,6 +33,7 @@ class RentOrder extends Component {
     returnDate: "",
     total: "",
     saving: false,
+    leaveID: "",
     barcodesRented: false
   };
 
@@ -75,13 +79,13 @@ class RentOrder extends Component {
       returnDate: state.returnDate,
       rentDate: state.rentDate,
       leaveId: true,
-      insuranceAmt:state.insAmt
+      insuranceAmt: state.insAmt
     };
 
      await this.props.addNewRentProduct(product);
 
     let { product_Array } = this.state;
-    
+
     if (product_Array) {
       let products = [];
       let counter = 1;
@@ -113,7 +117,7 @@ class RentOrder extends Component {
           });
           products.push(product);
           product = null;
-          
+
         }
       });
 
@@ -190,7 +194,6 @@ class RentOrder extends Component {
   getBarcodeRecord() {
     let productarray = [];
     let { barcode_Array } = this.state;
-
     const { products } = this.props;
     if (products) {
       let sortedAray = this.getSortedData(products);
@@ -204,7 +207,6 @@ class RentOrder extends Component {
       }
     }
     this.state.product_Array = productarray;
-
     return this.state.product_Array.map((product, b_index) => (
       // <div id="sizes_box" key={barcode.id || barcode._id}>
       <div id="sizes_box" key={b_index}>
@@ -253,6 +255,41 @@ class RentOrder extends Component {
             </button>
           </div>
         </div>
+     </div>
+    ));
+  }
+
+  getInvoiceBarcodeRecord() {
+    let { product_Array } = this.state;
+    return product_Array.map((product, b_index) => (
+      // <div id="sizes_box" key={barcode.id || barcode._id}>
+      <div id="sizes_box" key={b_index}>
+        <div className="row">
+          <input
+            type="text"
+            className="form-control mm-input s-input text-center"
+            placeholder="Barcode"
+            name="barcode"
+            id="widthBr"
+            style={{ width: "280px", color: 'black' }}
+            value={
+              product &&
+              product[0].title &&
+              product[0].title + " | " + product[0].barcode
+            }
+          />
+
+          <input
+            type="text"
+            className="form-control mm-input s-input text-center"
+            placeholder="Price"
+            id="setSize"
+            name="total"
+            style={{ color: 'black', width: '80px' }}
+            value={`${"$"}${product && product[0].price}`}
+          />
+
+        </div>
       </div>
     ));
   }
@@ -272,37 +309,44 @@ class RentOrder extends Component {
   calculateTax = () => {
     var totalAmount = this.calculateTotalWithoutTax();
     var { taxper } = this.state;
+   
     let amount;
-    if (taxper !== null) {
+        if (taxper !== null && taxper !== "0") {
       amount = totalAmount / taxper;
+    }
+    else {
+      amount = 0;
     }
     this.state.tax = amount;
     return amount;
   };
   calculateInsuranceAmt() {
     var totalAmount = this.calculateTotalWithoutTax();
-    var insuranceAmt = totalAmount / 2;
+    var insuranceAmt = Number(totalAmount) / 2;
     this.state.insAmt = insuranceAmt;
     return insuranceAmt;
   }
   calculateTotal = () => {
     let sum = 0;
     let { tax, insAmt, total_amt } = this.state;
-    sum = total_amt + tax + insAmt;
+    sum = Number(Number(total_amt) + Number(tax) + Number(insAmt));
     this.state.total = sum;
     return sum;
   };
 
   render() {
     const { auth } = this.props;
+    const { data } = this.props.location;
+
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
     }
 
-    if (this.state.barcodesRented) {
-      return <Redirect to="/RentInvoice" />;
-    }
+    // if (this.state.barcodesRented) {
+    //   return <Redirect to="/RentInvoice" />;
+    // }
     const { customer } = this.props;
+    console.log(customer)
     return (
       <React.Fragment>
         <Loader />
@@ -326,9 +370,8 @@ class RentOrder extends Component {
                                 <div className="form-group">
                                   <h3>
                                     {customer && customer.name}{" "}
-                                    {`${"#"}${
-                                      customer && customer.contactnumber
-                                    }`}
+                                    {`${"#"}${customer && customer.contactnumber
+                                      }`}
                                   </h3>
                                 </div>
                               </div>
@@ -422,7 +465,7 @@ class RentOrder extends Component {
                                               id="setSizeFloat"
                                               value={
                                                 this.state.product_Array &&
-                                                this.state.taxper
+                                                  this.state.taxper
                                                   ? `${"$"}${this.calculateTax()}`
                                                   : ""
                                               }
@@ -463,44 +506,41 @@ class RentOrder extends Component {
                                     <div className="row">
                                       <div className="col-md-12">
                                         <div className="form-group">
-                                          <div style={{ float: "left" }}>
+                                          <div style={{ 'float': 'left' }}>
+
                                             <h4 id="padLeft">Leave ID</h4>
                                           </div>
-                                          <div
-                                            style={{
-                                              float: "right",
-                                              paddingRight: "170px",
-                                            }}
-                                          >
-                                            <div className="custom-radio">
+                                          <div style={{ 'float': 'right', 'paddingRight': '170px' }}>
+
+                                            <div className="">
                                               <input
+                                                // className="custom-control-input"
                                                 type="radio"
-                                                className="custom-control-input"
+                                                name="leaveID"
+                                                value={true}
+                                                onChange={(e) => this.onHandleChange(e)}
+                                                checked={this.state.leaveID === "true"}
                                               />
                                               <label
-                                                className="custom-control-label"
-                                                htmlFor="customRadioInline1"
-                                              >
-                                                YES
-                                              </label>
+                                              // className="custom-control-label"
+                                              >YES</label>
                                             </div>
-                                            <div className="custom-radio">
+                                            <div className="">
                                               <input
+                                                // className="custom-control-input"
                                                 type="radio"
-                                                className="custom-control-input"
+                                                name="leaveID"
+                                                value={false}
+                                                onChange={(e) => this.onHandleChange(e)}
+                                                checked={this.state.leaveID === "false"}
                                               />
                                               <label
-                                                className="custom-control-label"
-                                                htmlFor="customRadioInline2"
-                                              >
-                                                NO
-                                              </label>
-                                            </div>{" "}
-                                          </div>
+                                              // className="custom-control-label"
+                                              >NO</label>
+                                            </div>                    </div>
                                         </div>
                                       </div>
                                     </div>
-
                                     <br />
 
                                     <div className="row">
@@ -576,12 +616,12 @@ class RentOrder extends Component {
                                               placeholder="Total"
                                               id="setSizeFloat"
                                               value={
-                                                this.state.tax
+                                                this.state.total_amt
                                                   ? `${"$"}${this.calculateTotal()}`
                                                   : ""
                                               }
 
-                                              // value={`${"Total: $"}${this.state.tax ? (this.calculateTotal()) : ""}`}
+                                            // value={`${"Total: $"}${this.state.tax ? (this.calculateTotal()) : ""}`}
                                             />
                                           </div>{" "}
                                         </div>
@@ -596,6 +636,9 @@ class RentOrder extends Component {
                                           type="submit"
                                           className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
                                           id="btnSize2"
+                                          data-toggle="modal"
+                                          data-backdrop="false"
+                                          data-target="#primary"
                                         >
                                           <i className="ft-check"></i>
                                           Submit &amp; Get Invoice
@@ -609,6 +652,218 @@ class RentOrder extends Component {
                           </div>
                         </div>
                       </div>
+
+                    </div>
+                  </div>
+
+                  {/* Invoice Modal */}
+                  <div class="modal fade text-left" id="primary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header bg-primary white">
+                          <h4 class="modal-title text-center" id="myModalLabel8">Rent Invoice</h4>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div id="colors_box">
+                            <div className="row color-row">
+                              <div className="col-md-12">
+                                <div className="form-group">
+                                  <div style={{ 'float': 'left' }}>
+
+                                    <h4>{(customer) ? `${customer.name}${"#"}${customer.contactnumber}` : ""}</h4>
+                                  </div>
+                                  <div style={{ 'float': 'right' }}>
+                                    {/* <h4>{(data) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4> */}
+
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-md-12">
+                                <div id="sizes_box">
+                                  {this.getInvoiceBarcodeRecord()}
+                                  <hr />
+                                  <div className="row">
+                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                                      <h6 id="padLeft">Total Without Tax</h6>
+                                    </div>
+                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+
+                                      <h6 >
+                                        {`${"$"}${this.state.total_amt}`}
+                                      </h6>
+                                    </div>
+
+                                  </div>
+
+
+                                  <div className="row">
+                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+
+                                      <h6 id="padLeft">Tax Percentage</h6>
+                                    </div>
+                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                                      <h6 >
+                                        {`${this.state.taxper}${"%"}`}
+                                      </h6>
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+
+                                      <h6 id="padLeft">Tax Amount</h6>
+                                    </div>
+                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                                      <h6 >
+                                        {`${"$"}${this.state.tax}`}
+                                      </h6>
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+
+                                      <h6 id="padLeft">Insurance Amount</h6>
+                                    </div>
+                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                                      <h6 >
+                                        {`${"$"}${this.state.insAmt}`}
+                                      </h6>
+                                    </div>
+                                  </div>
+
+
+
+                                  <div className="row justify-content-center">
+                                    <div className="form-group">
+
+                                      <div className="text-center" style={{ 'width': '300%' }}>
+                                        <input
+                                          type="text"
+
+                                          className="form-control mm-input s-input text-center"
+                                          placeholder="Total"
+                                          style={{ 'color': 'black' }}
+
+                                          id="setSizeFloat"
+                                          value={`${"PAID TOTAL: $"}${this.state.total}`}
+
+                                        />
+
+
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+
+
+                                      <h6 >Amount to be returned to customer
+</h6></div>
+
+                                    <div className="col-md-6 text-center" style={{ 'color': 'black' }}>
+
+
+
+                                      <h6 >
+                                        {`${"$"}${this.state.insAmt}`}
+                                      </h6>
+
+                                    </div>
+
+                                  </div>
+
+
+
+
+
+
+                                  <br />
+
+
+                                  <div className="row">
+                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+
+
+                                      <h6 id="padLeft">Leave ID</h6>
+                                    </div>
+                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                                      <h6 >
+                                        {this.state.leaveID === "true" ? `${"Yes"}` : `${"No"}`}
+                                      </h6>
+                                    </div>
+
+                                  </div>
+
+
+
+                                  <div className="row">
+                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                                      <h6 id="padLeft">Rent From</h6>
+                                    </div>
+                                    <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
+                                      <h6>
+                                        {moment(this.state.rentDate).format('DD/MMM/YYYY')}
+
+                                      </h6>
+                                    </div>
+
+
+                                  </div>
+
+
+
+                                  <div className="row">
+                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                                      <h6 >Due Date</h6>
+                                    </div>
+
+                                    <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
+                                      <h6 >
+
+                                        {moment(this.state.returnDate).format('DD/MMM/YYYY')}
+                                      </h6>
+                                    </div>
+
+
+                                  </div>
+
+
+                                  <div className="col-md-12">
+
+                                    <table>
+                                      <tr>
+                                        <td style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '15px' }}>OrderID
+                                                    {/* {`${order[0]._id}`}<br /> */}
+                                          {/* {this.generateOrderBarcode(order[0]._id)} */}
+                                        </td>
+                                        <td style={{ 'textAlign': 'center', 'padding': '15px' }}> Authorized by <br />
+                                                        Sutygon-Bot</td>
+                                      </tr>
+                                    </table>
+
+
+                                  </div>
+                                  <div className="row">
+                                    <p>For questions and contact information please check out
+                                              <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">www.sutygon-bot.com</a></p>
+                                  </div>
+
+
+
+                                </div>
+                              </div>
+
+                            </div>
+
+                          </div>
+                        </div>
+                        <hr />
+
+                      </div>
+
                     </div>
                   </div>
                 </section>

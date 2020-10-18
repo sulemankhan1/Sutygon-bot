@@ -57,3 +57,20 @@ export const getOrderbyCustomerNumber = (number) => async (dispatch) => {
     });
   }
 };
+// Get Order by ID
+export const getOrderbyID = (id) => async (dispatch) => {
+  dispatch({ type: RETURNPRODUCT_LOADING });
+ 
+  try {
+    const res = await axios.get(`/api/returnproducts/${id}`);
+    dispatch({
+      type: GET_RETURNPRODUCT,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: RETURNPRODUCT_ERROR,
+      payload: err.response,
+    });
+  }
+};

@@ -2,10 +2,12 @@ import {
     GET_RETURNPRODUCT,
     RETURNPRODUCT_ERROR,
     RETURNPRODUCT_LOADING,
+    GET_RETURNORDER
     
 } from "../actions/types";
 const initialState = {
     returnproduct: null,
+    returnorder: null,
     loading: false,
     saved: false,
     error: {},
@@ -28,6 +30,13 @@ export default function (state = initialState, action) {
                 loading: false,
                 saved: false,
             };
+            case GET_RETURNORDER:
+                return {
+                    ...state,
+                    returnorder: payload,
+                    loading: false,
+                    saved: false,
+                };
 
         case RETURNPRODUCT_ERROR:
             return {

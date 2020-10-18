@@ -29,12 +29,68 @@ class ViewProduct extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  
+  // return sorted products for barcodes
+  getSortedData = (products) => {
+    // looping through prducts
+    let rows = [];
+    products.forEach((product, p_index) => {
+      let product_name = product.name;
+      let product_id = product._id;
+      let product_image = product.image
+
+      // looping through each color of current product
+      if (product.color) {
+        product.color.forEach((color, c_index) => {
+          let color_name = color.colorname;
+          let color_id = color._id;
+
+          // looping through sizes of current color
+          if (color.sizes) {
+            color.sizes.forEach((size, s_index) => {
+              let size_name = size.size;
+              let size_id = size.id;
+              let price = size.price;
+              let totalQty = size.qty;
+              let length;
+              // show sizes with barcode
+              if (size.barcodes) {
+                length = size.barcodes.length;
+              } else {
+                length = 0;
+              }
+
+              let i;
+              for (i = 0; i < length; i++) {
+                let row = {
+                  product_id: product_id,
+                  product_image: product_image,
+                  prduct_totalQty: totalQty,
+                  color_id: color_id,
+                  size_id: size_id,
+                  barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
+                  title: product_name + " | " + color_name + " | " + size_name,
+                  barcode: size.barcodes[i].barcode,
+                  price: price,
+                };
+                rows.push(row);
+              }
+            });
+          }
+        });
+      }
+    }); // products foreach ends here
+    return rows;
+  };
+
   getTAble = () => {
     const { products } = this.props;
+    if(products){
+const productArray = this.getSortedData(products);
 
     let tbl_sno = 1;
-    if (products) {
-      if (products.length === 0) {
+    if (productArray) {
+      if (productArray.length === 0) {
         return (
           <tr>
             <td colSpan={10} className="text-center">
@@ -43,53 +99,44 @@ class ViewProduct extends Component {
           </tr>
         );
       }
-      return products.map((product, i) => (
+      return productArray.map((product, i) => (
         <tr key={i}>
           <td className="text-center text-muted">{tbl_sno++}</td>
           <td className="text-center">{""}</td>
+          <td className="text-center">{product.barcode}</td>
+
           <td className="text-center">
             <img
               className="media-object round-media"
-              src={`${product.image}`}
+              src={`${product.product_image}`}
               alt="Generic placeholder image"
               height={75}
             />
           </td>
-          <td className="text-center">{product.name}</td>
-          <td className="text-center">
-            {product.color && product.color[0].colorname}
-          </td>
-          <td className="text-center">
-            {product && product.color && product.color[0].sizes[0].size}
-          </td>
+          <td className="text-center">{product.title}</td>
+        
+          { <td className="text-center">{product.prduct_totalQty}</td> }
 
-          {/* <td className="text-center">{product.size}</td>
-          <td className="text-center">{product.fabric}</td>
-          <td className="text-center">
-            {product.availableQuantity > 0 ? (
-              <span className="">Available</span>
-            ):
-            <span className="">Not Available</span>
-          }
-          </td> 
-              <td className="text-center">{product.availableQuantity}</td> 
-           <td className="text-center">{product.rentedQuantity}</td> */}
+          <td className="text-center">{product.price}</td>
+         
           <td className="text-center">
             <Link
-              to={{ pathname: `/product/viewproduct/${product._id}` }}
+              to={{ pathname: `/product/viewproduct/${product.product_id}`}}
+              data={{colorID:product.color_id, sizeID:product.size_id}}
               className="info p-0"
             >
               <i className="ft-eye font-medium-3 mr-2" title="View"></i>
             </Link>
             <Link
-              to={{ pathname: `/product/editproduct/${product._id}` }}
+              to={{ pathname: `/product/editproduct/${product.product_id}` }}
+              data={{colorID:product.color_id, sizeID:product.size_id}}
               className="success p-0"
             >
               <i className="ft-edit-2 font-medium-3 mr-2" title="Edit"></i>
             </Link>
             <Link
               to="/product"
-              onClick={() => this.onDelete(product._id)}
+              onClick={() => this.onDelete(product.product_id)}
               className="danger p-0"
             >
               <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
@@ -99,7 +146,7 @@ class ViewProduct extends Component {
       ));
     }
   };
-
+  };
   async searchTable() {
     const searchVal = this.state.search;
     if (searchVal) {
@@ -174,11 +221,13 @@ class ViewProduct extends Component {
                                 <tr>
                                   <th>#</th>
                                   <th></th>
+                                  <th>Product ID</th>
                                   <th>Image</th>
                                   <th>Name</th>
-                                  <th>Color</th>
-                                  <th>Size</th>
-                                  <th>Actions</th>
+                                  <th>Total Quantity</th>
+                                  <th>Price</th>
+                                  <th>Actions</th> 
+                                
                                 </tr>
                               </thead>
                               <tbody>{this.getTAble()}</tbody>

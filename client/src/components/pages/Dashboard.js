@@ -42,13 +42,13 @@ class Dashboard extends Component {
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
-      console.log(currentdate)
-      let events = rentedproducts.filter(a => (moment(moment(a.rentDate).isBefore(currentdate))));
-    
-      console.log(events.length)
-
-      return events.length;
-
+      let events = rentedproducts.filter(a => (moment(moment(a.returnDate).format('MM/DD/YYYY')).isBefore(currentdate)));
+      if(events.length > 0){
+      let returningOrders = events.filter((f => f.status !== "Completed"))
+      return returningOrders.length;
+  
+    }
+      
     }
   }
   
@@ -57,10 +57,23 @@ class Dashboard extends Component {
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
-      let events = rentedproducts.filter(a => (moment(moment(a.returnDate).format('MM/DD/YYYY')).isSame(currentdate)));
+
+      console.log("currentdate",currentdate)
+
+      let events = rentedproducts.filter(a => (moment(moment(a.createdAt).format('MM/DD/YYYY')).isSame(currentdate)));
       return events.length;
     }
 
+
+  }
+  orderPickUpToday = () =>{
+    const { rentedproducts } = this.props;
+    if (rentedproducts) {
+      var currentdate = moment(new Date).format('MM/DD/YYYY');
+      let events = rentedproducts.filter(a => (moment(moment(a.rentDate).format('MM/DD/YYYY')).isSame(currentdate)));
+      let returningOrders = events.filter((f => f.status !== "Completed"))
+      return returningOrders.length;
+    }
 
   }
   getReturnOrder = () => {
@@ -181,7 +194,7 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
+                              <h3 class="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
                               <span>Order Pickup Today</span>
                             </div>
                             <div class="media-right white text-right">
@@ -200,7 +213,7 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
+                              <h3 class="font-large-1 mb-0">{}</h3>
                               <span>Order Needs Alteration</span>
                             </div>
                             <div class="media-right white text-right">
@@ -219,7 +232,7 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
+                              <h3 class="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
                               <span>Today's Orders</span>
                             </div>
                             <div class="media-right white text-right">

@@ -43,7 +43,7 @@ class Orders extends Component {
            <td className="text-center">{""}</td>
 
           <td className="text-center">{order.customer ? order.customer.name : ""}</td>
-          <td className="text-center">{order.barcodes ?  "ProductName?":""}</td>
+          <td className="text-center">{this.getBarcodeRecord(order.barcodes)}</td>
           <td className="text-center">{this.getStatus(order.rentDate) === "Pending"
           ? <div className="badge badge-success">Pending</div>
           : this.getStatus(order.rentDate) === "Due" 
@@ -57,11 +57,7 @@ class Orders extends Component {
           <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
           <td className="text-center">
       
-            {/* <Link
-              to={{ pathname: `/orders/${order._id}` }}
-              className="success p-0">
-              <i className="ft-edit-2 font-medium-3 mr-2"></i>
-            </Link>  */}
+         
             <Link to="/orders"
               onClick={() => this.onDelete(order._id)}
               className="danger p-0">
@@ -74,6 +70,82 @@ class Orders extends Component {
     }
   };
    
+
+  // return sorted products for barcodes
+  getSortedData = (products) => {
+    // looping through prducts
+    let rows = [];
+    products.forEach((product, p_index) => {
+      let product_name = product.name;
+      let product_id = product._id;
+
+      // looping through each color of current product
+      if (product.color) {
+        product.color.forEach((color, c_index) => {
+          let color_name = color.colorname;
+          let color_id = color._id;
+
+          // looping through sizes of current color
+          if (color.sizes) {
+            color.sizes.forEach((size, s_index) => {
+              let size_name = size.size;
+              let size_id = size.id;
+              let price = size.price;
+              let length;
+              // show sizes with barcode
+              if (size.barcodes) {
+                length = size.barcodes.length;
+              } else {
+                length = 0;
+              }
+
+              let i;
+              for (i = 0; i < length; i++) {
+                let row = {
+                  product_id: product_id,
+                  color_id: color_id,
+                  size_id: size_id,
+                  barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
+                  title: product_name + " | " + color_name + " | " + size_name,
+                  barcode: size.barcodes[i].barcode,
+                  price: price,
+                };
+                rows.push(row);
+              }
+            });
+          }
+        });
+      }
+    }); // products foreach ends here
+    return rows;
+  };
+
+  getBarcodeRecord(barcode_Array) {
+    let productarray = [];
+       const { products } = this.props;
+    if (products) {
+      let sortedAray = this.getSortedData(products);
+      if (sortedAray) {
+        barcode_Array.forEach((element) => {
+          productarray.push(
+            sortedAray.filter((f) => f.barcode === element)
+          );
+          return productarray;
+        });
+      }
+    }
+   
+
+    return productarray.map((product, b_index) => (
+      // <div id="sizes_box" key={barcode.id || barcode._id}>
+    //  <table>
+console.log(`${product[0].title} ${"|"} ${product[0].barcode}`)
+    //  </table>
+    ));
+  }
+
+      
+
   getStatus=(date) =>{
     var deliveryDate = moment(date).format('MM/DD/YYYY');
 

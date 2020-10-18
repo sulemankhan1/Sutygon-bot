@@ -79,6 +79,36 @@ async (req, res) => {
    }
 });
 
+// @route  GET api/returnproducts/:id
+// @desc   Get Order by id
+// @access Private
+router.get("/:id", auth,
+    async (req, res) => {
+        try {
+            const customer = await RentedProduct.findById(req.params.id);
+
+            if (!customer) {
+                return res
+                    .status(404)
+                    .json({ msg: "No Order found" });
+            }
+
+            res.json(customer);
+        } catch (err) {
+            console.error(err.message);
+            // Check if id is not valid
+            if (err.kind === "ObjectId") {
+                return res
+                    .status(404)
+                    .json({ msg: "No Order found" });
+            }
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+        }
+    });
+
+
 
 
 module.exports = router;

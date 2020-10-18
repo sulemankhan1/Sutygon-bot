@@ -30,7 +30,7 @@ const RentedProductSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        default: "new"
+        default: "New"
     },
 
     insuranceAmt:{

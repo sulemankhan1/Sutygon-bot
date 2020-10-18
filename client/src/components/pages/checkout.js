@@ -44,7 +44,7 @@ class Checkout extends Component {
       const { barcode } = this.state;
       barcode.push({
         id: shortid.generate(),
-        barcode: bc,
+        barcode: bc.trim(),
       });
       this.setState({ barcode });
   }
