@@ -22,7 +22,7 @@ class Orders extends Component {
   state = {
     search: ""
   }
-   
+
  getTAble = () => {
     const { rentproducts } = this.props;
         let tbl_sno=1;
@@ -38,7 +38,7 @@ class Orders extends Component {
       }
       return rentproducts.map((order,i) => (
         <tr key={i}>
-           
+
            <td className="text-center text-muted">{tbl_sno++}</td>
            <td className="text-center">{""}</td>
 
@@ -46,17 +46,17 @@ class Orders extends Component {
           <td className="text-center">{order.barcodes ?  "ProductName?":""}</td>
           <td className="text-center">{this.getStatus(order.rentDate) === "Pending"
           ? <div className="badge badge-success">Pending</div>
-          : this.getStatus(order.rentDate) === "Due" 
+          : this.getStatus(order.rentDate) === "Due"
           ? <div className="badge badge-warning">Over Due</div>
           :<div className="badge badge-danger">Due Today</div>
-        
+
         }</td>
 
           <td className="text-center">{moment(order.rentDate).format('DD/MMM/YYYY')}</td>
 
           <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
           <td className="text-center">
-      
+
             {/* <Link
               to={{ pathname: `/orders/${order._id}` }}
               className="success p-0">
@@ -73,7 +73,7 @@ class Orders extends Component {
        ));
     }
   };
-   
+
   getStatus=(date) =>{
     var deliveryDate = moment(date).format('MM/DD/YYYY');
 
@@ -91,7 +91,7 @@ class Orders extends Component {
   }
    return status;
        };
-  
+
   onDelete = (id) => {
     confirmAlert({
       title: "Cancel Order",
@@ -122,10 +122,10 @@ class Orders extends Component {
         } else {
             await this.props.getAllOrders();
         }
-        
+
     }
 
-    
+
   render() {
         const { auth   } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -171,7 +171,7 @@ class Orders extends Component {
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {this.getTAble()} 
+                                        {this.getTAble()}
                                       </tbody>
                                     </table>
                                   </div>
@@ -184,8 +184,8 @@ class Orders extends Component {
                       </div>
                     </div>
                     <footer className="footer footer-static footer-light">
-                        <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                            <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                        <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                            <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                     </footer>
                 </div>
 
@@ -210,4 +210,3 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getAllRentedProducts,deleteRentedProduct
 })(Orders);
-

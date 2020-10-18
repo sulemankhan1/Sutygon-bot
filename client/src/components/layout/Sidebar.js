@@ -14,13 +14,13 @@ class Sidebar extends Component {
   getClassName = (name) => {
     const { pathname } = this.props.location;
     let { active } = this.props;
-  
+
     const path = pathname.split("/");
     const activepath = active.split("/");
-    
+
     if (activepath[0] === path[1]) {
       active = path[1];
-    } 
+    }
 
     if (active === name) {
       return "open";
@@ -46,7 +46,7 @@ class Sidebar extends Component {
                 <img src={process.env.PUBLIC_URL+'/assets/img/logo.png'} height={120} width={120}/>
               </div>
               {/* <span className="text align-middle"></span> */}
-</Link>            
+</Link>
           </div>
         </div>
         <div className="sidebar-content">
@@ -58,7 +58,7 @@ class Sidebar extends Component {
                       to="/dashboard"
                       onClick={() => this.handleClick("dashboard")}
                     >
-                      <i className="ft-home" /> Dashboard
+                      <i className="ft-home" /> Trang chủ
                 </Link>
               </li>
               {(user && (user.type === "Admin")) ? (
@@ -67,7 +67,7 @@ class Sidebar extends Component {
                       to="/user"
                       onClick={() => this.handleClick("user")}
                     >
-                      <i className="ft-users" /> Users
+                      <i className="ft-users" /> Nhân Viên
                 </Link>
                 </li>
                 ) : ""
@@ -77,7 +77,7 @@ class Sidebar extends Component {
                       to="/product"
                       onClick={() => this.handleClick("product")}
                     >
-                      <i className="ft-box" /> Products
+                      <i className="ft-box" /> Hàng Kho
                 </Link>
                   </li>
                   <li className={this.getClassName("barcode")}>
@@ -93,17 +93,17 @@ class Sidebar extends Component {
                     <Link to="/customer"
                         onClick={() => this.handleClick("customer")}
                       >
-                        <i className="ft-user" /> Customers
+                        <i className="ft-user" /> Khách Hàng
                   </Link>
                   </li>
-                
+
 
               <li className={"nav-item " + this.getClassName("rentproduct")}>
               <Link
                       to="/rentproduct"
                       onClick={() => this.handleClick("rentproduct")}
                     >
-                      <i className="icon-basket-loaded" />  Rent a Product
+                      <i className="icon-basket-loaded" />  Thuê Đồ
                 </Link>
               </li>
               <li className=" nav-item" className={"nav-item " + this.getClassName("orders")}>
@@ -111,7 +111,7 @@ class Sidebar extends Component {
                       to="/orders"
                       onClick={() => this.handleClick("orders")}
                     >
-                      <i className="icon-bag" />  Orders
+                      <i className="icon-bag" />  Đơn Hàng
                 </Link>
               </li>
               <li className={"nav-item " + this.getClassName("appointments")}>
@@ -119,7 +119,7 @@ class Sidebar extends Component {
                       to="/appointments"
                       onClick={() => this.handleClick("appointments")}
                     >
-                      <i className="ft-activity" />  Add Fitting Appointment
+                      <i className="ft-activity" />  Hẹn Thử Đồ
                 </Link>
               </li>
               <li className={"nav-item " + this.getClassName("returnproduct")}>
@@ -127,7 +127,7 @@ class Sidebar extends Component {
                       to="/returnproduct"
                       onClick={() => this.handleClick("returnproduct")}
                     >
-                      <i className="ft-activity" />  Return Product
+                      <i className="ft-activity" />  Trả Đồ
                 </Link>
               </li>
               <li className={"nav-item " + this.getClassName("calender")}>
@@ -135,7 +135,7 @@ class Sidebar extends Component {
                       to="/calender"
                       onClick={() => this.handleClick("calender")}
                     >
-                      <i className="ft-calendar" />  Calender
+                      <i className="ft-calendar" />  Lịch
                 </Link>
               </li>
               <li className={"nav-item " + this.getClassName("reports")}>
@@ -143,7 +143,7 @@ class Sidebar extends Component {
                       to="/reports"
                       onClick={() => this.handleClick("reports")}
                     >
-                      <i className="ft-clipboard" />  Report
+                      <i className="ft-clipboard" />  Báo Cáo Thống Kê
                 </Link>
               </li>
             </ul>

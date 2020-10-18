@@ -37,8 +37,8 @@ class Login extends Component {
   render() {
     // Redirect if logged in
     const { shop } = this.props;
-    const { user } = this.props.auth; 
-   
+    const { user } = this.props.auth;
+
 if(user && user.type == "Employee") {
   if(shop){
     let openShop = shop[0]
@@ -47,13 +47,13 @@ if(user && user.type == "Employee") {
     if( openShop.status == "on") {
       return <Redirect to="/dashboard" />;
     }
-  
+
     else if(openShop.status == "off"){
       console.log("Shop is closed")
       // setAlert("Shop is closed", "danger", 5000);
     }
   }
-    
+
   }}
   }
     // if(user && user.type == "User") {
@@ -69,7 +69,7 @@ if(user && user.type == "Employee") {
     //    }
     // };
     // }
-     
+
     if(user && user.type == "Admin") {
       if (this.props.AuthLoading === false && this.props.isAuthenticated) {
         return <Redirect to="/dashboard" />;
@@ -101,21 +101,21 @@ if(user && user.type == "Employee") {
                               <div className="logo-img text-center align-middle">
                                   <img src="assets/img/logos/logo.png" height={100} width={100} />
                                 </div>
-                                <h4 className="mb-2 card-title text-center align-middle" style={{  }}>Login</h4>
+                                <h4 className="mb-2 card-title text-center align-middle" style={{  }}>Đăng Nhập</h4>
                                 <p className="card-text mb-3 text-center align-middle">
-                                  Welcome back, please login to your account.
+                                Đăng Nhập Với Một Nụ Cười Nào
                   </p>
                                 <form onSubmit={(e) => this.onSubmit(e)}>
                                 <Alert/>
 
                                   <input type="text"
                                     className="form-control mb-3"
-                                    placeholder="Username"
+                                    placeholder="Tên Đăng Nhập"
                                     onChange={(e) => this.onChange(e)}
                                     name="username" />
                                   <input type="password"
                                     className="form-control mb-1"
-                                    placeholder="Password"
+                                    placeholder="Mật Khẩu"
                                     onChange={(e) => this.onChange(e)}
                                     name="password" />
 
@@ -125,7 +125,7 @@ if(user && user.type == "Employee") {
                                       <input
                                         className="btn btn-primary btn-lg btn-block"
                                         type="submit"
-                                        value="login"
+                                        value="Tôi đã sẵn sàng để chăm sóc khách hàng"
                                       />
                                     </div>
                                   </div>
@@ -149,7 +149,7 @@ if(user && user.type == "Employee") {
     );
   }
   }
-  
+
 
 Login.propTypes = {
   auth: PropTypes.object,

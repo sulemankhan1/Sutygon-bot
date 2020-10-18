@@ -57,7 +57,7 @@ class AddProduct extends Component {
     const index = color.findIndex(
       (color_obj) => color_obj.id == color_id
     );
-    
+
     color_obj[0].sizes.push({
       id: shortid.generate(),
       size: "",
@@ -66,7 +66,7 @@ class AddProduct extends Component {
     })
 
     color[index] = color_obj[0];
-    
+
     this.setState({ color: color });
   }
 
@@ -135,13 +135,13 @@ class AddProduct extends Component {
             <input
               type="text"
               className="form-control mm-input "
-              placeholder="Color"
+              placeholder="Màu sắc"
               value={color.colorname}
               name="colorname"
               onChange={(e) => this.handleChange(e, color.id)} />
               </div>
 
-</div>             
+</div>
  <div className="right text-center" style={{'paddingRight': '0px' }}>
 
           <button
@@ -161,8 +161,7 @@ class AddProduct extends Component {
               <button
                 type="button"
                 onClick={() => this.addSizeRow(color.id)}
-                className="btn "><i className="fa fa-plus"></i> Add another
-              Size</button>
+                className="btn "><i className="fa fa-plus"></i> Thêm size khác</button>
             </div>
           </div>
         </div>
@@ -182,7 +181,7 @@ class AddProduct extends Component {
               type="text"
               name="size"
               className="form-control mm-input s-input"
-              placeholder="Size"
+              placeholder="Kích cỡ"
               onChange={(e) => this.handleChange(e, color_id, size.id)}
             //  value={color.sizes.size}
             />
@@ -190,7 +189,7 @@ class AddProduct extends Component {
               type="text"
               name="qty"
               className="form-control mm-input s-input"
-              placeholder="Quantity"
+              placeholder="Số lượng"
               onChange={(e) => this.handleChange(e, color_id, size.id)}
             //  value={color.sizes.qty}
 
@@ -199,7 +198,7 @@ class AddProduct extends Component {
               type="text"
               name="price"
               className="form-control mm-input s-input"
-              placeholder="Price"
+              placeholder="Giá"
               onChange={(e) => this.handleChange(e, color_id, size.id)}
             // value={color.sizes.price}
 
@@ -244,7 +243,7 @@ class AddProduct extends Component {
       // find current size obj in current color obj
       let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
 
-      // get index of size obj in all sizes 
+      // get index of size obj in all sizes
       const sizeIndex = sizes.findIndex(
         (size) => size.id == size_id
       );
@@ -316,7 +315,7 @@ class AddProduct extends Component {
                         <h4 className="form-section">
                           {/* <i className="icon-social-dropbox"></i> */}
                           {this.state.id === ""
-                            ? "Add New Product"
+                            ? "Thêm Mẫu Đồ Mới"
                             : "Update Product"}</h4>
                       </div>
 
@@ -348,7 +347,7 @@ class AddProduct extends Component {
                               type="text"
                               id="projectinput1"
                               className="form-control mm-input"
-                              placeholder="Product Name"
+                              placeholder="Tên Mẫu Đồ"
                               value={this.state.name}
                               name="name"
                               onChange={(e) => this.handleChangeName(e)} />
@@ -357,7 +356,7 @@ class AddProduct extends Component {
 
                           <div className="row">
                             <div className="col-md-12">
-                              <h3>Colors</h3>
+                              <h3>Màu Sắc</h3>
                             </div>
                           </div>
                           <div id="colors_box">
@@ -374,8 +373,7 @@ class AddProduct extends Component {
                                 <button
                                   type="button"
                                   onClick={() => this.addColorBox(this.state.id)}
-                                  className="btn"><i className="fa fa-plus"></i> Add another
-              Color</button>
+                                  className="btn"><i className="fa fa-plus"></i> Thêm màu khác</button>
                               </div>
                             </div>
                           </div>
@@ -399,7 +397,7 @@ class AddProduct extends Component {
                                       type="submit"
                                       className="mb-2 mr-2 btn btn-raised btn-primary"
                                     >
-                                      <i className="ft-check" /> Add Product
+                                      <i className="ft-check" /> Thêm mẫu đồ
                                     </button>
                                   )}
                               </>
@@ -421,7 +419,7 @@ class AddProduct extends Component {
                                       type="submit"
                                       className="mb-2 mr-2 btn btn-raised btn-primary"
                                     >
-                                      <i className="ft-check" /> Update Product
+                                      <i className="ft-check" /> Cập nhật mẫu đồ
                                     </button>
                                   )}
                               </>}
@@ -436,8 +434,8 @@ class AddProduct extends Component {
             </div>
 
             <footer className="footer footer-static footer-light">
-              <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                    <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
 
           </div>
