@@ -22,7 +22,6 @@ class ScanBarcode extends Component {
 
   async componentDidMount() {
     const { data } = this.props.location;
-console.log("data",data)
     if (data) {
       this.setState({
         // id: id,
