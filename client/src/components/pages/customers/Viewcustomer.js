@@ -16,10 +16,10 @@ class ViewCustomer extends Component {
   async componentDidMount() {
     await this.props.getAllCustomers();
   }
-   
+
  getTAble = () => {
     const { customers } = this.props;
-    
+
 
     let tbl_sno=1;
     if (customers) {
@@ -27,14 +27,14 @@ class ViewCustomer extends Component {
         return (
           <tr>
             <td colSpan={6} className="text-center">
-              No customer Found
+              Không tìm thấy khách hàng với thông tin này.
             </td>
           </tr>
         );
       }
       return customers.map((customer,i) => (
         <tr key={i}>
-          
+
            <td className="text-center text-muted">{tbl_sno++}</td>
            <td className="text-center">{""}</td>
 
@@ -64,8 +64,8 @@ class ViewCustomer extends Component {
       ));
     }
   };
-   
-  
+
+
   onDelete = (id) => {
     confirmAlert({
       title: "Delete Customer",
@@ -86,7 +86,7 @@ class ViewCustomer extends Component {
   };
 
 
- 
+
     render() {
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -110,7 +110,7 @@ class ViewCustomer extends Component {
                             <div className="col-sm-12">
                               <div className="card">
                                 <div className="card-header">
-                                  <h4 className="card-title">All Customers</h4>
+                                  <h4 className="card-title">Tất Cả Khách Hàng</h4>
                                 </div>
                                 <div className="card-content">
                                   <div className="card-body table-responsive">
@@ -125,9 +125,9 @@ class ViewCustomer extends Component {
                                         <tr>
                                           <th>#</th>
                                           <th></th>
-                                          <th>Name</th>
-                                          <th>Contact</th>
-                                          <th>Address</th>
+                                          <th>Tên</th>
+                                          <th>SĐT</th>
+                                          <th>Địa Chỉ</th>
                                           {/* <th>Phone</th> */}
                                           <th>Email</th>
                                           <th>No of Orders</th>
@@ -149,8 +149,8 @@ class ViewCustomer extends Component {
                         </div>
 
                         <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                         </footer>
 
                     </div>
@@ -178,4 +178,3 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getAllCustomers,deleteCustomer
 })(ViewCustomer);
-

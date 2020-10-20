@@ -43,7 +43,7 @@ class AddOrder extends Component {
             size:product.size,
             availableQuantity:product.availableQuantity,
             rentedQuantity:product.rentedQuantity,
-  
+
 
           });
         }
@@ -78,10 +78,10 @@ class AddOrder extends Component {
     onSubmit = async (e) => {
       e.preventDefault();
       this.setState({ saving: true });
-  
+
       const state = { ...this.state };
       const { user } = this.props.auth;
-  
+
       const order = {
         orderNumber: state.orderNumber,
         product: state.product,
@@ -91,14 +91,14 @@ class AddOrder extends Component {
         orderedQuantity:state.orderedQuantity,
         deliveryDate: state.deliveryDate,
         returnDate: state.returnDate,
-  
+
         image: state.image
       };
       await this.props.addNewOrder(order);
-  
+
       this.setState({ saving: false });
     };
-  
+
     render() {
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -126,10 +126,10 @@ class AddOrder extends Component {
                         <div className="content-wrapper">
                         <section id="form-action-layouts">
      <div className="form-body">
-     
+
         <div className="card">
           <div className="card-header">
-                <h4 className="form-section"><i className="icon-social-dropbox"></i> 
+                <h4 className="form-section"><i className="icon-social-dropbox"></i>
                     {this.state.id === ""
                           ? "Add New Order"
                           : "Update Order"}</h4>
@@ -141,7 +141,7 @@ class AddOrder extends Component {
 <Alert />
                           <div className="row">
                             <div className="form-group col-6 mb-2">
-                              <label htmlFor="issueinput5">Select Customer</label>
+                              <label htmlFor="issueinput5">Chọn Khách Hàng</label>
                               <select
                                 name="customer"
                                 className="form-control"
@@ -163,7 +163,7 @@ class AddOrder extends Component {
                               </select>
                             </div>
                             <div className="form-group col-6 mb-2">
-                              <label htmlFor="issueinput5">Select Product</label>
+                              <label htmlFor="issueinput5">Chọn Sản Phẩm</label>
                               <select
                                 name="product"
                                 className="form-control"
@@ -185,7 +185,7 @@ class AddOrder extends Component {
                           </div>
                           <div className="row">
                             <div className="form-group col-md-6 mb-2">
-                              <label htmlFor="projectinput4">Available Quantity</label>
+                              <label htmlFor="projectinput4">Số Lượng Khả Dụng</label>
                               <input type="text"
                                 id="projectinput4"
                                 className="form-control"
@@ -197,11 +197,11 @@ class AddOrder extends Component {
                               />
                             </div>
                             <div className="form-group col-md-6 mb-2">
-                              <label htmlFor="projectinput4">Rented Quantity</label>
+                              <label htmlFor="projectinput4">Số Lượng Đã Thuê</label>
                     <input type="text"
                      id="projectinput4"
                       className="form-control"
-                       placeholder="Rented Quantity" 
+                       placeholder="Rented Quantity"
                        name="orderedQuantity"
                         value={this.getRentedQuantity() >= 0 ?  this.getRentedQuantity(): `Rented Quantity`}
                        onChange={(e) => this.handleChange(e)}
@@ -210,10 +210,10 @@ class AddOrder extends Component {
                        />
                             </div>
                           </div>
-                   
+
                           <div className="row">
                             <div className="form-group col-md-6 mb-2">
-                              <label htmlFor="projectinput4">Size</label>
+                              <label htmlFor="projectinput4">Kích Cỡ</label>
                               <input type="text"
                                 id="projectinput4"
                                 className="form-control"
@@ -221,11 +221,11 @@ class AddOrder extends Component {
                                 name="orderedSize"
                                 value={this.state.orderedSize}
                                 onChange={(e) => this.handleChange(e)}
-                              
+
                               />
                             </div>
                             <div className="form-group col-md-6 mb-2">
-                            <label htmlFor="projectinput4">Quantity</label>
+                            <label htmlFor="projectinput4">Số Lượng</label>
                               <input type="text"
                                 id="projectinput4"
                                 className="form-control"
@@ -233,17 +233,17 @@ class AddOrder extends Component {
                                 name="orderedQuantity"
                                 value={this.state.orderedQuantity}
                                 onChange={(e) => this.handleChange(e)}
-                              
+
                               />
-                            
+
                             </div>
                           </div>
-                   
+
                           <div className="row">
                             <div className="form-group col-md-6 mb-2">
                               <label
                                 htmlFor="issueinput3"
-                              >Start Date
+                              >Ngày Lấy Đồ
                     </label>
                               <input
                                 type="date"
@@ -262,7 +262,7 @@ class AddOrder extends Component {
                               <label
                                 htmlFor="issueinput3"
                               >
-                                End Date
+                                Ngày Trả Đồ
                       </label>
                               <input
                                 type="date"
@@ -299,8 +299,8 @@ class AddOrder extends Component {
                               </button>
                             )}
 
-                           
-                         
+
+
                           </div>
                         </form>
              </div>
@@ -312,8 +312,8 @@ class AddOrder extends Component {
                         </div>
 
                         <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                         </footer>
 
                     </div>
@@ -345,4 +345,3 @@ export default connect(mapStateToProps, {
     getAllProducts,
    addNewOrder
 })(AddOrder);
-

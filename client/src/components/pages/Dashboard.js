@@ -38,7 +38,7 @@ class Dashboard extends Component {
     }
   }
   getOverDueOrder = () => {
-    // e.preventDefault() 
+    // e.preventDefault()
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
@@ -135,7 +135,7 @@ class Dashboard extends Component {
                           <div class="media">
                             <div class="media-body white text-left">
                               <h3 class="font-large-1 mb-0">{this.getTodaysAppointment()}</h3>
-                         <a href="/calender" style={{'textDecoration':'none' , 'color':'white'}}>Today's Appointment
+<a href="/calender" style={{'textDecoration':'none' , 'color':'white'}}>Today's Appointment
                          </a>
                             </div>
                             <div class="media-right white text-right">
@@ -155,7 +155,7 @@ class Dashboard extends Component {
                           <div class="media">
                             <div class="media-body white text-left">
                               <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
-                              <span>Return Today</span>
+                              <span>Đơn Hàng Phải Trả Hôm Nay</span>
                             </div>
                             <div class="media-right white text-right">
                               <i class="icon-bulb font-large-1"></i>
@@ -176,7 +176,7 @@ class Dashboard extends Component {
                           <div class="media">
                             <div class="media-body white text-left">
                               <h3 class="font-large-1 mb-0">{this.getOverDueOrder()}</h3>
-                              <span>Overdue Order</span>
+                              <span>Đơn Hàng Quá Hạn</span>
                             </div>
                             <div class="media-right white text-right">
                               <i class="icon-graph font-large-1"></i>
@@ -194,7 +194,7 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
+<h3 class="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
                               <span>Order Pickup Today</span>
                             </div>
                             <div class="media-right white text-right">
@@ -213,7 +213,7 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{}</h3>
+<h3 class="font-large-1 mb-0">{}</h3>
                               <span>Order Needs Alteration</span>
                             </div>
                             <div class="media-right white text-right">
@@ -232,7 +232,7 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
+<h3 class="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
                               <span>Today's Orders</span>
                             </div>
                             <div class="media-right white text-right">
@@ -255,20 +255,20 @@ class Dashboard extends Component {
 
                             <div className="row">
                               <div className="col-md-7 txt-sep">
-                                <h2>Shop was {this.props.shop[0] && (this.props.shop[0].status == "on" ? "Opened" : "Closed")} on</h2>
+                                <h2>Cửa Hàng Đã {this.props.shop[0] && (this.props.shop[0].status == "on" ? "Mở Cửa" : "Đóng Cửa")} lúc</h2>
                                 <h1> <span className="badge badge-info">{this.props.shop[0] && moment(this.props.shop[0].shopStartTime).format('hh:mm a')}</span></h1>
                                 <p><span className="badge badge-pill badge-light">{this.props.shop[0] && moment(this.props.shop[0].shopStartTime).format('DD-MMM-YY')}</span> </p>
                               </div>
                               <div className="col-md-3 txt-sep">
-                                <h3 className="mt-1">Status</h3>
-                                <p className="badge badge-pill badge-light">{this.props.shop[0] && (this.props.shop[0].status == "on" ? "Opened" : "Closed")}</p>
+                                <h3 className="mt-1">Trạng thái</h3>
+                                <p className="badge badge-pill badge-light">{this.props.shop[0] && (this.props.shop[0].status == "on" ? "Mở Cửa" : "Đóng Cửa")}</p>
                               </div>
                               <div className="col-md-2">
-                                <h3 className="mt-1">Action</h3>
+                                <h3 className="mt-1">Hành động</h3>
                                 {this.props.shop[0] && (this.props.shop[0].status == "on" ? (
-                                  <button type="button" onClick={() => this.changeShopStatus('off')} className="btn btn-link">Stop</button>
+                                  <button type="button" onClick={() => this.changeShopStatus('off')} className="btn btn-link">Đóng Cửa</button>
                                 ) : (
-                                    <button type="button" onClick={() => this.changeShopStatus('on')} className="btn btn-link">Start</button>
+                                    <button type="button" onClick={() => this.changeShopStatus('on')} className="btn btn-link">Mở Cửa</button>
                                   ))}
                               </div>
                             </div>
@@ -283,8 +283,8 @@ class Dashboard extends Component {
             </div>
 
             <footer className="footer footer-static footer-light">
-              <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                    <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
 
           </div>
@@ -324,4 +324,3 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getAllAppointments, getAllOrders, getAllProducts, getAllRentedProducts, changeShopStatus, getShop
 })(Dashboard);
-
