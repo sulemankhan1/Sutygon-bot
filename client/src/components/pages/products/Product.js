@@ -52,8 +52,6 @@ class Product extends Component {
                                                 <div className="card-header">
                                                     <h4 className="card-title">View Product</h4>
 
-
-
                                                     <div className="card-body">
 
                                                         <div className="row">
@@ -101,7 +99,6 @@ class Product extends Component {
                                                                             name="contactnumber"
                                                                             value={product ? product.size : ""}
                                                                         />
-
                                                                     </div>
                                                                     <div className="form-group col-12 mb-2">
                                                                         <label htmlFor="projectinput6">Available Quanity</label><br></br>
@@ -112,23 +109,15 @@ class Product extends Component {
                                                                             name="contactnumber"
                                                                             value={product ? product.availableQuantity : ""}
                                                                         />
-
                                                                     </div>
-
-
                                                                 </div>
                                                             </div>
-
                                                         </div>
-
-
                                                     </div>
                                                 </div>
                                                 <div className="card-content">
                                                     <div className="card-body table-responsive">
                                                         <Alert />
-
-
                                                     </div>
                                                 </div>
                                             </div>

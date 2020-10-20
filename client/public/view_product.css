@@ -1,0 +1,68 @@
+.tb_row {
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    margin: 5px; padding: 15px;
+  }
+  .tb_top .tb_t_left {
+    display: inline-block;
+    float: left;
+    width: 15%;
+  }
+  .tb_top .tb_t_left img {
+    min-width: 150px;
+    min-height: 150px;
+    max-width: 200px;
+    max-height: 200px;
+  }
+  .tb_top .tb_t_right {
+    display: inline-block;
+    float: left;
+    width: 80%;
+    padding-top: 25px;
+  }
+  .tb_top p {
+    display: inline-block;
+    width: 80%;
+  }
+  .clearfix {
+    clear: both;
+  }
+  .tb_color_box {
+    padding: 15px;
+  }
+  .tb_color_box p {
+    display: inline-block;
+    font-size: 20px;
+    /* font-weight: bold; */
+  }
+  .tb_arrow-btn {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    padding: 2px; margin: 2px;
+    background: #333;
+    font-size: 11px;
+    color: #fff;
+    border: none;
+  
+  }
+  .tb_size_box {
+    margin-left: 50px;
+  }
+  .tb_barcodes_box {
+    margin-left: 30px;
+  }
+  .tb_barcodes_box ul {
+    list-style: none;
+  }
+  .ttag {
+    display: inline-block;
+    padding: 5px;
+    color: #fff;
+    background: #3F94E6;
+    margin: 5px;
+  }
+  .mbtn {
+    margin: 5px;
+  }
+  

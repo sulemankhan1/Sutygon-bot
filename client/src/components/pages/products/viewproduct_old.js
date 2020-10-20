@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import {
-  getAllProducts,
-  updateProduct,
+  getAllProducts,updateProduct,
   deleteProduct,
   getProductById,
   findProducts,
@@ -16,7 +15,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
-import loadjs from "loadjs";
 
 class ViewProduct extends Component {
   state = {
@@ -31,6 +29,7 @@ class ViewProduct extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+
   // return sorted products for barcodes
   getSortedData = (products) => {
     // looping through prducts
@@ -38,7 +37,7 @@ class ViewProduct extends Component {
     products.forEach((product, p_index) => {
       let product_name = product.name;
       let product_id = product._id;
-      let product_image = product.image;
+      let product_image = product.image
 
       // looping through each color of current product
       if (product.color) {
@@ -52,11 +51,11 @@ class ViewProduct extends Component {
               let size_name = size.size;
               let size_id = size.id;
               let price = size.price;
-              let totalQty = size.qty;
+              let totalQty = size.qty;  
               let length;
-
+            
               // show sizes with barcode
-              if (size.barcodes) {
+              if(size.barcodes) {
                 // if barcodes availble then length should be qty - barcodes length
                 length = size.barcodes.length;
               } else {
@@ -72,7 +71,7 @@ class ViewProduct extends Component {
                   size_id: size_id,
                   barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
                   title: product_name + " | " + color_name + " | " + size_name,
-                  barcode: size.barcodes ? size.barcodes[i].barcode : "",
+                  barcode : (size.barcodes) ? size.barcodes[i].barcode: "",  
                   price: price,
                 };
                 rows.push(row);
@@ -85,143 +84,74 @@ class ViewProduct extends Component {
     return rows;
   };
 
-  calculateTotals = (products) => {
-    // looping through prducts
-    let rows = [];
-    products.forEach((product, p_index) => {
-
-      // looping through each color of current product
-      if (product.color) {
-        let product_total = 0;
-        product.color.forEach((color, c_index) => {
-
-          let color_size_total = 0;
-          // looping through sizes of current color
-          if (color.sizes) {
-            color.sizes.forEach((size, s_index) => {
-              color_size_total += parseInt(size.qty);
-            });
-            color.total = color_size_total;
-          }
-
-          product_total += parseInt(color.total);
-        });
-        product.total = product_total;
-      }
-      // break tags by comma
-      if(product.tags && typeof(product.tags) == "string") {
-        let tags_arr = product.tags.split(',');
-        product.tags = tags_arr;
-      }
-      rows.push(product);
-    }); // products foreach ends here
-    return rows;
-  };
-
   getTAble = () => {
     const { products } = this.props;
-    
     if (products) {
-      const p_products = this.calculateTotals(products);
+      const productArray = this.getSortedData(products);
+
       let tbl_sno = 1;
-      if (p_products) {
-        if (p_products.length === 0) {
+      if (productArray) {
+        if (productArray.length === 0) {
           return (
             <tr>
               <td colSpan={10} className="text-center">
                 No product Found
-              </td>
+            </td>
             </tr>
           );
         }
-        console.log(p_products);
-        return p_products.map((product, i) => (
-          <div className="tb_container" key={i}>
-            <div className="tb_row">
-              <div className="tb_top">
-                <div className="tb_t_left"></div>
-                <div className="tb_t_right">
-                  <h2>
-                    <strong>Product ID # </strong> {product.productId}
-                  </h2>
-                  <h2>
-                    <strong>Total Items : </strong> {product.total}
-                  </h2>
-                </div>
-              </div>
-              <div className="clearfix"></div>
+        return productArray.map((product, i) => (
+          <tr key={i}>
+            <td className="text-center text-muted">{tbl_sno++}</td>
+            <td className="text-center">{""}</td>
+            <td className="text-center">{product.barcode}</td>
 
-              <div className="tb_center">
-                {product.color &&
-                  product.color.map((color, color_i) => (
-                    <div className="tb_color_box" key={color_i}>
-                      <button
-                        type="button"
-                        name="button"
-                        className="tb_arrow-btn color_btn"
-                      >
-                        <i className="ft-arrow-right arrow"></i>
-                      </button>{" "}
-                      <p>{color.colorname} : {color.total}</p>
-                      <div className="tb_color_box_content">
-                        {color.sizes &&
-                          color.sizes.map((size, size_i) => (
-                            <div className="tb_size_box" key={size_i}>
-                              <button
-                                type="button"
-                                name="button"
-                                className="tb_arrow-btn size_btn"
-                              >
-                                <i className="ft-arrow-right arrow"></i>
-                              </button>{" "}
-                              <p>
-                                {size.size} : {size.qty}{" "}
-                              </p>
-                              <div className="tb_size_box_content">
-                                <div className="tb_barcodes_box">
-                                  <ul>
-                                    {size.barcodes &&
-                                      size.barcodes.map(
-                                        (barcode, barcode_i) => (
-                                          <li key={barcode_i}>
-                                            BARCODE ID # {barcode.barcode}
-                                          </li>
-                                        )
-                                      )}
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  ))}
-              </div>
+            <td className="text-center">
+              <img
+                className="media-object round-media"
+                src={`${product.product_image}`}
+                alt="Generic placeholder image"
+                height={75}
+              />
+            </td>
+            <td className="text-center">{product.title}</td>
 
-              <div className="tb_bottom">
-                <p>
-                  Tags: 
-                  {product.tags && product.tags.map((tag, tag_i) => (
-                    <span className="ttag" key={tag_i}>{tag}</span>
-                  ))}
-                </p>
+            { <td className="text-center">{product.prduct_totalQty}</td>}
 
-                <a href="#" className="btn btn-primary pull-right mbtn">
-                  {" "}
-                  <i className="fa fa-pencil"></i> Edit{" "}
-                </a>
-                <a href="#" className="btn btn-primary pull-right mbtn">
-                  {" "}
-                  <i className="fa fa-trash"></i> Delete{" "}
-                </a>
-              </div>
+            <td className="text-center">{product.price}</td>
 
-              <div className="clearfix"></div>
-            </div>
-          </div>
+            <td className="text-center">
+              <Link
+                to={{
+                  pathname: `/product/viewproduct/${product.product_id}`,
+                  data: product
+                }}
+                className="info p-0"
+              >
+                <i className="ft-eye font-medium-3 mr-2" title="View"></i>
+              </Link>
+              <Link
+                to={{
+                  pathname: `/product/editproduct/${product.product_id}`,
+                  data: product
+                }}
+
+                className="success p-0"
+              >
+                <i className="ft-edit-2 font-medium-3 mr-2" title="Edit"></i>
+              </Link>
+              <Link
+                to="/product"
+                onClick={() => this.onDelete(product)}
+                className="danger p-0"
+              >
+                <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
+              </Link>
+            </td>
+          </tr>
         ));
       }
-    }
+    };
   };
   async searchTable() {
     const searchVal = this.state.search;
@@ -233,50 +163,43 @@ class ViewProduct extends Component {
   }
 
   async onDelete(product) {
-    const { barcode, barcodeIndex, color_id, size_id, product_id } = product;
-    let color = this.disableBarCode(
-      barcode,
-      product_id,
-      color_id,
-      size_id,
-      barcodeIndex
-    );
-    console.log("color", color);
-    await this.props.updateProduct(color, product_id);
-  }
+    const {barcode,barcodeIndex,color_id,size_id,product_id} = product;
+ let color = this.disableBarCode(barcode,product_id,color_id,size_id,barcodeIndex);
+ console.log("color",color)
+ await this.props.updateProduct(color,product_id)
 
-  disableBarCode = async (
-    barcode,
-    product_id,
-    color_id,
-    size_id,
-    barcodeIndex
-  ) => {
+}
+
+   disableBarCode = async (barcode, product_id, color_id, size_id, barcodeIndex) => {
     // get product by id
     await this.props.getProductById(product_id);
     const { product } = this.props;
-    if (product && product.color) {
+    if(product && product.color) {
       // loop through product colors
       product.color.forEach((color, c_index) => {
         // get right color obj
-        if (color._id == color_id) {
+        if(color._id == color_id) {
           // get right size obj
-          if (color.sizes) {
+          if(color.sizes) {
             color.sizes.forEach((size, s_index) => {
-              if (size.id == size_id) {
+              if(size.id == size_id) {
                 // check if current size obj contain barcodes or not
-                if (size.barcodes) {
-                  size.barcodes[barcodeIndex].isDisable = true; // Disable barcode
-                }
+                if(size.barcodes) {
+                    size.barcodes[barcodeIndex].isDisable = true; // Disable barcode
+                } 
               }
-            });
+            })
           }
         }
-        return color;
+return color;
         // disable selected barcode only
-      });
+      })
+
+      
+
     }
-  };
+  }
+
 
   render() {
     const { auth } = this.props;
@@ -332,7 +255,23 @@ class ViewProduct extends Component {
                               </div>
                             </div>
                             <Alert />
-                            {this.getTAble()}
+
+                            <table className="table text-center">
+                              <thead>
+                                <tr>
+                                  <th>#</th>
+                                  <th></th>
+                                  <th>Product ID</th>
+                                  <th>Image</th>
+                                  <th>Name</th>
+                                  <th>Total Quantity</th>
+                                  <th>Price</th>
+                                  <th>Actions</th>
+
+                                </tr>
+                              </thead>
+                              <tbody>{this.getTAble()}</tbody>
+                            </table>
                           </div>
                         </div>
                       </div>
@@ -383,8 +322,7 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 export default connect(mapStateToProps, {
-  getAllProducts,
-  updateProduct,
+  getAllProducts,updateProduct,
   deleteProduct,
   getProductById,
   findProducts,
