@@ -11,84 +11,84 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 class AddAppointment extends Component {
-    state = {
-        id: "",
-        appointmentNumber: "",
-        start:"",
-        end:"",
-        customer: "",
-        user:"",
-        saving: false,
+  state = {
+    id: "",
+    appointmentNumber: "",
+    start: "",
+    end: "",
+    customer: "",
+    user: "",
+    saving: false,
+  };
+  async componentDidMount() {
+    this.props.getAllProducts();
+    this.props.getAllCustomers();
+
+  }
+
+  handleChange = (e, id = "") => {
+    this.setState({ [e.target.name]: e.target.value });
+
+  };
+
+  onSubmit = async (e) => {
+    e.preventDefault();
+    this.setState({ saving: true });
+
+    const state = { ...this.state };
+    const { user } = this.props.auth;
+    const appointment = {
+      appointmentNumber: state.appointmentNumber,
+      start: state.start,
+      end: state.start,
+      customer: state.customer,
+      user: user._id,
     };
-    async componentDidMount() {
-      this.props.getAllProducts();
-      this.props.getAllCustomers();
-  
+
+    if (state.id === "") {
+      await this.props.addNewAppointment(appointment);
+
+    }
+    this.setState({ saving: false });
+  }
+  render() {
+    const { auth } = this.props;
+    if (!auth.loading && !auth.isAuthenticated) {
+      return <Redirect to="/" />;
     }
 
-       handleChange = (e, id = "") => {
-        this.setState({ [e.target.name]: e.target.value });
-    
-    };
-
-    onSubmit = async (e) => {
-        e.preventDefault();
-        this.setState({ saving: true });
-
-        const state = { ...this.state };
-const {user} = this.props.auth;
-   const appointment = {
-            appointmentNumber: state.appointmentNumber,
-            start: state.start,
-            end: state.start,
-            customer:state.customer,
-            user: user._id,
-                   };
-
-        if (state.id === "") {
-            await this.props.addNewAppointment(appointment);
-      
-          } 
-          this.setState({ saving: false });
+    if (this.props.saved) {
+      return <Redirect to="/calender" />;
     }
-    render() {
-        const { auth } = this.props;
-        if (!auth.loading && !auth.isAuthenticated) {
-          return <Redirect to="/" />;
-        }
+    const { customer } = this.state;
+    const { customers } = this.props.customers;
 
-        if (this.props.saved) {
-            return <Redirect to="/calender" />;
-          }
-          const {customer} = this.state;
-          const { customers } = this.props.customers;
-         
-        return (
-            <React.Fragment>
-              <Loader />
-                <div className="wrapper menu-collapsed">
-                    <Sidebar location={this.props.location} >
-                    </Sidebar>
-                    <Header>
-                    </Header>
+    return (
+      <React.Fragment>
+        <Loader />
+        <div className="wrapper menu-collapsed">
+          <Sidebar location={this.props.location} >
+          </Sidebar>
+          <Header>
+          </Header>
 
-                    <div className="main-panel">
-                        <div className="main-content">
-                        <div className="content-wrapper">
-                        <section id="form-action-layouts">
-     <div className="form-body">
-        <div className="card">
-          <div className="card-header">
-                <h4 className="form-section"><i className="icon-social-dropbox"></i> 
+          <div className="main-panel">
+            <div className="main-content">
+              <div className="content-wrapper">
+                <section id="form-action-layouts">
+                  <div className="form-body">
+                    <div className="card">
+                      <div className="card-header">
+                        <h4 className="form-section"><i className="icon-social-dropbox"></i>
                           Add New Appointment</h4>
-            </div>
+                      </div>
 
-            <div className="card-body">
+                      <div className="card-body">
 
-            <form onSubmit={(e) => this.onSubmit(e)}>
-            <Alert />
+                        <form onSubmit={(e) => this.onSubmit(e)}>
+                          <Alert />
 
-            <div className="row">
+                          <div className="row">
                             <div className="form-group col-6 mb-2">
                               <label htmlFor="issueinput5">Select Customer</label>
                               <select
@@ -106,7 +106,7 @@ const {user} = this.props.auth;
                                     >
                                       {record.name +
                                         " - " +
-                                        record.email}
+                                        record.contactnumber}
                                     </option>
                                   ))}
                               </select>
@@ -114,7 +114,7 @@ const {user} = this.props.auth;
                             <div className="form-group col-md-6 mb-2">
                               <label
                                 htmlFor="issueinput3"
-                              >Start Date
+                              >Appointment Date
                     </label>
                               <input
                                 type="date"
@@ -129,53 +129,53 @@ const {user} = this.props.auth;
                                 value={this.state.start}
                               />
                             </div>
-                          </div>      
-                          
-                                  
-              <div className="form-actions top">
-                         
-                          {this.state.saving ? (
-                            <button
-                              type="button"
-                              className="mb-2 mr-2 btn btn-raised btn-primary"
-                            >
-                              <div
-                                className="spinner-grow spinner-grow-sm "
-                                role="status"
-                              ></div>
-                                &nbsp; Creating
-                            </button>
-                          ) : (
+                          </div>
+
+
+                          <div className="form-actions top">
+
+                            {this.state.saving ? (
                               <button
-                                type="submit"
+                                type="button"
                                 className="mb-2 mr-2 btn btn-raised btn-primary"
                               >
-                                <i className="ft-check" /> Create Appointment
+                                <div
+                                  className="spinner-grow spinner-grow-sm "
+                                  role="status"
+                                ></div>
+                                &nbsp; Creating
                               </button>
-                            )}
-                </div>
-            </form>
-             </div>
-           </div>
+                            ) : (
+                                <button
+                                  type="submit"
+                                  className="mb-2 mr-2 btn btn-raised btn-primary"
+                                >
+                                  <i className="ft-check" /> Create Appointment
+                                </button>
+                              )}
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+              </div>
+            </div>
+
+            <footer className="footer footer-static footer-light">
+              <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
+                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+            </footer>
+
           </div>
-        </section>
 
         </div>
-                        </div>
 
-                        <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
-                        </footer>
+      </React.Fragment>
 
-                    </div>
-
-                </div>
-
-            </React.Fragment>
-
-        );
-    }
+    );
+  }
 }
 
 AddAppointment.propTypes = {
@@ -185,17 +185,17 @@ AddAppointment.propTypes = {
   getAllCustomers: PropTypes.func.isRequired,
   getAllProducts: PropTypes.func.isRequired,
 
- };
+};
 
 const mapStateToProps = (state) => ({
   appointment: state.appointment,
-    saved: state.appointment.saved,
-    auth: state.auth,
-    products: state.product,
-    customers: state.customer
+  saved: state.appointment.saved,
+  auth: state.auth,
+  products: state.product,
+  customers: state.customer
 
 });
 export default connect(mapStateToProps, {
-   addNewAppointment,getAllCustomers,getAllProducts
+  addNewAppointment, getAllCustomers, getAllProducts
 })(AddAppointment);
 

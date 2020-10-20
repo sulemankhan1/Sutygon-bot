@@ -17,7 +17,6 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     await this.props.getAllAppointments();
-    await this.props.getAllOrders();
     await this.props.getAllRentedProducts();
     await this.props.getAllProducts();
     await this.props.getShop();
@@ -32,7 +31,7 @@ class Dashboard extends Component {
     const { rentedproducts } = this.props;
     if (rentedproducts) {
 
-      let events = rentedproducts.filter(a => (new Date(a.deliveryDate)) - (new Date()) > 0);
+      let events = rentedproducts.filter(a => (new Date(a.returnDate)) - (new Date()) > 0);
 
       return events.length;
 
@@ -43,11 +42,39 @@ class Dashboard extends Component {
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
-
-      let events = rentedproducts.filter(a => (moment(a.deliveryDate).isBefore(currentdate)));
-      return events.length;
-
+      let events = rentedproducts.filter(a => (moment(moment(a.returnDate).format('MM/DD/YYYY')).isBefore(currentdate)));
+      if(events.length > 0){
+      let returningOrders = events.filter((f => f.status !== "Completed"))
+      return returningOrders.length;
+  
     }
+      
+    }
+  }
+  
+  getTodaysOrder = () => {
+    // e.preventDefault()
+    const { rentedproducts } = this.props;
+    if (rentedproducts) {
+      var currentdate = moment(new Date).format('MM/DD/YYYY');
+
+      console.log("currentdate",currentdate)
+
+      let events = rentedproducts.filter(a => (moment(moment(a.createdAt).format('MM/DD/YYYY')).isSame(currentdate)));
+      return events.length;
+    }
+
+
+  }
+  orderPickUpToday = () =>{
+    const { rentedproducts } = this.props;
+    if (rentedproducts) {
+      var currentdate = moment(new Date).format('MM/DD/YYYY');
+      let events = rentedproducts.filter(a => (moment(moment(a.rentDate).format('MM/DD/YYYY')).isSame(currentdate)));
+      let returningOrders = events.filter((f => f.status !== "Completed"))
+      return returningOrders.length;
+    }
+
   }
   getReturnOrder = () => {
     // e.preventDefault()
@@ -108,7 +135,8 @@ class Dashboard extends Component {
                           <div class="media">
                             <div class="media-body white text-left">
                               <h3 class="font-large-1 mb-0">{this.getTodaysAppointment()}</h3>
-                              <span>Hẹn Thử Đồ Hôm Nay</span>
+<a href="/calender" style={{'textDecoration':'none' , 'color':'white'}}>Today's Appointment
+                         </a>
                             </div>
                             <div class="media-right white text-right">
                               <i class="icon-pie-chart font-large-1"></i>
@@ -166,8 +194,8 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
-                              <span>Đơn Hàng Cần Giao Khách Hôm Nay</span>
+<h3 class="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
+                              <span>Order Pickup Today</span>
                             </div>
                             <div class="media-right white text-right">
                               <i class="icon-wallet font-large-1"></i>
@@ -185,8 +213,8 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
-                              <span>Đơn Hàng Cần Sửa Đồ</span>
+<h3 class="font-large-1 mb-0">{}</h3>
+                              <span>Order Needs Alteration</span>
                             </div>
                             <div class="media-right white text-right">
                               <i class="icon-wallet font-large-1"></i>
@@ -204,8 +232,8 @@ class Dashboard extends Component {
                         <div class="card-body pt-2 pb-0">
                           <div class="media">
                             <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
-                              <span>Tổng Đơn Hàng Mới Hôm Nay</span>
+<h3 class="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
+                              <span>Today's Orders</span>
                             </div>
                             <div class="media-right white text-right">
                               <i class="fa-music font-large-1"></i>
@@ -288,7 +316,7 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   products: state.product.products,
   appointment: state.appointment.appointments,
-  orders: state.order.orders,
+  // orders: state.order.orders,
   shop: state.dashboard.shop,
   rentedproducts: state.rentproduct.rentproducts
 

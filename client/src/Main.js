@@ -20,6 +20,7 @@ import Product from "./components/pages/products/Product";
 import RentProduct from "./components/pages/rentproduct";
 import Checkout from "./components/pages/checkout";
 import ReturnProduct from "./components/pages/returnproduct/returnproduct";
+import ScanBarcode from "./components/pages/returnproduct/scanBarcode";
 
 import RentOrder from "./components/pages/rentOrder";
 import RentInvoice from "./components/pages/RentInvoice";
@@ -27,7 +28,7 @@ import RentInvoice from "./components/pages/RentInvoice";
 import Report from "./components/pages/report/report";
 import ReportOrder from "./components/pages/report/reportOrder";
 
-
+import MatchBarcodes from "./components/pages/returnproduct/matchBarcodes";
 // import Calender from "./components/pages/calender";
 
 // Redux
@@ -76,6 +77,8 @@ const Main = () => {
 
           {/* return product */}
           <PrivateRoute exact path="/returnproduct" component={ReturnProduct} />
+          <PrivateRoute exact path="/matchbarcodes" component={MatchBarcodes} />
+          <PrivateRoute exact path="/scanbarcode" component={ScanBarcode} />
 
 
           {/* orders */}

@@ -8,7 +8,8 @@ const Loader = ({
   productLoading,
   customerLoading,
   rentproductLoading,
-  orderLoading,
+  returnproductLoading,
+  // orderLoading,
   appointmentLoading,
   reportLoading,
 }) =>
@@ -18,7 +19,8 @@ const Loader = ({
     productLoading ||
     customerLoading ||
     rentproductLoading ||
-    orderLoading ||
+    returnproductLoading ||
+    // orderLoading ||
     appointmentLoading ||
     reportLoading) && (
     <div className="loaderContainer">
@@ -46,7 +48,8 @@ const mapStateToProps = (state) => ({
   productLoading: state.product.loading,
   customerLoading: state.customer.loading,
   rentproductLoading: state.rentproduct.loading,
-  orderLoading: state.order.loading,
+  returnproductLoading: state.returnproduct.loading,
+  // orderLoading: state.order.loading,
   appointmentLoading: state.appointment.loading,
   reportLoading: state.report.loading,
   auth: state.auth,

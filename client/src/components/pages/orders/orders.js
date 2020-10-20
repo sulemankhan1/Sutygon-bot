@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 import {getAllRentedProducts,deleteRentedProduct } from "../../../actions/rentproduct";
+
+import {getAllProducts } from "../../../actions/product";
 import { confirmAlert } from "react-confirm-alert";
 import * as moment from 'moment'
 
@@ -16,13 +18,15 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 class Orders extends Component {
 
   async componentDidMount() {
+    await this.props.getAllProducts();
     await this.props.getAllRentedProducts();
+
   }
 
   state = {
     search: ""
   }
-
+   
  getTAble = () => {
     const { rentproducts } = this.props;
         let tbl_sno=1;
@@ -37,42 +41,92 @@ class Orders extends Component {
         );
       }
       return rentproducts.map((order,i) => (
-        <tr key={i}>
+        console.log(this.productBox(order.barcodes))
+        // <tr key={i}>
+           
+        //    <td className="text-center text-muted">{tbl_sno++}</td>
+        //    <td className="text-center">{""}</td>
 
-           <td className="text-center text-muted">{tbl_sno++}</td>
-           <td className="text-center">{""}</td>
+        //   <td className="text-center">{order.customer ? order.customer.name : ""}</td>
+        //   <td className="text-center">{this.getBarcodeRecord(order.barcodes)}</td>
+        //   <td className="text-center">{this.getStatus(order.rentDate) === "Pending"
+        //   ? <div className="badge badge-success">Pending</div>
+        //   : this.getStatus(order.rentDate) === "Due" 
+        //   ? <div className="badge badge-warning">Over Due</div>
+        //   :<div className="badge badge-danger">Due Today</div>
+        
+        // }</td>
 
-          <td className="text-center">{order.customer ? order.customer.name : ""}</td>
-          <td className="text-center">{order.barcodes ?  "ProductName?":""}</td>
-          <td className="text-center">{this.getStatus(order.rentDate) === "Pending"
-          ? <div className="badge badge-success">Pending</div>
-          : this.getStatus(order.rentDate) === "Due"
-          ? <div className="badge badge-warning">Over Due</div>
-          :<div className="badge badge-danger">Due Today</div>
+        //   <td className="text-center">{moment(order.rentDate).format('DD/MMM/YYYY')}</td>
 
-        }</td>
+        //   <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
+        //   <td className="text-center">
+      
+         
+        //     <Link to="/orders"
+        //       onClick={() => this.onDelete(order._id)}
+        //       className="danger p-0">
+        //       <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
+        //     </Link>
+        //   </td>
 
-          <td className="text-center">{moment(order.rentDate).format('DD/MMM/YYYY')}</td>
-
-          <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
-          <td className="text-center">
-
-            {/* <Link
-              to={{ pathname: `/orders/${order._id}` }}
-              className="success p-0">
-              <i className="ft-edit-2 font-medium-3 mr-2"></i>
-            </Link>  */}
-            <Link to="/orders"
-              onClick={() => this.onDelete(order._id)}
-              className="danger p-0">
-              <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
-            </Link>
-          </td>
-
-        </tr>
+        // </tr>
        ));
     }
   };
+   
+
+  // return sorted products for barcodes
+  getSortedData = (products) => {
+    // looping through prducts
+    let rows = [];
+    products.forEach((product, p_index) => {
+      let product_name = product.name;
+      let product_id = product._id;
+
+      // looping through each color of current product
+      if (product.color) {
+        product.color.forEach((color, c_index) => {
+          let color_name = color.colorname;
+          let color_id = color._id;
+
+          // looping through sizes of current color
+          if (color.sizes) {
+            color.sizes.forEach((size, s_index) => {
+              let size_name = size.size;
+              let size_id = size.id;
+              let price = size.price;
+              let length;
+              // show sizes with barcode
+              if (size.barcodes) {
+                length = size.barcodes.length;
+              } else {
+                length = 0;
+              }
+
+              let i;
+              for (i = 0; i < length; i++) {
+                let row = {
+                  product_id: product_id,
+                  color_id: color_id,
+                  size_id: size_id,
+                  barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
+                  title: product_name + " | " + color_name + " | " + size_name,
+                  barcode: size.barcodes[i].barcode,
+                  price: price,
+                };
+                rows.push(row);
+              }
+            });
+          }
+        });
+      }
+    }); // products foreach ends here
+    return rows;
+  };
+
+
+      
 
   getStatus=(date) =>{
     var deliveryDate = moment(date).format('MM/DD/YYYY');
@@ -91,7 +145,7 @@ class Orders extends Component {
   }
    return status;
        };
-
+  
   onDelete = (id) => {
     confirmAlert({
       title: "Cancel Order",
@@ -122,10 +176,60 @@ class Orders extends Component {
         } else {
             await this.props.getAllOrders();
         }
-
+        
     }
 
+    productBox = (barcodes) => {
+console.log(barcodes)
+      let productarray = [];
+      const { products } = this.props;
+      if (products) {
+        let sortedAray = this.getSortedData(products);
+        if (sortedAray) {
+          barcodes.forEach((element) => {
+         for(var i=0;i<element.length;i++){
+          productarray.push(
+            sortedAray.filter((f) => f.barcode === element[i])
+            );
+            return productarray;
+         }
 
+            // element.forEach((e,e_index) => {
+              // console.log(element)
+            // productarray.push(
+            //   sortedAray.filter((f) => f.barcode === e)
+            // );
+            // return productarray;
+          // });
+
+          });
+        }
+      }
+      // return productarray.map((b, b_index) => (
+      //   <>
+
+      //     {
+      //       <div className="form-group">
+      //         <div className="row" key={b_index}>
+      //           <input
+      //             type="text"
+      //             value={`${b[0].title} ${"|"} ${b[0].barcode}`}
+      //             className="form-control mm-input s-input text-center text-dark"
+      //             placeholder="Barcode"
+      //             id="setSize1"
+      //             style={{ 'width': '110%' }}
+      //             readOnly
+      //           />
+  
+      //         </div>
+      //       </div>}
+  
+  
+      // //   </>
+      // ))
+    }
+  
+    
   render() {
         const { auth   } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -135,7 +239,10 @@ class Orders extends Component {
         // if (this.props.saved) {
         //     return <Redirect to="/dashboard" />;
         //   }
-
+        console.log(this.props)
+        if(this.props.products){
+        console.log(this.getSortedData(this.props.products))
+        }
         return (
             <React.Fragment>
               <Loader />
@@ -171,7 +278,7 @@ class Orders extends Component {
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {this.getTAble()}
+                                        {this.getTAble()} 
                                       </tbody>
                                     </table>
                                   </div>
@@ -184,8 +291,8 @@ class Orders extends Component {
                       </div>
                     </div>
                     <footer className="footer footer-static footer-light">
-                        <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                            <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+                        <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
+                            <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
                     </footer>
                 </div>
 
@@ -198,15 +305,20 @@ class Orders extends Component {
 Orders.propTypes = {
   auth: PropTypes.object,
   getAllRentedProducts: PropTypes.func.isRequired,
+  getAllProducts: PropTypes.func.isRequired,
   deleteRentedProduct: PropTypes.func.isRequired,
   rentproducts: PropTypes.array,
+  products:PropTypes.array
   };
 
 const mapStateToProps = (state) => ({
   rentproducts: state.rentproduct.rentproducts,
   auth: state.auth,
+  products: state.product.products,
+
 
 });
 export default connect(mapStateToProps, {
-  getAllRentedProducts,deleteRentedProduct
+  getAllRentedProducts,deleteRentedProduct,getAllProducts
 })(Orders);
+

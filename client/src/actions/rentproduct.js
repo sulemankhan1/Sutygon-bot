@@ -87,7 +87,7 @@ export const getProduct = (id) => async (dispatch) => {
 
 
 // Update User
-export const updateProduct = (product, id) => async (dispatch) => {
+export const updateRentedProduct = (product, id) => async (dispatch) => {
   dispatch({ type: RENTPRODUCTS_LOADING });
   const config = {
     headers: {
