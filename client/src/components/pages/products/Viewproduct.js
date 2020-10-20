@@ -25,6 +25,10 @@ class ViewProduct extends Component {
 
   async componentDidMount() {
     await this.props.getAllProducts();
+    const { products } = this.props;
+    if (products) {
+      this.calculateTotals(products);
+    }
   }
 
   handleChange = (e, id = "") => {
@@ -89,19 +93,19 @@ class ViewProduct extends Component {
     // looping through prducts
     let rows = [];
     products.forEach((product, p_index) => {
-
       // looping through each color of current product
       if (product.color) {
         let product_total = 0;
         product.color.forEach((color, c_index) => {
-
           let color_size_total = 0;
           // looping through sizes of current color
           if (color.sizes) {
             color.sizes.forEach((size, s_index) => {
               color_size_total += parseInt(size.qty);
+              size.is_open = false;
             });
             color.total = color_size_total;
+            color.is_open = false;
           }
 
           product_total += parseInt(color.total);
@@ -109,23 +113,38 @@ class ViewProduct extends Component {
         product.total = product_total;
       }
       // break tags by comma
-      if(product.tags && typeof(product.tags) == "string") {
-        let tags_arr = product.tags.split(',');
+      if (product.tags && typeof product.tags == "string") {
+        let tags_arr = product.tags.split(",");
         product.tags = tags_arr;
       }
       rows.push(product);
     }); // products foreach ends here
-    return rows;
+    this.setState({ formated_products: rows });
   };
 
+  toggleColor = (e, product_i, color_i) => {
+    const { formated_products } = this.state;
+
+    formated_products[product_i].color[color_i].is_open = !formated_products[product_i].color[color_i].is_open;
+    this.setState({ formated_products });;
+  };
+
+  toggleSize = (e, product_i, color_i, size_i) => {
+    const { formated_products } = this.state;
+
+    formated_products[product_i].color[color_i].sizes[
+      size_i
+    ].is_open = !formated_products[product_i].color[color_i].sizes[size_i]
+      .is_open;
+    this.setState({ formated_products });;
+  };
   getTAble = () => {
-    const { products } = this.props;
-    
-    if (products) {
-      const p_products = this.calculateTotals(products);
+    const { formated_products } = this.state;
+
+    if (formated_products) {
       let tbl_sno = 1;
-      if (p_products) {
-        if (p_products.length === 0) {
+      if (formated_products) {
+        if (formated_products.length === 0) {
           return (
             <tr>
               <td colSpan={10} className="text-center">
@@ -134,12 +153,18 @@ class ViewProduct extends Component {
             </tr>
           );
         }
-        console.log(p_products);
-        return p_products.map((product, i) => (
+
+        return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">
               <div className="tb_top">
-                <div className="tb_t_left"></div>
+                <div className="tb_t_left">
+                  <img
+                    className="media-object round-media"
+                    src={`${product.image}`}
+                    alt="Generic placeholder image"
+                  />
+                </div>
                 <div className="tb_t_right">
                   <h2>
                     <strong>Product ID # </strong> {product.productId}
@@ -154,16 +179,27 @@ class ViewProduct extends Component {
               <div className="tb_center">
                 {product.color &&
                   product.color.map((color, color_i) => (
-                    <div className="tb_color_box" key={color_i}>
+                    <div className={`tb_color_box`} key={color_i}>
                       <button
                         type="button"
                         name="button"
                         className="tb_arrow-btn color_btn"
+                        onClick={(e) =>
+                          this.toggleColor(e, i, color_i)
+                        }
                       >
-                        <i className="ft-arrow-right arrow"></i>
+                        <i 
+                        className={color.is_open ? "ft-arrow-down" : "ft-arrow-right"}
+                        ></i>
                       </button>{" "}
-                      <p>{color.colorname} : {color.total}</p>
-                      <div className="tb_color_box_content">
+                      <p>
+                        {color.colorname} : {color.total}
+                      </p>
+                      <div
+                        className={`tb_color_box_content ${
+                          color.is_open ? "show_it" : "hide_it"
+                        }`}
+                      >
                         {color.sizes &&
                           color.sizes.map((size, size_i) => (
                             <div className="tb_size_box" key={size_i}>
@@ -171,13 +207,22 @@ class ViewProduct extends Component {
                                 type="button"
                                 name="button"
                                 className="tb_arrow-btn size_btn"
+                                onClick={(e) =>
+                                  this.toggleSize(e, i, color_i, size_i)
+                                }
                               >
-                                <i className="ft-arrow-right arrow"></i>
+                                <i 
+                                className={size.is_open ? "ft-arrow-down" : "ft-arrow-right"}
+                                ></i>
                               </button>{" "}
                               <p>
                                 {size.size} : {size.qty}{" "}
                               </p>
-                              <div className="tb_size_box_content">
+                              <div
+                                className={`tb_size_box_content ${
+                                  size.is_open ? "show_it" : "hide_it"
+                                }`}
+                              >
                                 <div className="tb_barcodes_box">
                                   <ul>
                                     {size.barcodes &&
@@ -200,10 +245,13 @@ class ViewProduct extends Component {
 
               <div className="tb_bottom">
                 <p>
-                  Tags: 
-                  {product.tags && product.tags.map((tag, tag_i) => (
-                    <span className="ttag" key={tag_i}>{tag}</span>
-                  ))}
+                  Tags:
+                  {product.tags &&
+                    product.tags.map((tag, tag_i) => (
+                      <span className="ttag" key={tag_i}>
+                        {tag}
+                      </span>
+                    ))}
                 </p>
 
                 <a href="#" className="btn btn-primary pull-right mbtn">
@@ -241,7 +289,6 @@ class ViewProduct extends Component {
       size_id,
       barcodeIndex
     );
-    console.log("color", color);
     await this.props.updateProduct(color, product_id);
   }
 
