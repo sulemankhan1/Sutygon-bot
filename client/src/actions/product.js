@@ -142,19 +142,12 @@ export const getProductById = (id) => async (dispatch) => {
 
 export const updateProduct = (product, id) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });
-  // const config = {
-  //   headers: {
-  //       'content-type': 'multipart/form-data'
-  //   }
-  // }
-  dispatch({ type: PRODUCTS_LOADING });
   const config = {
     headers: {
       "Content-Type": "application/json",
     },  
   };
   const body = JSON.stringify(product);
-
   try {
     const res = await axios.post(`/api/products/${id}`,body, config);
 

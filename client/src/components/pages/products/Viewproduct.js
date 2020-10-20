@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import {
-  getAllProducts,
+  getAllProducts,updateProduct,
   deleteProduct,
-  getProduct,
+  getProductById,
   findProducts,
 } from "../../../actions/product";
 import { confirmAlert } from "react-confirm-alert";
@@ -29,7 +29,7 @@ class ViewProduct extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  
+
   // return sorted products for barcodes
   getSortedData = (products) => {
     // looping through prducts
@@ -51,15 +51,16 @@ class ViewProduct extends Component {
               let size_name = size.size;
               let size_id = size.id;
               let price = size.price;
-              let totalQty = size.qty;
+              let totalQty = size.qty;  
               let length;
+            
               // show sizes with barcode
-              if (size.barcodes) {
+              if(size.barcodes) {
+                // if barcodes availble then length should be qty - barcodes length
                 length = size.barcodes.length;
               } else {
                 length = 0;
               }
-
               let i;
               for (i = 0; i < length; i++) {
                 let row = {
@@ -70,7 +71,7 @@ class ViewProduct extends Component {
                   size_id: size_id,
                   barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
                   title: product_name + " | " + color_name + " | " + size_name,
-                  barcode: size.barcodes[i].barcode,
+                  barcode : (size.barcodes) ? size.barcodes[i].barcode: "",  
                   price: price,
                 };
                 rows.push(row);
@@ -85,67 +86,72 @@ class ViewProduct extends Component {
 
   getTAble = () => {
     const { products } = this.props;
-    if(products){
-const productArray = this.getSortedData(products);
+    if (products) {
+      const productArray = this.getSortedData(products);
 
-    let tbl_sno = 1;
-    if (productArray) {
-      if (productArray.length === 0) {
-        return (
-          <tr>
-            <td colSpan={10} className="text-center">
-              No product Found
+      let tbl_sno = 1;
+      if (productArray) {
+        if (productArray.length === 0) {
+          return (
+            <tr>
+              <td colSpan={10} className="text-center">
+                No product Found
+            </td>
+            </tr>
+          );
+        }
+        return productArray.map((product, i) => (
+          <tr key={i}>
+            <td className="text-center text-muted">{tbl_sno++}</td>
+            <td className="text-center">{""}</td>
+            <td className="text-center">{product.barcode}</td>
+
+            <td className="text-center">
+              <img
+                className="media-object round-media"
+                src={`${product.product_image}`}
+                alt="Generic placeholder image"
+                height={75}
+              />
+            </td>
+            <td className="text-center">{product.title}</td>
+
+            { <td className="text-center">{product.prduct_totalQty}</td>}
+
+            <td className="text-center">{product.price}</td>
+
+            <td className="text-center">
+              <Link
+                to={{
+                  pathname: `/product/viewproduct/${product.product_id}`,
+                  data: product
+                }}
+                className="info p-0"
+              >
+                <i className="ft-eye font-medium-3 mr-2" title="View"></i>
+              </Link>
+              <Link
+                to={{
+                  pathname: `/product/editproduct/${product.product_id}`,
+                  data: product
+                }}
+
+                className="success p-0"
+              >
+                <i className="ft-edit-2 font-medium-3 mr-2" title="Edit"></i>
+              </Link>
+              <Link
+                to="/product"
+                onClick={() => this.onDelete(product)}
+                className="danger p-0"
+              >
+                <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
+              </Link>
             </td>
           </tr>
-        );
+        ));
       }
-      return productArray.map((product, i) => (
-        <tr key={i}>
-          <td className="text-center text-muted">{tbl_sno++}</td>
-          <td className="text-center">{""}</td>
-          <td className="text-center">{product.barcode}</td>
-
-          <td className="text-center">
-            <img
-              className="media-object round-media"
-              src={`${product.product_image}`}
-              alt="Generic placeholder image"
-              height={75}
-            />
-          </td>
-          <td className="text-center">{product.title}</td>
-        
-          { <td className="text-center">{product.prduct_totalQty}</td> }
-
-          <td className="text-center">{product.price}</td>
-         
-          <td className="text-center">
-            <Link
-              to={{ pathname: `/product/viewproduct/${product.product_id}`}}
-              data={{colorID:product.color_id, sizeID:product.size_id}}
-              className="info p-0"
-            >
-              <i className="ft-eye font-medium-3 mr-2" title="View"></i>
-            </Link>
-            <Link
-              to={{ pathname: `/product/editproduct/${product.product_id}` }}
-              data={{colorID:product.color_id, sizeID:product.size_id}}
-              className="success p-0"
-            >
-              <i className="ft-edit-2 font-medium-3 mr-2" title="Edit"></i>
-            </Link>
-            <Link
-              to="/product"
-              onClick={() => this.onDelete(product.product_id)}
-              className="danger p-0"
-            >
-              <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
-            </Link>
-          </td>
-        </tr>
-      ));
-    }
-  };
+    };
   };
   async searchTable() {
     const searchVal = this.state.search;
@@ -156,11 +162,45 @@ const productArray = this.getSortedData(products);
     }
   }
 
-  async onDelete(id) {
+  async onDelete(product) {
+    const {barcode,barcodeIndex,color_id,size_id,product_id} = product;
+ let color = this.disableBarCode(barcode,product_id,color_id,size_id,barcodeIndex);
+ console.log("color",color)
+ await this.props.updateProduct(color,product_id)
 
-    await this.props.deleteProduct(id);
+}
+
+   disableBarCode = async (barcode, product_id, color_id, size_id, barcodeIndex) => {
+    // get product by id
+    await this.props.getProductById(product_id);
+    const { product } = this.props;
+    if(product && product.color) {
+      // loop through product colors
+      product.color.forEach((color, c_index) => {
+        // get right color obj
+        if(color._id == color_id) {
+          // get right size obj
+          if(color.sizes) {
+            color.sizes.forEach((size, s_index) => {
+              if(size.id == size_id) {
+                // check if current size obj contain barcodes or not
+                if(size.barcodes) {
+                    size.barcodes[barcodeIndex].isDisable = true; // Disable barcode
+                } 
+              }
+            })
+          }
+        }
+return color;
+        // disable selected barcode only
+      })
+
+      
+
+    }
   }
-  
+
+
   render() {
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
@@ -226,8 +266,8 @@ const productArray = this.getSortedData(products);
                                   <th>Name</th>
                                   <th>Total Quantity</th>
                                   <th>Price</th>
-                                  <th>Actions</th> 
-                                
+                                  <th>Actions</th>
+
                                 </tr>
                               </thead>
                               <tbody>{this.getTAble()}</tbody>
@@ -267,19 +307,23 @@ const productArray = this.getSortedData(products);
 ViewProduct.propTypes = {
   auth: PropTypes.object,
   getAllProducts: PropTypes.func.isRequired,
-  getProduct: PropTypes.func.isRequired,
+  getProductById: PropTypes.func.isRequired,
   deleteProduct: PropTypes.func.isRequired,
   findProducts: PropTypes.func.isRequired,
+  updateProduct: PropTypes.func.isRequired,
   products: PropTypes.array,
+  product: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
   products: state.product.products,
+  product: state.product.product,
+
   auth: state.auth,
 });
 export default connect(mapStateToProps, {
-  getAllProducts,
+  getAllProducts,updateProduct,
   deleteProduct,
-  getProduct,
+  getProductById,
   findProducts,
 })(ViewProduct);

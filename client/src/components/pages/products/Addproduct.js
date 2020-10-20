@@ -11,13 +11,16 @@ import { connect } from "react-redux";
 import shortid from "shortid";
 
 import "../../../custom.css"
+// import c from "config";
 
 
 class AddProduct extends Component {
   state = {
+    productId: "",
     id: "",
     image: "",
     name: "",
+    tags: "",
     color: [
       {
         id: shortid.generate(),
@@ -25,31 +28,38 @@ class AddProduct extends Component {
         sizes: [],
       }
     ],
+    color_id: "",
+    size_id: "",
     saving: false,
+    isEdit: false
   };
 
   async componentDidMount() {
     // check form is to Add or Edit
     if (this.props.match.params.id) {
+
       const id = this.props.match.params.id;
       let res = await this.props.getProduct(id);
       const { product } = this.props;
+      const { data } = this.props.location
       if (product) {
         this.setState({
           id: id,
+          isEdit: true,
           name: product.name,
-          image:product.image,
-          color: product.color.map((color) => {
-            color.id = shortid.generate();
-            return { ...product };
-          }),
-
+          tags: product.tags,
+          image: product.image,
+          color: product.color,
+          color_id: data.color_id,
+          size_id: data.size_id,
+          image: data.product_image
         });
       }
     }
   }
 
   addSizeRow = (color_id) => {
+    console.log("Working")
     let { color } = this.state; // get all colors
     let color_obj = color.filter((color) => color.id == color_id); // get current color obj
 
@@ -57,7 +67,7 @@ class AddProduct extends Component {
     const index = color.findIndex(
       (color_obj) => color_obj.id == color_id
     );
-    
+
     color_obj[0].sizes.push({
       id: shortid.generate(),
       size: "",
@@ -66,18 +76,18 @@ class AddProduct extends Component {
     })
 
     color[index] = color_obj[0];
-    
+
     this.setState({ color: color });
   }
 
   addColorBox = (id) => {
-  let { color } = this.state; // get all colors
+    let { color } = this.state; // get all colors
     color.push({
       id: shortid.generate(),
       colorname: "",
       sizes: []
     })
-    this.setState({color });
+    this.setState({ color });
   }
 
 
@@ -122,16 +132,18 @@ class AddProduct extends Component {
 
   removeColorBox = (color_id) => {
     let { color } = this.state;
-    color= color.filter((color) => color.id !== color_id); // get current color obj
+    color = color.filter((color) => color.id !== color_id); // get current color obj
     this.setState({ color });
   }
 
   getColors = () => {
     let { color } = this.state;
+
     return color.map((color) => (
- <div className="row color-row" key={color.id || color._id}>
-       <div className="left" style={{ 'width': '95%', 'paddingLeft': '25px','paddingRight':'10px' }}>
+      <div className="row color-row" key={color.id || color._id}>
+        <div className="left" style={{ 'width': '95%', 'paddingLeft': '25px', 'paddingRight': '10px' }}>
           <div className="form-group">
+
             <input
               type="text"
               className="form-control mm-input "
@@ -139,18 +151,20 @@ class AddProduct extends Component {
               value={color.colorname}
               name="colorname"
               onChange={(e) => this.handleChange(e, color.id)} />
-              </div>
 
-</div>             
- <div className="right text-center" style={{'paddingRight': '0px' }}>
+          </div>
+
+        </div>
+        <div className="right text-center" style={{ 'paddingRight': '0px' }}>
 
           <button
-              type="button"
-              onClick={() => this.removeColorBox(color.id)}
-              className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
-              <i className="fa fa-minus"></i>
-            </button>
-          </div>
+            type="button"
+            onClick={() => this.removeColorBox(color.id)}
+            className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
+            <i className="fa fa-minus"></i>
+          </button>
+
+        </div>
         <div className="col-md-12">
           {this.getSizeboxes(color.id)}
         </div>
@@ -168,7 +182,77 @@ class AddProduct extends Component {
         </div>
       </div>
     ))
+
   }
+
+  handleChange = (e, color_id = "", size_id = "") => {
+    let name = e.target.name;
+    let value = e.target.value;
+
+    // get all colors
+    let { color } = this.state;
+    // get current color obj
+    let color_obj = color.filter((color) => color.id == color_id)[0]; // get current color obj
+
+    // get index of color obj in all colors
+    const colorIndex = color.findIndex(
+      (color) => color.id == color_id
+    );
+    if (size_id != '') {
+      // get all sizes
+      let { sizes } = color_obj;
+
+      // find current size obj in current color obj
+      let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
+
+      // get index of size obj in all sizes 
+      const sizeIndex = sizes.findIndex(
+        (size) => size.id == size_id
+      );
+
+      // update value inside size object
+      size_obj[name] = value;
+      // update sizes arr
+      sizes[sizeIndex] = size_obj;
+      // update curernt color obj
+      color[colorIndex].sizes = sizes;
+    } else {
+      color[colorIndex][name] = value;
+    }
+
+    // update state
+    this.setState({ color });
+  };
+  getEditColors = () => {
+    let { color } = this.state;
+    let { color_id } = this.state;
+    let color_obj = color.filter((color) => color._id == color_id); // get current color obj
+    return color_obj.map((color) => (
+      <div className="row color-row" key={color.id || color._id}>
+        <div className="left" style={{ 'width': '95%', 'paddingLeft': '25px', 'paddingRight': '10px' }}>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control mm-input "
+              placeholder="Color"
+              value={color.colorname}
+              name="colorname"
+              onChange={(e) => this.handleEditChange(e, color.id)}
+              readOnly />
+
+          </div>
+
+        </div>
+
+        <div className="col-md-12">
+          {this.getEditSizeboxes(this.state.color_id)}
+        </div>
+
+      </div>
+    ))
+
+  }
+
 
   getSizeboxes = (color_id) => {
     let { color } = this.state; // get all colors
@@ -177,7 +261,7 @@ class AddProduct extends Component {
     return color_obj[0].sizes.map((size) => (
       <div className="sizes_box" key={size.id || size._id}>
         <div className="row">
-            <div className="left" style={{ 'width': '95%', 'paddingLeft': '40px','paddingRight':'10px' }}>
+          <div className="left" style={{ 'width': '95%', 'paddingLeft': '40px', 'paddingRight': '10px' }}>
             <input
               type="text"
               name="size"
@@ -204,7 +288,7 @@ class AddProduct extends Component {
             // value={color.sizes.price}
 
             />
-                </div>
+          </div>
           <div className="right">
 
             <button
@@ -220,38 +304,86 @@ class AddProduct extends Component {
 
   }
 
+
+  getEditSizeboxes = (color_id) => {
+    let { color } = this.state; // get all colors
+    let { size_id } = this.state;
+    // let {color_id} = this.state;
+    let color_obj = color.filter((color) => color._id == color_id); // get current color obj
+    let size_obj = color_obj[0].sizes.filter((size) => size.id == size_id); // get current color obj
+    return size_obj.map((size) => (
+      <div className="sizes_box" key={size.id || size._id}>
+        <div className="row">
+          <div className="left" style={{ 'width': '95%', 'paddingLeft': '40px', 'paddingRight': '10px' }}>
+
+            <input
+              type="text"
+              name="size"
+              className="form-control mm-input s-input text-center"
+              placeholder="Size"
+              onChange={(e) => this.handleChange(e, color_id, size.id)}
+              value={size.size}
+              readOnly
+            />
+            <input
+              type="text"
+              name="qty"
+              className="form-control mm-input s-input text-center"
+              placeholder="Quantity"
+              onChange={(e) => this.handleChange(e, color_id, size_id)}
+              value={size.qty}
+
+            />
+            <input
+              type="text"
+              name="price"
+              className="form-control mm-input s-input text-center"
+              placeholder="Price"
+              onChange={(e) => this.handleChange(e, color_id, size.id)}
+              value={size.price}
+              readOnly
+            />
+          </div>
+        </div>
+      </div>
+    ))
+
+
+  }
+
   _onChange = (e, id = "") => {
     this.setState({ [e.target.name]: e.target.files[0] });
   }
 
-  handleChange = (e, color_id = "", size_id = "") => {
+  handleEditChange = (e, color_id = "", size_id = "") => {
     let name = e.target.name;
     let value = e.target.value;
 
     // get all colors
     let { color } = this.state;
     // get current color obj
-    let color_obj = color.filter((color) => color.id == color_id)[0]; // get current color obj
+    // let color_obj = color.filter((color) => color.id == color_id)[0]; // get current color obj
+    let color_obj = color.filter((color) => color._id == color_id)[0];
 
     // get index of color obj in all colors
     const colorIndex = color.findIndex(
-      (color) => color.id == color_id
+      (color) => color._id == color_id
     );
-    if(size_id != '') {
+    if (size_id != '') {
       // get all sizes
       let { sizes } = color_obj;
-
       // find current size obj in current color obj
       let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
-
       // get index of size obj in all sizes 
       const sizeIndex = sizes.findIndex(
         (size) => size.id == size_id
       );
 
+
       // update value inside size object
+
       size_obj[name] = value;
-// update sizes arr
+      // update sizes arr
       sizes[sizeIndex] = size_obj;
       // update curernt color obj
       color[colorIndex].sizes = sizes;
@@ -265,24 +397,27 @@ class AddProduct extends Component {
 
 
   handleChangeName = (e) => {
-    this.setState({
-      name: e.target.value
-    });
+    this.setState({ [e.target.name]: e.target.value });
+
   }
 
   onSubmit = async (e) => {
     e.preventDefault();
+    var productId = Math.random().toString(36).slice(-6);
+
     this.setState({ saving: true });
     const state = { ...this.state };
     const formData = new FormData();
     formData.append('name', state.name)
+    formData.append('productId', productId)
+    formData.append('image', state.image)
+    formData.append('tags', state.tags)
     formData.append('color', JSON.stringify(state.color))
-
     if (state.id === "") {
-        await this.props.addNewProduct(formData);
+      await this.props.addNewProduct(formData);
 
     } else {
-      await this.props.updateProduct(formData, state.id);
+      await this.props.updateProduct(this.state.color, state.id);
     }
     this.setState({ saving: false });
   }
@@ -295,6 +430,7 @@ class AddProduct extends Component {
     if (this.props.saved) {
       return <Redirect to="/product" />;
     }
+
 
 
     return (
@@ -354,6 +490,17 @@ class AddProduct extends Component {
                               onChange={(e) => this.handleChangeName(e)} />
 
                           </div>
+                          <div className="form-group">
+                            <input
+                              type="text"
+                              id="projectinput1"
+                              className="form-control mm-input"
+                              placeholder="Tags"
+                              value={this.state.tags}
+                              name="tags"
+                              onChange={(e) => this.handleChangeName(e)} />
+
+                          </div>
 
                           <div className="row">
                             <div className="col-md-12">
@@ -361,24 +508,25 @@ class AddProduct extends Component {
                             </div>
                           </div>
                           <div id="colors_box">
-                            {this.getColors()}
+                            {this.state.isEdit !== true ? this.getColors() : this.getEditColors()}
                           </div>
 
 
                           <br />
                           <br />
-
-                          <div className="row">
-                            <div className="col-md-12 btn-cont">
-                              <div className="form-group mb-0">
-                                <button
-                                  type="button"
-                                  onClick={() => this.addColorBox(this.state.id)}
-                                  className="btn"><i className="fa fa-plus"></i> Add another
+                          {this.state.isEdit !== true ?
+                            <div className="row">
+                              <div className="col-md-12 btn-cont">
+                                <div className="form-group mb-0">
+                                  <button
+                                    type="button"
+                                    onClick={() => this.addColorBox(this.state.id)}
+                                    className="btn"><i className="fa fa-plus"></i> Add another
               Color</button>
+                                </div>
                               </div>
                             </div>
-                          </div>
+                            : ""}
                           <div className="form-actions top">
                             {this.state.id === ""
                               ? <>
@@ -455,7 +603,6 @@ AddProduct.propTypes = {
   saved: PropTypes.bool,
   addNewProduct: PropTypes.func.isRequired,
   getProduct: PropTypes.func.isRequired,
-
   auth: PropTypes.object,
   updateProduct: PropTypes.func.isRequired,
 };

@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 import {getAllRentedProducts,deleteRentedProduct } from "../../../actions/rentproduct";
+
+import {getAllProducts } from "../../../actions/product";
 import { confirmAlert } from "react-confirm-alert";
 import * as moment from 'moment'
 
@@ -16,7 +18,9 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 class Orders extends Component {
 
   async componentDidMount() {
+    await this.props.getAllProducts();
     await this.props.getAllRentedProducts();
+
   }
 
   state = {
@@ -37,35 +41,36 @@ class Orders extends Component {
         );
       }
       return rentproducts.map((order,i) => (
-        <tr key={i}>
+        console.log(this.productBox(order.barcodes))
+        // <tr key={i}>
            
-           <td className="text-center text-muted">{tbl_sno++}</td>
-           <td className="text-center">{""}</td>
+        //    <td className="text-center text-muted">{tbl_sno++}</td>
+        //    <td className="text-center">{""}</td>
 
-          <td className="text-center">{order.customer ? order.customer.name : ""}</td>
-          <td className="text-center">{this.getBarcodeRecord(order.barcodes)}</td>
-          <td className="text-center">{this.getStatus(order.rentDate) === "Pending"
-          ? <div className="badge badge-success">Pending</div>
-          : this.getStatus(order.rentDate) === "Due" 
-          ? <div className="badge badge-warning">Over Due</div>
-          :<div className="badge badge-danger">Due Today</div>
+        //   <td className="text-center">{order.customer ? order.customer.name : ""}</td>
+        //   <td className="text-center">{this.getBarcodeRecord(order.barcodes)}</td>
+        //   <td className="text-center">{this.getStatus(order.rentDate) === "Pending"
+        //   ? <div className="badge badge-success">Pending</div>
+        //   : this.getStatus(order.rentDate) === "Due" 
+        //   ? <div className="badge badge-warning">Over Due</div>
+        //   :<div className="badge badge-danger">Due Today</div>
         
-        }</td>
+        // }</td>
 
-          <td className="text-center">{moment(order.rentDate).format('DD/MMM/YYYY')}</td>
+        //   <td className="text-center">{moment(order.rentDate).format('DD/MMM/YYYY')}</td>
 
-          <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
-          <td className="text-center">
+        //   <td className="text-center">{moment(order.returnDate).format('DD/MMM/YYYY')}</td>
+        //   <td className="text-center">
       
          
-            <Link to="/orders"
-              onClick={() => this.onDelete(order._id)}
-              className="danger p-0">
-              <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
-            </Link>
-          </td>
+        //     <Link to="/orders"
+        //       onClick={() => this.onDelete(order._id)}
+        //       className="danger p-0">
+        //       <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
+        //     </Link>
+        //   </td>
 
-        </tr>
+        // </tr>
        ));
     }
   };
@@ -120,29 +125,6 @@ class Orders extends Component {
     return rows;
   };
 
-  getBarcodeRecord(barcode_Array) {
-    let productarray = [];
-       const { products } = this.props;
-    if (products) {
-      let sortedAray = this.getSortedData(products);
-      if (sortedAray) {
-        barcode_Array.forEach((element) => {
-          productarray.push(
-            sortedAray.filter((f) => f.barcode === element)
-          );
-          return productarray;
-        });
-      }
-    }
-   
-
-    return productarray.map((product, b_index) => (
-      // <div id="sizes_box" key={barcode.id || barcode._id}>
-    //  <table>
-console.log(`${product[0].title} ${"|"} ${product[0].barcode}`)
-    //  </table>
-    ));
-  }
 
       
 
@@ -197,6 +179,56 @@ console.log(`${product[0].title} ${"|"} ${product[0].barcode}`)
         
     }
 
+    productBox = (barcodes) => {
+console.log(barcodes)
+      let productarray = [];
+      const { products } = this.props;
+      if (products) {
+        let sortedAray = this.getSortedData(products);
+        if (sortedAray) {
+          barcodes.forEach((element) => {
+         for(var i=0;i<element.length;i++){
+          productarray.push(
+            sortedAray.filter((f) => f.barcode === element[i])
+            );
+            return productarray;
+         }
+
+            // element.forEach((e,e_index) => {
+              // console.log(element)
+            // productarray.push(
+            //   sortedAray.filter((f) => f.barcode === e)
+            // );
+            // return productarray;
+          // });
+
+          });
+        }
+      }
+      // return productarray.map((b, b_index) => (
+      //   <>
+
+      //     {
+      //       <div className="form-group">
+      //         <div className="row" key={b_index}>
+      //           <input
+      //             type="text"
+      //             value={`${b[0].title} ${"|"} ${b[0].barcode}`}
+      //             className="form-control mm-input s-input text-center text-dark"
+      //             placeholder="Barcode"
+      //             id="setSize1"
+      //             style={{ 'width': '110%' }}
+      //             readOnly
+      //           />
+  
+      //         </div>
+      //       </div>}
+  
+  
+      // //   </>
+      // ))
+    }
+  
     
   render() {
         const { auth   } = this.props;
@@ -207,7 +239,10 @@ console.log(`${product[0].title} ${"|"} ${product[0].barcode}`)
         // if (this.props.saved) {
         //     return <Redirect to="/dashboard" />;
         //   }
-
+        console.log(this.props)
+        if(this.props.products){
+        console.log(this.getSortedData(this.props.products))
+        }
         return (
             <React.Fragment>
               <Loader />
@@ -270,16 +305,20 @@ console.log(`${product[0].title} ${"|"} ${product[0].barcode}`)
 Orders.propTypes = {
   auth: PropTypes.object,
   getAllRentedProducts: PropTypes.func.isRequired,
+  getAllProducts: PropTypes.func.isRequired,
   deleteRentedProduct: PropTypes.func.isRequired,
   rentproducts: PropTypes.array,
+  products:PropTypes.array
   };
 
 const mapStateToProps = (state) => ({
   rentproducts: state.rentproduct.rentproducts,
   auth: state.auth,
+  products: state.product.products,
+
 
 });
 export default connect(mapStateToProps, {
-  getAllRentedProducts,deleteRentedProduct
+  getAllRentedProducts,deleteRentedProduct,getAllProducts
 })(Orders);
 
