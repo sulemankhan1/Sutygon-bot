@@ -143,11 +143,7 @@ export const getProductById = (id) => async (dispatch) => {
 
 export const updateProduct = (product, id) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });
-  // const config = {
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },  
-  // };
+  
   const config = {
     headers: {
         'content-type': 'multipart/form-data'
@@ -163,6 +159,30 @@ export const updateProduct = (product, id) => async (dispatch) => {
     });
     dispatch(setAlert(res.data.msg, "success"));
     dispatch(getAllProducts());
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: PRODUCTS_ERROR,
+    });
+  }
+};
+// changeStatus
+
+
+export const changeStatus = (status, id) => async (dispatch) => {
+  dispatch({ type: PRODUCTS_LOADING });
+  
+  try {
+    const res = await axios.post(`/api/products/changeStatus/${id}/${status}`);
+
+    dispatch({
+      type: PRODUCT_UPDATED,
+      payload: res.data,
+    });
 
   } catch (err) {
     const errors = err.response.data.errors;

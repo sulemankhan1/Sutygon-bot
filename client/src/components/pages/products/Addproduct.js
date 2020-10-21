@@ -377,7 +377,7 @@ class AddProduct extends Component {
 
     const totalFromState = this.calculateTotals(state);
     if (state.totalFromProps > state.total) {
-      OCAlert.alertError(`${"Quantity cannot be less than"} ${state.totalFromProps}`)
+OCAlert.alertError(`${"Quantity cannot be less than"} ${state.totalFromProps}`)
       this.setState({ saving: false });
       return;
     }
