@@ -35,6 +35,7 @@ router.post(
     auth,
     upload.single('image'),
     async (req, res) => {
+
         const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
         try {
             const productBody = {
@@ -68,8 +69,9 @@ router.post(
     async (req, res) => {
         try {
             const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+
             await Product.updateOne({ _id: req.params.id }, {
-                $set: {     
+                $set: {
                     color: body.color,
                 }
             });
@@ -90,12 +92,24 @@ router.post(
 router.post(
     "/:id",
     auth,
-    // upload.single('image'),
+    upload.single('image'),
     async (req, res) => {
         try {
+            let updatedImage = "";
+
+            const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+            if (req.file === undefined) {
+                updatedImage = body.image;
+            }
+            else {
+                updatedImage = `/uploads/products/${req.file.originalname}`;
+            }
             await Product.updateOne({ _id: req.params.id }, {
                 $set: {
-                    color: req.body
+                    name: body.name,
+                    tags: body.tags,
+                    image: updatedImage,
+                    color: JSON.parse(body.color),
                 }
             });
             res
