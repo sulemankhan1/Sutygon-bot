@@ -31,9 +31,10 @@ class AddProduct extends Component {
       }
     ],
     saving: false,
-    imgUpd:false,
+    imgUpd: false,
     isEdit: false,
-    src:"",
+    src: "",
+    sizeQty:""
   };
 
   async componentDidMount() {
@@ -175,6 +176,7 @@ class AddProduct extends Component {
               placeholder="Color"
               value={color.colorname}
               name="colorname"
+              required
               onChange={(e) => this.handleChange(e, color._id)} />
           </div>
 
@@ -218,7 +220,6 @@ class AddProduct extends Component {
     let { color } = this.state;
     // get current color obj
     let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
-    console.log(color_id, size_id)
     // get index of color obj in all colors
     const colorIndex = color.findIndex(
       (color) => color._id == color_id
@@ -264,6 +265,7 @@ class AddProduct extends Component {
                 placeholder="Size"
                 onChange={(e) => this.handleChange(e, color_id, size.id)}
                 value={size.size}
+                required
               />
 
               <input
@@ -271,9 +273,10 @@ class AddProduct extends Component {
                 name="qty"
                 className="form-control mm-input s-input"
                 placeholder="Quantity"
-                onChange={(e) => this.handleChange(e, color_id, size.id)}
+                // onInput={(e) => this.QtyCheck(e, color_id, size.id)}
+                onChange={(e) => (this.QtyCheck(e, color_id, size.id),this.handleChange(e, color_id, size.id))}
                 value={size.qty}
-
+                required
               />
               <input
                 type="text"
@@ -282,7 +285,7 @@ class AddProduct extends Component {
                 placeholder="Price"
                 onChange={(e) => this.handleChange(e, color_id, size.id)}
                 value={size.price}
-
+                required
               />
             </div>
             <div className="right">
@@ -300,151 +303,36 @@ class AddProduct extends Component {
 
     }
   }
-  getEditSizeboxes = (color_id) => {
-    let { color } = this.state; // get all colors
-    let size_obj = color.filter((color) => color._id == color_id); // get current color obj
-    return size_obj[0].sizes.map((size) => (
-      <div className="sizes_box" key={size.id}>
-        <div className="row">
-          <div className="left" style={{ 'width': '95%', 'paddingLeft': '40px', 'paddingRight': '10px' }}>
 
-            <input
-              type="text"
-              name="size"
-              className="form-control mm-input s-input text-center"
-              placeholder="Size"
-              onChange={(e) => this.handleEditChange(e, color_id, size.id)}
-              value={size.size}
-            />
-            <input
-              type="text"
-              name="qty"
-              className="form-control mm-input s-input text-center"
-              placeholder="Quantity"
-              onChange={(e) => this.handleEditChange(e, color_id, size.id)}
-              value={size.qty}
-
-            />
-            <input
-              type="text"
-              name="price"
-              className="form-control mm-input s-input text-center"
-              placeholder="Price"
-              onChange={(e) => this.handleEditChange(e, color_id, size.id)}
-              value={size.price}
-            />
-          </div>
-          <div className="right">
-
-            <button
-              type="button"
-              onClick={() => this.removeSizeRow(color_id, size.id)}
-              className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
-              <i className="fa fa-minus"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    ))
-
-
+  QtyCheck = (e, color_id, size_id) => {
+    e.preventDefault();
+    const value = e.target.value;
+    const { product } = this.props;
+    let { color } = product;
+    let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
+    let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
+    if(product){
+    this.setState({
+      sizeQty: size_obj.qty
+    })
+  }
+    if (this.state.sizeQty) {
+      if (this.state.sizeQty > value) {
+        OCAlert.alertError(`Quantity must be greater than ${this.state.sizeQty}`)
+      }
+    }
   }
 
-  getEditColors = () => {
-    let { color } = this.state;
-    return color.map((color) => (
-      <div className="row color-row" key={color._id}>
-        <div className="left" style={{ 'width': '95%', 'paddingLeft': '25px', 'paddingRight': '10px' }}>
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control mm-input "
-              placeholder="Color"
-              name="colorname"
-              value={color.colorname}
-              onChange={(e) => this.handleChange(e, color._id)}
-            />
-
-          </div>
-
-        </div>
-        <div className="right text-center" style={{ 'paddingRight': '0px' }}>
-          <button
-            type="button"
-            onClick={() => this.removeColorBox(color._id)}
-            className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
-            <i className="fa fa-minus"></i>
-          </button>
 
 
-
-        </div>
-
-        <div className="col-md-12">
-          {this.getEditSizeboxes(color._id)}
-        </div>
-        <div className="row">
-          <div className="col-md-12 btn-cont">
-            <div className="form-group mb-0">
-
-              <button
-                type="button"
-                onClick={() => this.addEditSizeRow(color._id)}
-                className="btn "><i className="fa fa-plus"></i> Add another
-              Size</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))
-
-  }
   _onChange = (e, id = "") => {
     this.setState({
       [e.target.name]: e.target.files[0],
-      imgUpd:true,
-      src:URL.createObjectURL(e.target.files[0])
+      imgUpd: true,
+      src: URL.createObjectURL(e.target.files[0])
     });
   }
 
-  handleEditChange = (e, color_id = "", size_id = "") => {
-    let name = e.target.name;
-    let value = e.target.value;
-    // get all colors
-    let { color } = this.state;
-    // get current color obj
-
-    // let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
-    let color_obj = color.filter((color) => color._id == color_id)[0];
-    // get index of color obj in all colors
-    const colorIndex = color.findIndex(
-      (color) => color._id == color_id
-    );
-
-    if (size_id != '') {
-      // get all sizes
-      let { sizes } = color_obj;
-      // find current size obj in current color obj
-      let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
-      // get index of size obj in all sizes 
-      const sizeIndex = sizes.findIndex(
-        (size) => size.id == size_id
-      );
-
-      // update value inside size object
-
-      size_obj[name] = value;
-      // update sizes arr
-      sizes[sizeIndex] = size_obj;
-      // update curernt color obj
-      color[colorIndex].sizes = sizes;
-    } else {
-      color[colorIndex][name] = value;
-    }
-
-    // update state
-    this.setState({ color });
-  };
 
 
   handleChangeName = (e) => {
@@ -489,7 +377,7 @@ class AddProduct extends Component {
 
     const totalFromState = this.calculateTotals(state);
     if (state.totalFromProps > state.total) {
-      OCAlert.alertError(`${"Quantity cannot be Less than"} ${state.totalFromProps}`)
+OCAlert.alertError(`${"Quantity cannot be less than"} ${state.totalFromProps}`)
       this.setState({ saving: false });
       return;
     }
@@ -577,7 +465,7 @@ class AddProduct extends Component {
                               id="projectinput8"
                               accept='image/*,.pdf,.jpg'
                               onChange={(e) => this._onChange(e)} />
-                            {this.state.isEdit === true  && this.state.imgUpd === false?
+                            {this.state.isEdit === true && this.state.imgUpd === false ?
                               <img
                                 className="media-object round-media"
                                 src={`${this.state.image}`}
@@ -585,7 +473,7 @@ class AddProduct extends Component {
                                 height={100}
                               />
                               : ""}
-                               {this.state.imgUpd === true?
+                            {this.state.imgUpd === true ?
                               <img
                                 className="media-object round-media"
                                 src={`${this.state.src}`}
@@ -605,6 +493,7 @@ class AddProduct extends Component {
                               placeholder="Product Name"
                               value={this.state.name}
                               name="name"
+                              required
                               onChange={(e) => this.handleChangeName(e)} />
 
                           </div>
@@ -616,6 +505,7 @@ class AddProduct extends Component {
                               placeholder="Tags"
                               value={this.state.tags}
                               name="tags"
+                              required
                               onChange={(e) => this.handleChangeName(e)} />
 
                           </div>
