@@ -169,7 +169,7 @@ class Barcode extends Component {
               <button
               type="button"
               className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-              onClick={(e) => this.deleteItem(e, product.product_id, product.color_id, product.size_id)}
+              onClick={(e) => this.deleteConfirm(e, product.product_id, product.color_id, product.size_id)}
             >
               Delete Item
             </button>
@@ -177,7 +177,7 @@ class Barcode extends Component {
               <button
               type="button"
               className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-              onClick={(e) => this.deleteItem(e, product.product_id, product.color_id, product.size_id, product.barcodeIndex)}
+              onClick={(e) => this.deleteConfirm(e, product.product_id, product.color_id, product.size_id, product.barcodeIndex)}
             >
               Delete Item
             </button>
@@ -206,35 +206,35 @@ class Barcode extends Component {
 
   // generate and print random bar code
   genPrintRandBarcode = async  (e, product_id, color_id, size_id) => {
-    // generate randome barcode
-    let barcode = shortid.generate();
+    // generate random barcode
+    let barcode = Math.floor(Math.random() * 999999) + 111111;
     this.saveBarCode(barcode, product_id, color_id, size_id);
     this.printBarcode(barcode);
     OCAlert.alertSuccess('Barcode Generated and Saved Successfully!');
   }
 
 
-  // Delete Item
-  // deleteConfirm = async  (e, product_id, color_id, size_id, barcodeIndex) => {
-  //   confirmAlert({
-  //     title: "Delete Item",
-  //     message: "Are you sure you want to delete this Item?",
-  //     buttons: [
-  //       {
-  //         label: "Yes",
-  //         onClick: () => {
-  //           this.props.deleteItem(e, product_id, color_id, size_id, barcodeIndex);
-  //         },
-  //       },
-  //       {
-  //         label: "No",
-  //         onClick: () => { },
-  //       },
-  //     ],
-  //   });
-  // }
+  deleteConfirm = async  (e, product_id, color_id, size_id, barcodeIndex) => {
+    confirmAlert({
+      title: "Delete Item",
+      message: "Are you sure you want to delete this Item?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            console.log(1);
+            this.deleteItem(e, product_id, color_id, size_id, barcodeIndex);
+          },
+        },
+        {
+          label: "No",
+          onClick: () => { },
+        },
+      ],
+    });
+  }
 
-  
+  // Delete Item
   deleteItem = async  (e, product_id, color_id, size_id, barcodeIndex) => {
     // get product by id
     await this.props.getProductById(product_id);
@@ -273,10 +273,23 @@ class Barcode extends Component {
 
   // change existing barcode in size object and correct index
   changeBarcode = async (e, product_id, color_id, size_id, barcodeIndex) => {
-    // generate randome barcode
-    let barcode = shortid.generate();
-    this.saveBarCode(barcode, product_id, color_id, size_id, 'update', barcodeIndex);
-    OCAlert.alertSuccess('Barcode is Removed and moved to Without barcode tab');
+    confirmAlert({
+      title: "Change Barcode",
+      message: "Are you sure you want to Remove barcode for this item?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            this.saveBarCode(null, product_id, color_id, size_id, 'update', barcodeIndex);
+            OCAlert.alertSuccess('Barcode is Removed and moved to Without barcode tab');
+          },
+        },
+        {
+          label: "No",
+          onClick: () => { },
+        },
+      ],
+    });
   }
 
   printBarcode = (barcode) => {

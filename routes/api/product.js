@@ -86,6 +86,29 @@ router.post(
     }
 );
 
+// @route  POST api/products/changeStatus/:id
+// @desc   changeStatus
+// @access Private
+router.post(
+    "/changeStatus/:id/:status",
+    auth,
+    async (req, res) => {
+        try {
+            const result = await Product.updateOne({ _id: req.params.id }, {
+                $set: {
+                    disabled: req.params.status,
+                }
+            });
+            res.json({ msg: "Product Status changed Successfully" });
+        } catch (err) {
+            console.error(err.message);
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+        }
+    }
+);
+
 // @route  POST api/products/item_delete/:id
 // @desc   Update a Product to Delete Item
 // @access Private
