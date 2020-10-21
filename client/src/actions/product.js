@@ -173,15 +173,35 @@ export const updateProduct = (product, id) => async (dispatch) => {
 export const barcodeUpdateProduct = (product, id) => async (dispatch) => {
 
   dispatch({ type: PRODUCTS_LOADING });
-  // const config = {
-  //   headers: {
-  //       'content-type': 'multipart/form-data'
-  //   }
-  // }
 
   try {
     // const res = await axios.post(`/api/products/${id}`,product, config);
     const res = await axios.post(`/api/products/barcode_update/${id}`,product);
+
+    dispatch({
+      type: PRODUCT_UPDATED,
+      payload: res.data,
+    });
+    dispatch(setAlert(res.data.msg, "success"));
+    dispatch(getAllProducts());
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: PRODUCTS_ERROR,
+    });
+  }
+};
+
+export const deleteItem = (product, id) => async (dispatch) => {
+
+  dispatch({ type: PRODUCTS_LOADING });
+
+  try {
+    const res = await axios.post(`/api/products/item_delete/${id}`,product);
 
     dispatch({
       type: PRODUCT_UPDATED,

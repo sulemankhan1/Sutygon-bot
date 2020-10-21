@@ -74,7 +74,32 @@ router.post(
                 }
             });
             res
-                .json({ msg: "Barcode Added Successfully" });
+                .json({ msg: "Product Updated Successfully" });
+        } catch (err) {
+            console.error(err.message);
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+        }
+    }
+);
+
+// @route  POST api/products/item_delete/:id
+// @desc   Update a Product to Delete Item
+// @access Private
+router.post(
+    "/item_delete/:id",
+    auth,
+    async (req, res) => {
+        try {
+            const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+            await Product.updateOne({ _id: req.params.id }, {
+                $set: {     
+                    color: body.color,
+                }
+            });
+            res
+                .json({ msg: "Item Deleted Successfully" });
         } catch (err) {
             console.error(err.message);
             res
