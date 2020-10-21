@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 import loadjs from "loadjs";
+import { changePage } from "../../../actions/pages";
 
 class ViewProduct extends Component {
   state = {
@@ -153,7 +154,7 @@ class ViewProduct extends Component {
             </tr>
           );
         }
-
+console.log(formated_products)
         return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">
@@ -254,13 +255,18 @@ class ViewProduct extends Component {
                     ))}
                 </p>
 
-                <a href="#" className="btn btn-primary pull-right mbtn">
-                  {" "}
+                <Link 
+                to={{
+                  pathname: `/product/editproduct/${product._id}`,
+                  data: product
+                }}
+                 className="btn btn-primary pull-right mbtn">
+                    {" "}
                   <i className="fa fa-pencil"></i> Edit{" "}
-                </a>
+                </Link>
                 <a href="#" className="btn btn-primary pull-right mbtn">
                   {" "}
-                  <i className="fa fa-trash"></i> Delete{" "}
+                  <i className="fa fa-trash"></i> Disable{" "}
                 </a>
               </div>
 
