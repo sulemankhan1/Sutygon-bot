@@ -215,7 +215,9 @@ class AddProduct extends Component {
   handleChange = (e, color_id = "", size_id = "") => {
     let name = e.target.name;
     let value = e.target.value;
-
+    if(name = "qty"){
+      this.QtyCheck(e,color_id,size_id)
+    }
     // get all colors
     let { color } = this.state;
     // get current color obj
@@ -274,7 +276,7 @@ class AddProduct extends Component {
                 className="form-control mm-input s-input"
                 placeholder="Quantity"
                 // onInput={(e) => this.QtyCheck(e, color_id, size.id)}
-                onChange={(e) => (this.QtyCheck(e, color_id, size.id),this.handleChange(e, color_id, size.id))}
+                onChange={(e) =>this.handleChange(e, color_id, size.id)}
                 value={size.qty}
                 required
               />
@@ -306,20 +308,17 @@ class AddProduct extends Component {
 
   QtyCheck = (e, color_id, size_id) => {
     e.preventDefault();
+    let sizeQty;
     const value = e.target.value;
     const { product } = this.props;
     let { color } = product;
     let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
     let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
-    if(product){
-    this.setState({
-      sizeQty: size_obj.qty
-    })
-  }
-    if (this.state.sizeQty) {
-      if (this.state.sizeQty > value) {
-        OCAlert.alertError(`Quantity must be greater than ${this.state.sizeQty}`)
-      }
+    console.log(size_obj)
+    
+      if (size_obj.qty > value) {
+        OCAlert.alertError(`Quantity must be greater than ${size_obj.qty}`)
+
     }
   }
 
