@@ -58,7 +58,6 @@ class Dashboard extends Component {
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
 
-      console.log("currentdate",currentdate)
 
       let events = rentedproducts.filter(a => (moment(moment(a.createdAt).format('MM/DD/YYYY')).isSame(currentdate)));
       return events.length;

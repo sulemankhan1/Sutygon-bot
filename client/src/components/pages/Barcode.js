@@ -222,7 +222,10 @@ class Barcode extends Component {
         {
           label: "Yes",
           onClick: () => {
+<<<<<<< HEAD
             console.log(1);
+=======
+>>>>>>> f7d456e9178fb4caa8c03ae834a2322e15a89a5b
             this.deleteItem(e, product_id, color_id, size_id, barcodeIndex);
           },
         },
@@ -471,4 +474,8 @@ export default connect(mapStateToProps, {
   getProductById,
   barcodeUpdateProduct,
   deleteItem
+<<<<<<< HEAD
 })(Barcode);
+=======
+})(Barcode);
+>>>>>>> f7d456e9178fb4caa8c03ae834a2322e15a89a5b

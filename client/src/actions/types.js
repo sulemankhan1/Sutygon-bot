@@ -112,3 +112,17 @@ export const DASHBOARD_ERROR = "DASHBOARD_ERROR";
 export const SHOP_LOADING = "SHOP_LOADING";
 export const SHOP_LOADED = "SHOP_LOADED";
 export const SHOP_ERROR = "SHOP_ERROR";
+
+
+//Invoices
+
+export const INVOICE_LOADING = "INVOICE_LOADING";
+export const INVOICES_LOADING = "INVOICES_LOADING";
+export const INVOICE_SAVED = "INVOICE_SAVED";
+export const GET_INVOICE = "GET_INVOICE";
+export const GET_INVOICES = "GET_INVOICES";
+export const INVOICES_ERROR = "INVOICES_ERROR";
+export const INVOICE_ERROR = "INVOICE_ERROR";
+export const INVOICE_DELETED = "INVOICE_DELETED";
+export const INVOICE_UPDATED = "INVOICE_UPDATED";
+

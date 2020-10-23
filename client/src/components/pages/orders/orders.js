@@ -180,7 +180,6 @@ class Orders extends Component {
     }
 
     productBox = (barcodes) => {
-console.log(barcodes)
       let productarray = [];
       const { products } = this.props;
       if (products) {

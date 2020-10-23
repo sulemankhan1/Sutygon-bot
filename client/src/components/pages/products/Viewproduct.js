@@ -156,7 +156,11 @@ class ViewProduct extends Component {
             </tr>
           );
         }
+<<<<<<< HEAD
         
+=======
+        console.log(formated_products)
+>>>>>>> f7d456e9178fb4caa8c03ae834a2322e15a89a5b
         return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">
@@ -169,7 +173,13 @@ class ViewProduct extends Component {
                   />
                 </div>
                 <div className="tb_t_right">
+<<<<<<< HEAD
                   <span className={"badge badge-"+((product.disabled == "true") ? "secondary":"info")+ " float-right"}>{(product.disabled == "false") ? "active":"disabled"}</span>
+=======
+                <h2>
+                    <strong>Product Name</strong> {product.name}
+                  </h2>
+>>>>>>> f7d456e9178fb4caa8c03ae834a2322e15a89a5b
                   <h2>
                     <strong>Product ID # </strong> {product.productId}
                   </h2>
@@ -192,17 +202,16 @@ class ViewProduct extends Component {
                           this.toggleColor(e, i, color_i)
                         }
                       >
-                        <i 
-                        className={color.is_open ? "ft-arrow-down" : "ft-arrow-right"}
+                        <i
+                          className={color.is_open ? "ft-arrow-down" : "ft-arrow-right"}
                         ></i>
                       </button>{" "}
                       <p>
                         {color.colorname} : {color.total}
                       </p>
                       <div
-                        className={`tb_color_box_content ${
-                          color.is_open ? "show_it" : "hide_it"
-                        }`}
+                        className={`tb_color_box_content ${color.is_open ? "show_it" : "hide_it"
+                          }`}
                       >
                         {color.sizes &&
                           color.sizes.map((size, size_i) => (
@@ -215,17 +224,16 @@ class ViewProduct extends Component {
                                   this.toggleSize(e, i, color_i, size_i)
                                 }
                               >
-                                <i 
-                                className={size.is_open ? "ft-arrow-down" : "ft-arrow-right"}
+                                <i
+                                  className={size.is_open ? "ft-arrow-down" : "ft-arrow-right"}
                                 ></i>
                               </button>{" "}
                               <p>
                                 {size.size} : {size.qty}{" "}
                               </p>
                               <div
-                                className={`tb_size_box_content ${
-                                  size.is_open ? "show_it" : "hide_it"
-                                }`}
+                                className={`tb_size_box_content ${size.is_open ? "show_it" : "hide_it"
+                                  }`}
                               >
                                 <div className="tb_barcodes_box">
                                   <ul>
@@ -258,13 +266,13 @@ class ViewProduct extends Component {
                     ))}
                 </p>
 
-                <Link 
-                to={{
-                  pathname: `/product/editproduct/${product._id}`,
-                  data: product
-                }}
-                 className="btn btn-primary pull-right mbtn">
-                    {" "}
+                <Link
+                  to={{
+                    pathname: `/product/editproduct/${product._id}`,
+                    data: product
+                  }}
+                  className="btn btn-primary pull-right mbtn">
+                  {" "}
                   <i className="fa fa-pencil"></i> Edit{" "}
                 </Link>
                 <button type="button" onClick={(e) => this.toggleStatus(product.disabled, product._id)} className="btn btn-primary pull-right mbtn">
