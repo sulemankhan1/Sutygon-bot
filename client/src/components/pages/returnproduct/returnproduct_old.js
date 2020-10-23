@@ -130,7 +130,6 @@ class ReturnProduct extends Component {
   productBox = () => {
    const selectedOrder = this.selectedOrder();
     let productarray = [];
-    console.log("productBox",selectedOrder)
     // let { barcodes } = selectedOrder[0];
     // const { products } = this.props;
     // if (products) {

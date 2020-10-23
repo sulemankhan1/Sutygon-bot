@@ -15,8 +15,11 @@ import {
 } from "../../actions/product";
 import { getCustomer } from "../../actions/customer";
 import { addNewRentProduct } from "../../actions/rentproduct";
+import { getOrderbyOrderNumber } from "../../actions/returnproduct";
+
 import * as moment from 'moment'
 
+import { addNewInvoice } from "../../actions/invoices";
 import { OCAlertsProvider } from '@opuscapita/react-alerts';
 import { OCAlert } from '@opuscapita/react-alerts'
 import shortid from "shortid";
@@ -52,25 +55,24 @@ class RentOrder extends Component {
     }
     await this.props.getCustomer(this.state.customer_id);
   }
-returnDateValidity = ()=>{
-  const {rentDate,returnDate} = this.state;
- if(moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)){
-  OCAlert.alertError('Return Date should be after rent date');
- }
-}
+  returnDateValidity = () => {
+    const { rentDate, returnDate } = this.state;
+    if (moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)) {
+      OCAlert.alertError('Return Date should be after rent date');
+    }
+  }
 
-rentDateValidity = ()=>{
-  const {rentDate} = this.state;
-  var currentdate = moment(new Date).format('MM/DD/YYYY');
-  console.log(moment(rentDate).format('MM/DD/YYYY'))
-  console.log(currentdate)
+  rentDateValidity = () => {
+    const { rentDate } = this.state;
+    var currentdate = moment(new Date).format('MM/DD/YYYY');
 
- if(moment(moment(rentDate).format('MM/DD/YYYY')).isBefore(currentdate)){
-  OCAlert.alertError(`Rent Date should be after today's date`);
 
- }
+    if (moment(moment(rentDate).format('MM/DD/YYYY')).isBefore(currentdate)) {
+      OCAlert.alertError(`Rent Date should be after today's date`);
 
-}
+    }
+
+  }
 
   onSubmit = async (e) => {
     e.preventDefault();
@@ -85,9 +87,13 @@ rentDateValidity = ()=>{
     barcode_Array.forEach((element) => {
       barcodeArr.push(element.barcode);
     });
+    var orderNumber = Math.floor(Math.random() * 8999 + 1000);
+    this.setState({
+      orderNumber: orderNumber
 
-    const product = {
-      orderNumber: state.orderNumber,
+    })
+    const rentedOrder = {
+      orderNumber: orderNumber,
       customer: state.customer_id,
       customerContactNumber: customer.contactnumber,
       user: user._id,
@@ -99,8 +105,19 @@ rentDateValidity = ()=>{
       insuranceAmt: state.insAmt
     };
 
-     await this.props.addNewRentProduct(product);
+    await this.props.addNewRentProduct(rentedOrder);
 
+    await this.props.getOrderbyOrderNumber(orderNumber)
+
+    const { order, auth } = this.props;
+    if (order) {
+       const invoice = {
+        order_id: order[0]._id,
+        customer_id: order[0].customer,
+        user_id: auth.user._id,
+      }
+      await this.props.addNewInvoice(invoice);
+    }
     let { product_Array } = this.state;
 
     if (product_Array) {
@@ -125,7 +142,7 @@ rentDateValidity = ()=>{
                     if (size.barcodes) {
                       // Add isRented
                       size.barcodes[pd[0].barcodeIndex].isRented = true;
-                      this.props.updateProduct(product, pd[0].product_id);
+                      // this.props.updateProduct(product, pd[0].product_id);
                     }
                   }
                 });
@@ -140,6 +157,9 @@ rentDateValidity = ()=>{
 
     }
     this.setState({ saving: false });
+    // if(this.props.saved == true){
+    //   console.log(this.props,"this.props")
+    // }
     // this.setState({
     //   barcodesRented: true
     // })
@@ -147,7 +167,7 @@ rentDateValidity = ()=>{
 
   onHandleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
-    
+
   };
 
   // return sorted products for barcodes
@@ -218,7 +238,7 @@ rentDateValidity = ()=>{
       if (sortedAray) {
         barcode_Array.forEach((element) => {
           productarray.push(
-            sortedAray.filter((f) => f.barcode === element.barcode)
+            sortedAray.filter((f) => f.barcode == element.barcode)
           );
           return productarray;
         });
@@ -273,7 +293,7 @@ rentDateValidity = ()=>{
             </button>
           </div>
         </div>
-     </div>
+      </div>
     ));
   }
 
@@ -327,9 +347,9 @@ rentDateValidity = ()=>{
   calculateTax = () => {
     var totalAmount = this.calculateTotalWithoutTax();
     var { taxper } = this.state;
-   
+
     let amount;
-        if (taxper !== null && taxper !== "0") {
+    if (taxper !== null && taxper !== "0") {
       amount = totalAmount / taxper;
     }
     else {
@@ -353,7 +373,7 @@ rentDateValidity = ()=>{
   };
 
   render() {
-    const { auth } = this.props;
+    const { auth, order } = this.props;
     const { data } = this.props.location;
 
     if (!auth.loading && !auth.isAuthenticated) {
@@ -364,7 +384,6 @@ rentDateValidity = ()=>{
     //   return <Redirect to="/RentInvoice" />;
     // }
     const { customer } = this.props;
-    console.log(customer)
     return (
       <React.Fragment>
         <Loader />
@@ -683,7 +702,7 @@ rentDateValidity = ()=>{
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
                         <div class="modal-header bg-primary white">
-                          <h4 class="modal-title text-center" id="myModalLabel8">Rent Invoice</h4>
+                          <h4 class="modal-title text-center" id="myModalLabel8">Invoice</h4>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
@@ -698,7 +717,7 @@ rentDateValidity = ()=>{
                                     <h4>{(customer) ? `${customer.name}${"#"}${customer.contactnumber}` : ""}</h4>
                                   </div>
                                   <div style={{ 'float': 'right' }}>
-                                    {/* <h4>{(data) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4> */}
+                                    <h4>{(order) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4>
 
                                   </div>
                                 </div>
@@ -856,11 +875,11 @@ rentDateValidity = ()=>{
 
                                     <table>
                                       <tr>
-                                        <td style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '15px' }}>OrderID
-                                                    {/* {`${order[0]._id}`}<br /> */}
-                                          {/* {this.generateOrderBarcode(order[0]._id)} */}
+                                        <td className="col-md-6" style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '15px' }}>OrderID <br/>
+                                                    {(order && order.length>0 )? `${order[0]._id}`:""}<br />
+                                          { (order && order.length>0 )?shortid.generate():""}
                                         </td>
-                                        <td style={{ 'textAlign': 'center', 'padding': '15px' }}> Authorized by <br />
+                                        <td className="col-md-6" style={{ 'textAlign': 'center', 'padding': '15px' }}> Authorized by <br />
                                                         Sutygon-Bot</td>
                                       </tr>
                                     </table>
@@ -922,16 +941,26 @@ RentOrder.propTypes = {
   addNewRentProduct: PropTypes.func.isRequired,
   getProductById: PropTypes.func.isRequired,
   updateProduct: PropTypes.func.isRequired,
+  getOrderb: PropTypes.func.isRequired,
+  getOrderbyOrderNumber: PropTypes.func.isRequired,
+  addNewInvoice: PropTypes.func.isRequired,
   auth: PropTypes.object,
   products: PropTypes.array,
   customer: PropTypes.array,
+  order: PropTypes.array,
+  saved: PropTypes.bool,
+
+
 };
 
 const mapStateToProps = (state) => ({
   product: state.product.product,
   auth: state.auth,
+  order: state.returnproduct.returnproduct,
   products: state.product.products,
   customer: state.customer.customer,
+  saved: state.rentproduct.saved,
+
 });
 export default connect(mapStateToProps, {
   getAllProducts,
@@ -939,4 +968,6 @@ export default connect(mapStateToProps, {
   addNewRentProduct,
   getProductById,
   updateProduct,
+  addNewInvoice,
+  getOrderbyOrderNumber
 })(RentOrder);

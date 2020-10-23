@@ -24,7 +24,6 @@ class Header extends Component {
     loadjs(`/assets/js/notification-sidebar.js`);
     loadjs(`/assets/js/customizer.js`);
     loadjs(`/assets/js/view_product.js`);
-    // console.log('loader: ',`${process.env.PUBLIC_URL}/assets/vendors/js/core/jquery-3.2.1.min.js`);
   }
 
   componentWillReceiveProps(nextProps) {

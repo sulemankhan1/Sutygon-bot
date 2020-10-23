@@ -13,9 +13,6 @@ import { OCAlertsProvider } from '@opuscapita/react-alerts';
 import { OCAlert } from '@opuscapita/react-alerts';
 import "../../../custom.css"
 
-// import c from "config";
-
-
 class AddProduct extends Component {
   state = {
     productId: "",
@@ -34,7 +31,8 @@ class AddProduct extends Component {
     imgUpd: false,
     isEdit: false,
     src: "",
-    sizeQty:""
+    sizeQty: "",
+    enteredSizeQty:"",
   };
 
   async componentDidMount() {
@@ -81,27 +79,6 @@ class AddProduct extends Component {
 
     this.setState({ color: color });
 
-  }
-
-
-  addEditSizeRow = (color_id) => {
-    let { color } = this.state; // get all colors
-    let color_obj = color.filter((color) => (color._id || color._id) == color_id); // get current color obj
-    // get index of color i all colors object
-    const index = color.findIndex(
-      (color_obj) => color_obj._id == color_id
-    );
-
-    color_obj[0].sizes.push({
-      id: shortid.generate(),
-      size: "",
-      price: "",
-      qty: "",
-    })
-
-    color[index] = color_obj[0];
-
-    this.setState({ color: color });
   }
 
   addColorBox = (id) => {
@@ -215,7 +192,7 @@ class AddProduct extends Component {
   handleChange = (e, color_id = "", size_id = "") => {
     let name = e.target.name;
     let value = e.target.value;
-    
+
     // get all colors
     let { color } = this.state;
     // get current color obj
@@ -237,6 +214,8 @@ class AddProduct extends Component {
       );
 
       // update value inside size object
+
+
       size_obj[name] = value;
       // update sizes arr
       sizes[sizeIndex] = size_obj;
@@ -273,8 +252,7 @@ class AddProduct extends Component {
                 name="qty"
                 className="form-control mm-input s-input"
                 placeholder="Quantity"
-                // onInput={(e) => this.QtyCheck(e, color_id, size.id)}
-                onChange={(e) =>this.handleChange(e, color_id, size.id)}
+                onChange={(e) => this.handleChange(e, color_id, size.id)}
                 value={size.qty}
                 required
               />
@@ -304,9 +282,17 @@ class AddProduct extends Component {
     }
   }
 
- 
-
-
+  QtyCheck = (e, Qty) => {
+    this.setState({
+      sizeQty: Qty,
+      enteredSizeQty:e.target.value 
+    })
+    e.preventDefault()
+    if(this.state.sizeQty > e.target.value){
+      OCAlert.alertError(`value can't be less than ${this.state.sizeQty}`)
+    }
+   
+  }
 
   _onChange = (e, id = "") => {
     this.setState({
@@ -446,7 +432,7 @@ class AddProduct extends Component {
                               type="file"
                               className="form-control-file file btn btn-raised gradient-purple-bliss white input-div shadow-z-1-hover"
                               id="projectinput8"
-                              accept='image/*,.pdf,.jpg'
+                              accept='image/jpeg,image/gif,image/jpg,image/png,image/x-eps'
                               onChange={(e) => this._onChange(e)} />
                             {this.state.isEdit === true && this.state.imgUpd === false ?
                               <img

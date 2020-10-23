@@ -154,7 +154,7 @@ class ViewProduct extends Component {
             </tr>
           );
         }
-console.log(formated_products)
+        console.log(formated_products)
         return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">
@@ -167,6 +167,9 @@ console.log(formated_products)
                   />
                 </div>
                 <div className="tb_t_right">
+                <h2>
+                    <strong>Product Name</strong> {product.name}
+                  </h2>
                   <h2>
                     <strong>Product ID # </strong> {product.productId}
                   </h2>
@@ -189,17 +192,16 @@ console.log(formated_products)
                           this.toggleColor(e, i, color_i)
                         }
                       >
-                        <i 
-                        className={color.is_open ? "ft-arrow-down" : "ft-arrow-right"}
+                        <i
+                          className={color.is_open ? "ft-arrow-down" : "ft-arrow-right"}
                         ></i>
                       </button>{" "}
                       <p>
                         {color.colorname} : {color.total}
                       </p>
                       <div
-                        className={`tb_color_box_content ${
-                          color.is_open ? "show_it" : "hide_it"
-                        }`}
+                        className={`tb_color_box_content ${color.is_open ? "show_it" : "hide_it"
+                          }`}
                       >
                         {color.sizes &&
                           color.sizes.map((size, size_i) => (
@@ -212,17 +214,16 @@ console.log(formated_products)
                                   this.toggleSize(e, i, color_i, size_i)
                                 }
                               >
-                                <i 
-                                className={size.is_open ? "ft-arrow-down" : "ft-arrow-right"}
+                                <i
+                                  className={size.is_open ? "ft-arrow-down" : "ft-arrow-right"}
                                 ></i>
                               </button>{" "}
                               <p>
                                 {size.size} : {size.qty}{" "}
                               </p>
                               <div
-                                className={`tb_size_box_content ${
-                                  size.is_open ? "show_it" : "hide_it"
-                                }`}
+                                className={`tb_size_box_content ${size.is_open ? "show_it" : "hide_it"
+                                  }`}
                               >
                                 <div className="tb_barcodes_box">
                                   <ul>
@@ -255,13 +256,13 @@ console.log(formated_products)
                     ))}
                 </p>
 
-                <Link 
-                to={{
-                  pathname: `/product/editproduct/${product._id}`,
-                  data: product
-                }}
-                 className="btn btn-primary pull-right mbtn">
-                    {" "}
+                <Link
+                  to={{
+                    pathname: `/product/editproduct/${product._id}`,
+                    data: product
+                  }}
+                  className="btn btn-primary pull-right mbtn">
+                  {" "}
                   <i className="fa fa-pencil"></i> Edit{" "}
                 </Link>
                 <a href="#" className="btn btn-primary pull-right mbtn">

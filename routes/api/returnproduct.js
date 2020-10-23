@@ -16,12 +16,10 @@ router.get('/searchbyContactNumber',
      auth,
     async (req, res) => {
         try {
-            console.log(req.query.number)
 
             const result = await RentedProduct.find({
                 customerContactNumber: { $eq: req.query.number }
             })
-            console.log(result)
             if (result == null) {
                 return res
                     .status(404)
