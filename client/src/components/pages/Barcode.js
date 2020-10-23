@@ -222,10 +222,6 @@ class Barcode extends Component {
         {
           label: "Yes",
           onClick: () => {
-<<<<<<< HEAD
-            console.log(1);
-=======
->>>>>>> f7d456e9178fb4caa8c03ae834a2322e15a89a5b
             this.deleteItem(e, product_id, color_id, size_id, barcodeIndex);
           },
         },
@@ -440,9 +436,21 @@ class Barcode extends Component {
             </div>
 
             <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-                        </footer>
+              <p className="clearfix text-muted text-sm-center px-2">
+                <span>
+                  Powered by &nbsp;{" "}
+                  <a
+                    href="https://www.alphinex.com"
+                    id="pixinventLink"
+                    target="_blank"
+                    className="text-bold-800 primary darken-2"
+                  >
+                    Alphinex Solutions{" "}
+                  </a>
+                  , All rights reserved.{" "}
+                </span>
+              </p>
+            </footer>
           </div>
         </div>
         {/* Alerts */}
@@ -474,8 +482,4 @@ export default connect(mapStateToProps, {
   getProductById,
   barcodeUpdateProduct,
   deleteItem
-<<<<<<< HEAD
 })(Barcode);
-=======
-})(Barcode);
->>>>>>> f7d456e9178fb4caa8c03ae834a2322e15a89a5b
