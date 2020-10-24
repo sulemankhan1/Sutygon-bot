@@ -101,9 +101,10 @@ class ViewProduct extends Component {
           let color_size_total = 0;
           // looping through sizes of current color
           if (color.sizes) {
+         
             color.sizes.forEach((size, s_index) => {
-              color_size_total += parseInt(size.qty);
-              size.is_open = false;
+               color_size_total += parseInt(size.qty);
+             size.is_open = false;
             });
             color.total = color_size_total;
             color.is_open = false;
@@ -141,7 +142,6 @@ class ViewProduct extends Component {
     this.setState({ formated_products });;
   };
   getTAble = () => {
-    console.log('getTAble');
     const { formated_products } = this.state;
 
     if (formated_products) {
@@ -156,7 +156,6 @@ class ViewProduct extends Component {
             </tr>
           );
         }
-        
         return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">
@@ -165,11 +164,14 @@ class ViewProduct extends Component {
                   <img
                     className="media-object round-media"
                     src={`${product.image}`}
-                    alt="Generic placeholder image"
+                    alt="Product image"
                   />
                 </div>
                 <div className="tb_t_right">
                   <span className={"badge badge-"+((product.disabled == "true") ? "secondary":"info")+ " float-right"}>{(product.disabled == "false") ? "active":"disabled"}</span>
+                  <h2>
+                    <strong>Product Name</strong> {product.name}
+                  </h2>
                   <h2>
                     <strong>Product ID # </strong> {product.productId}
                   </h2>
@@ -229,7 +231,7 @@ class ViewProduct extends Component {
                               >
                                 <div className="tb_barcodes_box">
                                   <ul>
-                                    {size.barcodes &&
+                                    {size.barcodes && 
                                       size.barcodes.map(
                                         (barcode, barcode_i) => (
                                           <li key={barcode_i}>
@@ -290,6 +292,7 @@ class ViewProduct extends Component {
   }
 
   async toggleStatus(status, product_id) {
+    
     if(status == "true") {
       status = "false";
     } else {

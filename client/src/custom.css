@@ -43,3 +43,13 @@
 .btn-cont {
   padding-left: 50px;
 }
+body.modal-open .background-container {
+  -webkit-filter: blur(1px);
+  -moz-filter: blur(1px);
+  -o-filter: blur(1px);
+  -ms-filter: blur(1px);
+  filter: blur(1px);
+}
+.modal-dialog{
+  overflow-y: initial !important
+}

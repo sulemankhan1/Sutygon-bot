@@ -15,8 +15,11 @@ import {
 } from "../../actions/product";
 import { getCustomer } from "../../actions/customer";
 import { addNewRentProduct } from "../../actions/rentproduct";
+import { getOrderbyOrderNumber } from "../../actions/returnproduct";
+
 import * as moment from 'moment'
 
+import { addNewInvoice } from "../../actions/invoices";
 import { OCAlertsProvider } from '@opuscapita/react-alerts';
 import { OCAlert } from '@opuscapita/react-alerts'
 import shortid from "shortid";
@@ -52,25 +55,24 @@ class RentOrder extends Component {
     }
     await this.props.getCustomer(this.state.customer_id);
   }
-returnDateValidity = ()=>{
-  const {rentDate,returnDate} = this.state;
- if(moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)){
-  OCAlert.alertError('Return Date should be after rent date');
- }
-}
+  returnDateValidity = () => {
+    const { rentDate, returnDate } = this.state;
+    if (moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)) {
+      OCAlert.alertError('Return Date should be after rent date');
+    }
+  }
 
-rentDateValidity = ()=>{
-  const {rentDate} = this.state;
-  var currentdate = moment(new Date).format('MM/DD/YYYY');
-  console.log(moment(rentDate).format('MM/DD/YYYY'))
-  console.log(currentdate)
+  rentDateValidity = () => {
+    const { rentDate } = this.state;
+    var currentdate = moment(new Date).format('MM/DD/YYYY');
 
- if(moment(moment(rentDate).format('MM/DD/YYYY')).isBefore(currentdate)){
-  OCAlert.alertError(`Rent Date should be after today's date`);
 
- }
+    if (moment(moment(rentDate).format('MM/DD/YYYY')).isBefore(currentdate)) {
+      OCAlert.alertError(`Rent Date should be after today's date`);
 
-}
+    }
+
+  }
 
   onSubmit = async (e) => {
     e.preventDefault();
@@ -85,9 +87,13 @@ rentDateValidity = ()=>{
     barcode_Array.forEach((element) => {
       barcodeArr.push(element.barcode);
     });
+    var orderNumber = Math.floor(Math.random() * 8999 + 1000);
+    this.setState({
+      orderNumber: orderNumber
 
-    const product = {
-      orderNumber: state.orderNumber,
+    })
+    const rentedOrder = {
+      orderNumber: orderNumber,
       customer: state.customer_id,
       customerContactNumber: customer.contactnumber,
       user: user._id,
@@ -99,8 +105,19 @@ rentDateValidity = ()=>{
       insuranceAmt: state.insAmt
     };
 
-     await this.props.addNewRentProduct(product);
+    await this.props.addNewRentProduct(rentedOrder);
 
+    await this.props.getOrderbyOrderNumber(orderNumber)
+
+    const { order, auth } = this.props;
+    if (order) {
+      const invoice = {
+        order_id: order[0]._id,
+        customer_id: order[0].customer,
+        user_id: auth.user._id,
+      }
+      await this.props.addNewInvoice(invoice);
+    }
     let { product_Array } = this.state;
 
     if (product_Array) {
@@ -125,7 +142,7 @@ rentDateValidity = ()=>{
                     if (size.barcodes) {
                       // Add isRented
                       size.barcodes[pd[0].barcodeIndex].isRented = true;
-                      this.props.updateProduct(product, pd[0].product_id);
+                      // this.props.updateProduct(product, pd[0].product_id);
                     }
                   }
                 });
@@ -140,6 +157,9 @@ rentDateValidity = ()=>{
 
     }
     this.setState({ saving: false });
+    // if(this.props.saved == true){
+    //   console.log(this.props,"this.props")
+    // }
     // this.setState({
     //   barcodesRented: true
     // })
@@ -147,7 +167,7 @@ rentDateValidity = ()=>{
 
   onHandleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
-    
+
   };
 
   // return sorted products for barcodes
@@ -218,7 +238,7 @@ rentDateValidity = ()=>{
       if (sortedAray) {
         barcode_Array.forEach((element) => {
           productarray.push(
-            sortedAray.filter((f) => f.barcode === element.barcode)
+            sortedAray.filter((f) => f.barcode == element.barcode)
           );
           return productarray;
         });
@@ -237,6 +257,7 @@ rentDateValidity = ()=>{
               name="barcode"
               id="widthBr"
               style={{ width: "60%" }}
+              readOnly
               value={
                 product &&
                 product[0].title &&
@@ -250,6 +271,7 @@ rentDateValidity = ()=>{
               placeholder="Price"
               id="setSize"
               name="total"
+              readOnly
               value={`${"$"}${product && product[0].price}`}
             />
           </div>
@@ -273,7 +295,7 @@ rentDateValidity = ()=>{
             </button>
           </div>
         </div>
-     </div>
+      </div>
     ));
   }
 
@@ -289,7 +311,9 @@ rentDateValidity = ()=>{
             placeholder="Barcode"
             name="barcode"
             id="widthBr"
+            readOnly
             style={{ width: "280px", color: 'black' }}
+            readOnly
             value={
               product &&
               product[0].title &&
@@ -302,6 +326,7 @@ rentDateValidity = ()=>{
             className="form-control mm-input s-input text-center"
             placeholder="Price"
             id="setSize"
+            readOnly
             name="total"
             style={{ color: 'black', width: '80px' }}
             value={`${"$"}${product && product[0].price}`}
@@ -327,9 +352,9 @@ rentDateValidity = ()=>{
   calculateTax = () => {
     var totalAmount = this.calculateTotalWithoutTax();
     var { taxper } = this.state;
-   
+
     let amount;
-        if (taxper !== null && taxper !== "0") {
+    if (taxper !== null && taxper !== "0") {
       amount = totalAmount / taxper;
     }
     else {
@@ -351,9 +376,17 @@ rentDateValidity = ()=>{
     this.state.total = sum;
     return sum;
   };
+  //   generateOrderBarcode =(orderNumber)=>{
+  //  const orderBarcode = shortid.generate();
+  //     // this.setState({
+  //     //   orderBarcode:orderBarcode
+  //     // })
+  //     return orderBarcode;
+
+  //   }
 
   render() {
-    const { auth } = this.props;
+    const { auth, order } = this.props;
     const { data } = this.props.location;
 
     if (!auth.loading && !auth.isAuthenticated) {
@@ -364,7 +397,6 @@ rentDateValidity = ()=>{
     //   return <Redirect to="/RentInvoice" />;
     // }
     const { customer } = this.props;
-    console.log(customer)
     return (
       <React.Fragment>
         <Loader />
@@ -381,7 +413,7 @@ rentDateValidity = ()=>{
                         <h4 className="card-title">Rent a Product</h4>
                       </div>
                       <div className="card-content">
-                        <div className="card-body table-responsive">
+                        <div className="card-body table-responsive background-container">
                           <div id="colors_box">
                             <div className="row color-row">
                               <div className="col-md-12">
@@ -423,6 +455,8 @@ rentDateValidity = ()=>{
                                               placeholder="Total"
                                               name="total_amt"
                                               id="setSizeFloat"
+                                              required
+                                              readOnly
                                               onChange={(e) =>
                                                 this.onHandleChange(e)
                                               }
@@ -457,6 +491,7 @@ rentDateValidity = ()=>{
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Tax"
                                               id="setSizeFloat"
+                                              required
                                               value={`${this.state.taxper}`}
                                               onChange={(e) =>
                                                 this.onHandleChange(e)
@@ -487,6 +522,7 @@ rentDateValidity = ()=>{
                                                   ? `${"$"}${this.calculateTax()}`
                                                   : ""
                                               }
+                                              readOnly
                                             />
                                           </div>{" "}
                                         </div>
@@ -509,6 +545,9 @@ rentDateValidity = ()=>{
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Insurance"
                                               id="setSizeFloat"
+                                              required
+                                              readOnly
+
                                               value={
                                                 this.state.total_amt
                                                   ? `${"$"}${this.calculateInsuranceAmt()}`
@@ -549,6 +588,7 @@ rentDateValidity = ()=>{
                                                 type="radio"
                                                 name="leaveID"
                                                 value={false}
+
                                                 onChange={(e) => this.onHandleChange(e)}
                                                 checked={this.state.leaveID === "false"}
                                               />
@@ -594,6 +634,8 @@ rentDateValidity = ()=>{
                                           data-trigger="hover"
                                           data-placement="top"
                                           data-title="Rent Date"
+                                          required
+
                                           onChange={(e) =>
                                             this.onHandleChange(e)
                                           }
@@ -612,6 +654,8 @@ rentDateValidity = ()=>{
                                           data-toggle="tooltip"
                                           data-trigger="hover"
                                           data-placement="top"
+                                          required
+
                                           data-title="Return Date"
                                           onChange={(e) =>
                                             this.onHandleChange(e)
@@ -635,6 +679,8 @@ rentDateValidity = ()=>{
                                               type="text"
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Total"
+                                              required
+                                              readOnly
                                               id="setSizeFloat"
                                               value={
                                                 this.state.total_amt
@@ -677,18 +723,40 @@ rentDateValidity = ()=>{
                     </div>
                   </div>
 
-                  {/* Invoice Modal */}
-                  <div class="modal fade text-left" id="primary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8"
+                
+                </section>
+              </div>
+            </div>
+
+           
+
+            <footer className="footer footer-static footer-light">
+              <p className="clearfix text-muted text-sm-center px-2">
+                <span>
+                  Powered by &nbsp;{" "}
+                  <a
+                    href="https://www.alphinex.com"
+                    id="pixinventLink"
+                    target="_blank"
+                    className="text-bold-800 primary darken-2"
+                  >
+                    Alphinex Solutions{" "}
+                  </a>
+                  , All rights reserved.{" "}
+                </span>
+              </p>
+            </footer>
+          </div>
+             {/* Invoice Modal */}
+             <div className="modal fade text-left" id="primary" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel8"
                     aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary white">
-                          <h4 class="modal-title text-center" id="myModalLabel8">Rent Invoice</h4>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
+                    <div className="modal-dialog" role="document">
+                      <div className="modal-content">
+                        <div className="modal-header bg-primary white">
+                          <h4 className="modal-title text-center" id="myModalLabel8">Invoice</h4>
+                          
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
                           <div id="colors_box">
                             <div className="row color-row">
                               <div className="col-md-12">
@@ -698,7 +766,7 @@ rentDateValidity = ()=>{
                                     <h4>{(customer) ? `${customer.name}${"#"}${customer.contactnumber}` : ""}</h4>
                                   </div>
                                   <div style={{ 'float': 'right' }}>
-                                    {/* <h4>{(data) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4> */}
+                                    <h4>{(order) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4>
 
                                   </div>
                                 </div>
@@ -763,7 +831,7 @@ rentDateValidity = ()=>{
                                       <div className="text-center" style={{ 'width': '300%' }}>
                                         <input
                                           type="text"
-
+                                          readOnly
                                           className="form-control mm-input s-input text-center"
                                           placeholder="Total"
                                           style={{ 'color': 'black' }}
@@ -855,14 +923,16 @@ rentDateValidity = ()=>{
                                   <div className="col-md-12">
 
                                     <table>
-                                      <tr>
-                                        <td style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '15px' }}>OrderID
-                                                    {/* {`${order[0]._id}`}<br /> */}
-                                          {/* {this.generateOrderBarcode(order[0]._id)} */}
-                                        </td>
-                                        <td style={{ 'textAlign': 'center', 'padding': '15px' }}> Authorized by <br />
+                                      <tbody>
+                                        <tr>
+                                          <td className="col-md-6" style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>OrderID <br />
+                                            {(order && !!order.length) ? `${order[0]._id}` : ""}<br />
+                                            {(order && !!order.length) ? shortid.generate() : ""}
+                                          </td>
+                                          <td className="col-md-6" style={{ 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}> Authorized by <br />
                                                         Sutygon-Bot</td>
-                                      </tr>
+                                        </tr>
+                                      </tbody>
                                     </table>
 
 
@@ -876,37 +946,35 @@ rentDateValidity = ()=>{
 
                                 </div>
                               </div>
-
+                              <div className="col-md-12">
+                                <div className="row justify-content-center">
+                              <button type="button" 
+                         className="close text-center" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                         id="btnSize2">Finish</span>
+                          </button>
+                          </div>
+                            </div>
                             </div>
 
-                          </div>
-                        </div>
-                        <hr />
 
+                           
+                          </div>
+                        
+                        </div>
+                     
                       </div>
 
                     </div>
                   </div>
-                </section>
+ </section>
               </div>
             </div>
 
             <footer className="footer footer-static footer-light">
-              <p className="clearfix text-muted text-sm-center px-2">
-                <span>
-                  Powered by &nbsp;{" "}
-                  <a
-                    href="https://www.alphinex.com"
-                    id="pixinventLink"
-                    target="_blank"
-                    className="text-bold-800 primary darken-2"
-                  >
-                    Alphinex Solutions{" "}
-                  </a>
-                  , All rights reserved.{" "}
-                </span>
-              </p>
-            </footer>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+                        </footer>
           </div>
         </div>
         <OCAlertsProvider />
@@ -922,16 +990,26 @@ RentOrder.propTypes = {
   addNewRentProduct: PropTypes.func.isRequired,
   getProductById: PropTypes.func.isRequired,
   updateProduct: PropTypes.func.isRequired,
+  // getOrder: PropTypes.func.isRequired,
+  getOrderbyOrderNumber: PropTypes.func.isRequired,
+  addNewInvoice: PropTypes.func.isRequired,
   auth: PropTypes.object,
   products: PropTypes.array,
   customer: PropTypes.array,
+  order: PropTypes.array,
+  saved: PropTypes.bool,
+
+
 };
 
 const mapStateToProps = (state) => ({
   product: state.product.product,
   auth: state.auth,
+  order: state.returnproduct.returnproduct,
   products: state.product.products,
   customer: state.customer.customer,
+  saved: state.rentproduct.saved,
+
 });
 export default connect(mapStateToProps, {
   getAllProducts,
@@ -939,4 +1017,6 @@ export default connect(mapStateToProps, {
   addNewRentProduct,
   getProductById,
   updateProduct,
+  addNewInvoice,
+  getOrderbyOrderNumber
 })(RentOrder);

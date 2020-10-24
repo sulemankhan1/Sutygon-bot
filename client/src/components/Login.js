@@ -49,7 +49,6 @@ if(user && user.type == "Employee") {
     }
 
     else if(openShop.status == "off"){
-      console.log("Shop is closed")
       // setAlert("Shop is closed", "danger", 5000);
     }
   }
