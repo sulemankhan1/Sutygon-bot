@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "npm start --prefix client",
     "server": "nodemon server",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "\"npm run server\" \"npm run client\""
   },
   "author": "Alphinex solutions www.alphinex.com",
   "license": "ISC",
