@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Sidebar from "../layout/Sidebar";
 import Header from "../layout/Header";
-import { getAllProducts, updateProduct, getProductById, barcodeUpdateProduct, deleteItem } from "../../actions/product";
+import { getAllProducts, updateProduct, getProductById, barcodeUpdateProduct, deleteItem, deleteProduct } from "../../actions/product";
 import Loader from "../layout/Loader";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -50,17 +50,17 @@ class Barcode extends Component {
               let size_id = size.id;
 
               let length;
-              if(this.state.dataType == "without_barcode") { // show sizes without barcodes
+              if (this.state.dataType == "without_barcode") { // show sizes without barcodes
                 // if we have some barcodes then skip that 
                 // number of rows for the current size
-                if(size.barcodes) {
+                if (size.barcodes) {
                   // if barcodes availble then length should be qty - barcodes length
                   length = size.qty - size.barcodes.length;
                 } else {
                   length = size.qty;
                 }
               } else { // show sizes with barcode
-                if(size.barcodes) {
+                if (size.barcodes) {
                   length = size.barcodes.length;
                 } else {
                   length = 0;
@@ -76,7 +76,7 @@ class Barcode extends Component {
                   short_product_id: product.productId,
                   barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
                   title: product_name + " | " + color_name + " | " + size_name,
-                  barcodes: (size.barcodes) ? size.barcodes: []
+                  barcodes: (size.barcodes) ? size.barcodes : []
                 };
                 rows.push(row);
               }
@@ -93,102 +93,102 @@ class Barcode extends Component {
   };
 
   getTAbleRows = () => {
-    
+
     let products = this.props.products;
-    if(products) {
+    if (products) {
       let sortedProducts = this.getSortedData(products);
-    // let tbl_sno = 1;
-    if (sortedProducts) {
-      if (sortedProducts.length === 0) {
-        return (
-          <tr>
-            <td colSpan={10} className="text-center">
-              No product Found
+      // let tbl_sno = 1;
+      if (sortedProducts) {
+        if (sortedProducts.length === 0) {
+          return (
+            <tr>
+              <td colSpan={10} className="text-center">
+                No product Found
             </td>
-          </tr>
-        );
-      }
-      return sortedProducts.map((product, i) => {
-        return (
-          <tr key={i}>
-          <td>
-            {product.short_product_id}
-          </td>
-          <td>
-            <div className="form-group">
-              <div className="">
-                {product.title}
-              </div>
-            </div>
-          </td>
-          {(this.state.dataType == 'with_barcode') && (
+            </tr>
+          );
+        }
+        return sortedProducts.map((product, i) => {
+          return (
+            <tr key={i}>
               <td>
-                <span className="badge badge-secondary">{product.barcodes[product.barcodeIndex].barcode}</span>
+                {product.short_product_id}
               </td>
-            )}
-          <td>
-            {(this.state.dataType == 'without_barcode') ? (
-              <button
-              type="button"
-              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-              onClick={(e) => this.genPrintRandBarcode(e, product.product_id, product.color_id, product.size_id)}
-            >
-              Generate &amp; PRINT random barcode
-            </button>
-            ) : (
-              <button
-              type="button"
-              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-              onClick={(e) => this.changeBarcode(e, product.product_id, product.color_id, product.size_id, product.barcodeIndex)}
-            >
-              Change Barcode
-            </button>
-            )}
-          </td>
-          <td>
-          {(this.state.dataType == 'without_barcode') ? (
-              <form onSubmit={(e) => this.OnSubmitScanBarcode(e, product.product_id, product.color_id, product.size_id)}>
-              <input
-                type="text"
-                className="form-control mm-input"
-                placeholder={"Scan existing Barcode"}
-              />
-            </form>
-            ) : (
-              <button
-              type="button"
-              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-              onClick={(e) => this.printBarcode(product.barcodes[product.barcodeIndex].barcode)}
-            >
-              Print Barcode
-            </button>
-            )}
-          </td>
-          <td>
-          {(this.state.dataType == 'without_barcode') ? (
-              <button
-              type="button"
-              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-              onClick={(e) => this.deleteConfirm(e, product.product_id, product.color_id, product.size_id)}
-            >
-              Delete Item
-            </button>
-            ) : (
-              <button
-              type="button"
-              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-              onClick={(e) => this.deleteConfirm(e, product.product_id, product.color_id, product.size_id, product.barcodeIndex)}
-            >
-              Delete Item
-            </button>
-            )}
-          </td>
-        </tr>
-        );
-      });
+              <td>
+                <div className="form-group">
+                  <div className="">
+                    {product.title}
+                  </div>
+                </div>
+              </td>
+              {(this.state.dataType == 'with_barcode') && (
+                <td>
+                  <span className="badge badge-secondary">{product.barcodes[product.barcodeIndex].barcode}</span>
+                </td>
+              )}
+              <td>
+                {(this.state.dataType == 'without_barcode') ? (
+                  <button
+                    type="button"
+                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                    onClick={(e) => this.genPrintRandBarcode(e, product.product_id, product.color_id, product.size_id)}
+                  >
+                    Generate &amp; PRINT random barcode
+                  </button>
+                ) : (
+                    <button
+                      type="button"
+                      className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                      onClick={(e) => this.changeBarcode(e, product.product_id, product.color_id, product.size_id, product.barcodeIndex)}
+                    >
+                      Change Barcode
+                    </button>
+                  )}
+              </td>
+              <td>
+                {(this.state.dataType == 'without_barcode') ? (
+                  <form onSubmit={(e) => this.OnSubmitScanBarcode(e, product.product_id, product.color_id, product.size_id)}>
+                    <input
+                      type="text"
+                      className="form-control mm-input"
+                      placeholder={"Scan existing Barcode"}
+                    />
+                  </form>
+                ) : (
+                    <button
+                      type="button"
+                      className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                      onClick={(e) => this.printBarcode(product.barcodes[product.barcodeIndex].barcode)}
+                    >
+                      Print Barcode
+                    </button>
+                  )}
+              </td>
+              <td>
+                {(this.state.dataType == 'without_barcode') ? (
+                  <button
+                    type="button"
+                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                    onClick={(e) => this.deleteConfirm(e, product.product_id, product.color_id, product.size_id)}
+                  >
+                    Delete Item
+                  </button>
+                ) : (
+                    <button
+                      type="button"
+                      className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                      onClick={(e) => this.deleteConfirm(e, product.product_id, product.color_id, product.size_id, product.barcodeIndex)}
+                    >
+                      Delete Item
+                    </button>
+                  )}
+              </td>
+            </tr>
+          );
+        });
+      }
     }
-    }
-    
+
   };
 
   // runs when existing barcode is scanned
@@ -205,7 +205,7 @@ class Barcode extends Component {
   }
 
   // generate and print random bar code
-  genPrintRandBarcode = async  (e, product_id, color_id, size_id) => {
+  genPrintRandBarcode = async (e, product_id, color_id, size_id) => {
     // generate random barcode
     let barcode = Math.floor(Math.random() * 999999) + 111111;
     this.saveBarCode(barcode, product_id, color_id, size_id);
@@ -214,7 +214,7 @@ class Barcode extends Component {
   }
 
 
-  deleteConfirm = async  (e, product_id, color_id, size_id, barcodeIndex) => {
+  deleteConfirm = async (e, product_id, color_id, size_id, barcodeIndex) => {
     confirmAlert({
       title: "Delete Item",
       message: "Are you sure you want to delete this Item?",
@@ -235,7 +235,7 @@ class Barcode extends Component {
   }
 
   // Delete Item
-  deleteItem = async  (e, product_id, color_id, size_id, barcodeIndex) => {
+  deleteItem = async (e, product_id, color_id, size_id, barcodeIndex) => {
     // get product by id
     await this.props.getProductById(product_id);
     const { product } = this.props;
@@ -243,38 +243,59 @@ class Barcode extends Component {
     // return;
 
     let total_qty = 0;
-    if(product && product.color) {
+    if (product && product.color) {
       // loop through product colors
       product.color.forEach((color, c_index) => {
         // get right color obj
-        if(color._id == color_id) {
+        if (color._id == color_id) {
           // get right size obj
-          if(color.sizes) {
+          if (color.sizes) {
             color.sizes.forEach((size, s_index) => {
               total_qty += parseInt(size.qty);
-              if(size.id == size_id) {
-
+              if (size.id == size_id) {
                 // decrease size qty
-                // size.qty = parseInt(size.qty) - 1; 
+                if (size.qty > 0) {
+                  size.qty = parseInt(size.qty) - 1;
 
-                // if barcode is availble remove it too
-                if(typeof barcodeIndex !== "undefined") {
-                  // size.barcodes.splice(barcodeIndex, 1);
+                  // if barcode is availble remove it too
+                  if (typeof barcodeIndex !== "undefined") {
+                    size.barcodes.splice(barcodeIndex, 1);
+                  }
                 }
               }
             })
           }
         }
       })
-
-      console.log('overall product qty', total_qty);
-      return;
-
       // update product for barcode only
       await this.props.deleteItem(product, product_id);
+
     }
 
     OCAlert.alertSuccess('Item Deleted Successfully!');
+    this._deleteProduct();
+
+  }
+
+  _deleteProduct = async () => {
+    const { product } = this.props
+    let total_qty = 0;
+    if (product && product.color) {
+      // loop through product colors
+      product.color.forEach((color, c_index) => {
+        if (color.sizes) {
+          color.sizes.forEach((size, s_index) => {
+            total_qty += parseInt(size.qty);
+          })
+        }
+      })
+      if (total_qty == 0) {
+        await this.props.deleteProduct(product._id);
+        OCAlert.alertSuccess('Product Deleted Successfully!');
+
+      }
+      return;
+    }
   }
 
   // change existing barcode in size object and correct index
@@ -303,7 +324,7 @@ class Barcode extends Component {
 
     // convert barcode to image and open in new window and print
     JsBarcode(canvas, barcode);
-    let html  = '<img src="' + canvas.toDataURL() + '" style="width: 100%" />';
+    let html = '<img src="' + canvas.toDataURL() + '" style="width: 100%" />';
     let newWindow = window.open("", '_blank', 'location=yes,height=570,width=720,scrollbars=yes,status=yes');
     newWindow.document.write(html);
     newWindow.window.print();
@@ -311,26 +332,26 @@ class Barcode extends Component {
   }
 
   // saves the barcode in specific item > color > size object
-  saveBarCode = async (barcode, product_id, color_id, size_id, mode='add', barcodeIndex='') => {
-    
+  saveBarCode = async (barcode, product_id, color_id, size_id, mode = 'add', barcodeIndex = '') => {
+
     // get product by id
     await this.props.getProductById(product_id);
     const { product } = this.props;
 
-    if(product && product.color) {
+    if (product && product.color) {
       // loop through product colors
       product.color.forEach((color, c_index) => {
         // get right color obj
-        if(color._id == color_id) {
+        if (color._id == color_id) {
           // get right size obj
-          if(color.sizes) {
+          if (color.sizes) {
             color.sizes.forEach((size, s_index) => {
-              if(size.id == size_id) {
+              if (size.id == size_id) {
                 // check if current size obj contain barcodes or not
-                if(size.barcodes) {
-                  
-                  if(mode == 'add') {
-                    size.barcodes.push({barcode});  // Add barcode
+                if (size.barcodes) {
+
+                  if (mode == 'add') {
+                    size.barcodes.push({ barcode });  // Add barcode
                   } else {
                     // size.barcodes[barcodeIndex].barcode = barcode; // Change barcode
                     size.barcodes.splice(barcodeIndex, 1);
@@ -339,7 +360,7 @@ class Barcode extends Component {
                   // create new barcode array
                   size.barcodes = [];
                   // and push this new barcode to it
-                  size.barcodes.push({barcode});
+                  size.barcodes.push({ barcode });
                 }
               }
             })
@@ -362,7 +383,7 @@ class Barcode extends Component {
     //   return <Redirect to="/barcode" />;
     // }
 
-    
+
     return (
       <React.Fragment>
         <Loader />
@@ -423,7 +444,7 @@ class Barcode extends Component {
                               <th>Product ID</th>
                               <th>Product</th>
                               {(this.state.dataType == "with_barcode") && (
-                                <th>Barcode</th>  
+                                <th>Barcode</th>
                               )}
                               <th>Change Barcode</th>
                               <th>Scan Barcode</th>
@@ -474,6 +495,7 @@ Barcode.propTypes = {
   barcodeUpdateProduct: PropTypes.func.isRequired,
   deleteItem: PropTypes.func.isRequired,
   getProductById: PropTypes.func.isRequired,
+  deleteProduct: PropTypes.func.isRequired,
   auth: PropTypes.object,
 };
 
@@ -488,5 +510,6 @@ export default connect(mapStateToProps, {
   updateProduct,
   getProductById,
   barcodeUpdateProduct,
-  deleteItem
+  deleteItem,
+  deleteProduct
 })(Barcode);
