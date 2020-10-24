@@ -129,120 +129,120 @@ class Dashboard extends Component {
           <div className="main-panel">
             <div className="main-content">
               <div className="content-wrapper">
-                <div class="row">
-                <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div class="card gradient-red-pink">
-                      <div class="card-content">
-                        <div class="card-body pt-2 pb-0">
-                          <div class="media">
-                            <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getTodaysAppointment()}</h3>
+                <div className="row">
+                <div className="col-xl-4 col-lg-6 col-md-6 col-12">
+                    <div className="card gradient-red-pink">
+                      <div className="card-content">
+                        <div className="card-body pt-2 pb-0">
+                          <div className="media">
+                            <div className="media-body white text-left">
+                              <h3 className="font-large-1 mb-0">{this.getTodaysAppointment()}</h3>
 <a href="/calender" style={{'textDecoration':'none' , 'color':'white'}}>Today's Appointment
                          </a>
                             </div>
-                            <div class="media-right white text-right">
-                              <i class="icon-pie-chart font-large-1"></i>
+                            <div className="media-right white text-right">
+                              <i className="icon-pie-chart font-large-1"></i>
                             </div>
                           </div>
                         </div>
-                        <div id="Widget-line-chart" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+                        <div id="Widget-line-chart" className="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div class="card gradient-blueberry">
-                      <div class="card-content">
-                        <div class="card-body pt-2 pb-0">
-                          <div class="media">
-                            <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getReturnOrder()}</h3>
+                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
+                    <div className="card gradient-blueberry">
+                      <div className="card-content">
+                        <div className="card-body pt-2 pb-0">
+                          <div className="media">
+                            <div className="media-body white text-left">
+                              <h3 className="font-large-1 mb-0">{this.getReturnOrder()}</h3>
                               <span>Đơn Hàng Phải Trả Hôm Nay</span>
                             </div>
-                            <div class="media-right white text-right">
-                              <i class="icon-bulb font-large-1"></i>
+                            <div className="media-right white text-right">
+                              <i className="icon-bulb font-large-1"></i>
                             </div>
                           </div>
                         </div>
-                        <div id="Widget-line-chart1" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+                        <div id="Widget-line-chart1" className="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
                         </div>
 
                       </div>
                     </div>
                   </div>
 
-                  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div class="card gradient-mint">
-                      <div class="card-content">
-                        <div class="card-body pt-2 pb-0">
-                          <div class="media">
-                            <div class="media-body white text-left">
-                              <h3 class="font-large-1 mb-0">{this.getOverDueOrder()}</h3>
+                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
+                    <div className="card gradient-mint">
+                      <div className="card-content">
+                        <div className="card-body pt-2 pb-0">
+                          <div className="media">
+                            <div className="media-body white text-left">
+                              <h3 className="font-large-1 mb-0">{this.getOverDueOrder()}</h3>
                               <span>Đơn Hàng Quá Hạn</span>
                             </div>
-                            <div class="media-right white text-right">
-                              <i class="icon-graph font-large-1"></i>
+                            <div className="media-right white text-right">
+                              <i className="icon-graph font-large-1"></i>
                             </div>
                           </div>
                         </div>
-                        <div id="Widget-line-chart2" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+                        <div id="Widget-line-chart2" className="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div class="card gradient-mini">
-                      <div class="card-content">
-                        <div class="card-body pt-2 pb-0">
-                          <div class="media">
-                            <div class="media-body white text-left">
-<h3 class="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
+                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
+                    <div className="card gradient-mini">
+                      <div className="card-content">
+                        <div className="card-body pt-2 pb-0">
+                          <div className="media">
+                            <div className="media-body white text-left">
+<h3 className="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
                               <span>Order Pickup Today</span>
                             </div>
-                            <div class="media-right white text-right">
-                              <i class="icon-wallet font-large-1"></i>
+                            <div className="media-right white text-right">
+                              <i className="icon-wallet font-large-1"></i>
                             </div>
                           </div>
                         </div>
-                        <div id="Widget-line-chart3" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+                        <div id="Widget-line-chart3" className="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div class="card gradient-brown-brown">
-                      <div class="card-content">
-                        <div class="card-body pt-2 pb-0">
-                          <div class="media">
-                            <div class="media-body white text-left">
-<h3 class="font-large-1 mb-0">{}</h3>
+                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
+                    <div className="card gradient-brown-brown">
+                      <div className="card-content">
+                        <div className="card-body pt-2 pb-0">
+                          <div className="media">
+                            <div className="media-body white text-left">
+<h3 className="font-large-1 mb-0">{}</h3>
                               <span>Order Needs Alteration</span>
                             </div>
-                            <div class="media-right white text-right">
-                              <i class="icon-wallet font-large-1"></i>
+                            <div className="media-right white text-right">
+                              <i className="icon-wallet font-large-1"></i>
                             </div>
                           </div>
                         </div>
-                        <div id="Widget-line-chart3" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+                        <div id="Widget-line-chart3" className="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-                  <div class="card gradient-orange">
-                      <div class="card-content">
-                        <div class="card-body pt-2 pb-0">
-                          <div class="media">
-                            <div class="media-body white text-left">
-<h3 class="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
+                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
+                  <div className="card gradient-orange">
+                      <div className="card-content">
+                        <div className="card-body pt-2 pb-0">
+                          <div className="media">
+                            <div className="media-body white text-left">
+<h3 className="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
                               <span>Today's Orders</span>
                             </div>
-                            <div class="media-right white text-right">
-                              <i class="fa-music font-large-1"></i>
+                            <div className="media-right white text-right">
+                              <i className="fa-music font-large-1"></i>
                             </div>
                           </div>
                         </div>
-                        <div id="Widget-line-chart3" class="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
+                        <div id="Widget-line-chart3" className="height-75 WidgetlineChart WidgetlineChartshadow mb-2">
                         </div>
                       </div>
                     </div>
@@ -310,7 +310,7 @@ Dashboard.propTypes = {
   products: PropTypes.array,
   orders: PropTypes.array,
   rentedproducts: PropTypes.array,
-  shop: PropTypes.array
+  shop: PropTypes.object
 };
 
 const mapStateToProps = (state) => ({
