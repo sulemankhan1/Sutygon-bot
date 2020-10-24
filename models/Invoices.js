@@ -15,7 +15,10 @@ const RentInvoiceSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "customer",
     },
+    type:{
+        type:String
+    }
 },
 
 );
-module.exports = RentInvoice = mongoose.model("invoiceRent", RentInvoiceSchema);
+module.exports = RentInvoice = mongoose.model("invoice", RentInvoiceSchema);

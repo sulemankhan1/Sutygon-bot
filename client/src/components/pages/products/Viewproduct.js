@@ -101,9 +101,10 @@ class ViewProduct extends Component {
           let color_size_total = 0;
           // looping through sizes of current color
           if (color.sizes) {
+         
             color.sizes.forEach((size, s_index) => {
-              color_size_total += parseInt(size.qty);
-              size.is_open = false;
+               color_size_total += parseInt(size.qty);
+             size.is_open = false;
             });
             color.total = color_size_total;
             color.is_open = false;
@@ -155,7 +156,6 @@ class ViewProduct extends Component {
             </tr>
           );
         }
-        console.log(formated_products)
         return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">

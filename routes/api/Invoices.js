@@ -57,13 +57,13 @@ router.get("/:id", auth,
         try {
             const rentInvoice = await RentInvoice.findById(req.params.id);
 
-            if (!customer) {
+            if (!rentInvoice) {
                 return res
                     .status(404)
                     .json({ msg: "No Invoice found" });
             }
 
-            res.json(customer);
+            res.json(rentInvoice);
         } catch (err) {
             console.error(err.message);
             // Check if id is not valid
