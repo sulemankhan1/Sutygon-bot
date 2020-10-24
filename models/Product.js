@@ -14,6 +14,10 @@ const ProductSchema = new mongoose.Schema({
   tags:{
     type:String
   },
+  disabled: {
+    type:String,
+    default:false
+  },
   color: [
     {
       colorname: {
