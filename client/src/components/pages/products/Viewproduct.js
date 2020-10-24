@@ -298,7 +298,6 @@ class ViewProduct extends Component {
     } else {
       status = "true";
     }
-    // this.setState({formated_products: null});
     await this.props.changeStatus(status, product_id);
     await this.props.getAllProducts();
     const { products } = this.props;

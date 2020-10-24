@@ -40,13 +40,18 @@ import {
           loading: false,
         };
   
-      case PRODUCT_UPDATED:
       case PRODUCT_SAVED:
         return {
           ...state,
           saved: true,
           loading: false,
         };
+        case PRODUCT_UPDATED:
+          return {
+            ...state,
+            saved: true,
+            loading: false,
+          };
       case PRODUCTS_ERROR:
         return {
           ...state,
