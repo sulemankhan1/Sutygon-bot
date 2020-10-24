@@ -9,7 +9,7 @@
     "server": "nodemon server",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-  "author": "",
+  "author": "Alphinex solutions www.alphinex.com",
   "license": "ISC",
   "dependencies": {
     "@opuscapita/react-alerts": "^3.1.0",

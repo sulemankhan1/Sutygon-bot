@@ -26,7 +26,7 @@ class ViewCustomer extends Component {
       if (customers.length === 0) {
         return (
           <tr>
-            <td colSpan={6} className="text-center">
+            <td colSpan={10} className="text-center">
               Không tìm thấy khách hàng với thông tin này.
             </td>
           </tr>
