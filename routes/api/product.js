@@ -85,7 +85,6 @@ router.post(
         }
     }
 );
-
 // @route  POST api/products/barcode_update/:id
 // @desc   Update a Product for Barcode
 // @access Private
@@ -112,7 +111,6 @@ router.post(
     }
 );
 
-
 // @route  POST api/products/changeStatus/:id
 // @desc   changeStatus
 // @access Private
@@ -121,7 +119,7 @@ router.post(
     auth,
     async (req, res) => {
         try {
-            await Product.updateOne({ _id: req.params.id }, {
+await Product.updateOne({ _id: req.params.id }, {
                 $set: {
                     disabled: req.params.status,
                 }
@@ -145,7 +143,7 @@ router.post(
     async (req, res) => {
         try {
             const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
-           const product = await Product.updateOne({ _id: req.params.id }, {
+const product = await Product.updateOne({ _id: req.params.id }, {
                 $set: {     
                     color: body.color,
                 }

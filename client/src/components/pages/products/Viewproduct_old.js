@@ -3,10 +3,10 @@ import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import {
   getAllProducts,
+  updateProduct,
   deleteProduct,
   getProductById,
   findProducts,
-  changeStatus
 } from "../../../actions/product";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -127,8 +127,7 @@ class ViewProduct extends Component {
     const { formated_products } = this.state;
 
     formated_products[product_i].color[color_i].is_open = !formated_products[product_i].color[color_i].is_open;
-    this.setState({ formated_products });
-    this.getTAble();
+    this.setState({ formated_products });;
   };
 
   toggleSize = (e, product_i, color_i, size_i) => {
@@ -141,7 +140,6 @@ class ViewProduct extends Component {
     this.setState({ formated_products });;
   };
   getTAble = () => {
-    console.log('getTAble');
     const { formated_products } = this.state;
 
     if (formated_products) {
@@ -156,7 +154,7 @@ class ViewProduct extends Component {
             </tr>
           );
         }
-        
+console.log(formated_products)
         return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">
@@ -169,7 +167,7 @@ class ViewProduct extends Component {
                   />
                 </div>
                 <div className="tb_t_right">
-                  <span className={"badge badge-"+((product.disabled == "true") ? "secondary":"info")+ " float-right"}>{(product.disabled == "false") ? "active":"disabled"}</span>
+                <span className="badge badge-info float-right">active</span>
                   <h2>
                     <strong>Product ID # </strong> {product.productId}
                   </h2>
@@ -267,9 +265,9 @@ class ViewProduct extends Component {
                     {" "}
                   <i className="fa fa-pencil"></i> Edit{" "}
                 </Link>
-                <button type="button" onClick={(e) => this.toggleStatus(product.disabled, product._id)} className="btn btn-primary pull-right mbtn">
+                <button type="button" onClick={(e) => this.toggleProduct(!product.disabled, product._id)} className="btn btn-primary pull-right mbtn">
                   {" "}
-                  <i className={"ft-" + ((product.disabled == "true") ? "play":"pause")}></i> {(product.disabled == "true") ? "Reactivate":"Disable"}
+                  <i className="fa fa-trash"></i> Disable{" "}
                 </button>
               </div>
 
@@ -289,19 +287,25 @@ class ViewProduct extends Component {
     }
   }
 
-  async toggleStatus(status, product_id) {
-    if(status == "true") {
-      status = "false";
-    } else {
-      status = "true";
-    }
-    // this.setState({formated_products: null});
-    await this.props.changeStatus(status, product_id);
-    await this.props.getAllProducts();
-    const { products } = this.props;
-    if (products) {
-      this.calculateTotals(products);
-    }
+  // async onDelete(product) {
+  //   const { barcode, barcodeIndex, color_id, size_id, product_id } = product;
+  //   let color = this.disableBarCode(
+  //     barcode,
+  //     product_id,
+  //     color_id,
+  //     size_id,
+  //     barcodeIndex
+  //   );
+  //   await this.props.updateProduct(color, product_id);
+  // }
+
+  async toggleProduct(status, product_id) {
+    // get product by id
+    await this.props.getProductById(product_id);
+    const { product } = this.props;
+    product.disabled = status;
+    console.log(product);
+    await this.props.updateProduct(product, product_id);
   };
 
   render() {
@@ -367,28 +371,12 @@ class ViewProduct extends Component {
                 </section>
               </div>
             </div>
-<footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-                        </footer>
           </div>
 
           <footer className="footer footer-static footer-light">
-            <p className="clearfix text-muted text-sm-center px-2">
-              <span>
-                Powered by &nbsp;{" "}
-                <a
-                  href="https://www.alphinex.com"
-                  id="pixinventLink"
-                  target="_blank"
-                  className="text-bold-800 primary darken-2"
-                >
-                  Alphinex Solutions{" "}
-                </a>
-                , All rights reserved.{" "}
-              </span>
-            </p>
-          </footer>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+                        </footer>
         </div>
       </React.Fragment>
     );
@@ -401,7 +389,7 @@ ViewProduct.propTypes = {
   getProductById: PropTypes.func.isRequired,
   deleteProduct: PropTypes.func.isRequired,
   findProducts: PropTypes.func.isRequired,
-  changeStatus: PropTypes.func.isRequired,
+  updateProduct: PropTypes.func.isRequired,
   products: PropTypes.array,
   product: PropTypes.array,
 };
@@ -414,7 +402,7 @@ const mapStateToProps = (state) => ({
 });
 export default connect(mapStateToProps, {
   getAllProducts,
-  changeStatus,
+  updateProduct,
   deleteProduct,
   getProductById,
   findProducts,
