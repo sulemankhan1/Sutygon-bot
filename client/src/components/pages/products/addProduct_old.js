@@ -1,421 +1,627 @@
 import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
-import {
-  getAllProducts,
-  deleteProduct,
-  getProductById,
-  findProducts,
-  changeStatus
-} from "../../../actions/product";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
-import { Link } from "react-router-dom";
+import { addNewProduct, getProductById, updateProduct } from "../../../actions/product";
+import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
+
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Alert from "../../layout/Alert";
-import Loader from "../../layout/Loader";
-import loadjs from "loadjs";
-import { changePage } from "../../../actions/pages";
+import shortid from "shortid";
+import { OCAlertsProvider } from '@opuscapita/react-alerts';
+import { OCAlert } from '@opuscapita/react-alerts';
+import "../../../custom.css"
 
-class ViewProduct extends Component {
+// import c from "config";
+
+
+class AddProduct extends Component {
   state = {
-    filter: "",
+    productId: "",
+    id: "",
+    image: "",
+    name: "",
+    tags: "",
+    color: [
+      {
+        _id: shortid.generate(),
+        colorname: "",
+        sizes: [],
+      }
+    ],
+    saving: false,
+    imgUpd: false,
+    isEdit: false,
+    src: "",
+    sizeQty:""
   };
 
   async componentDidMount() {
-    await this.props.getAllProducts();
-    const { products } = this.props;
-    if (products) {
-      this.calculateTotals(products);
+    // check form is to Add or Edit
+    if (this.props.match.params.id) {
+
+      const id = this.props.match.params.id;
+      let res = await this.props.getProductById(id);
+      const { product } = this.props;
+      const { data } = this.props.location
+      const test1 = this.calculateTotals(this.props.product);
+      if (product) {
+        this.setState({
+          id: id,
+          isEdit: true,
+          name: product.name,
+          tags: product.tags,
+          image: product.image,
+          color: product.color,
+          image: product.image,
+          totalFromProps: test1.total,
+        });
+      }
+
+    }
+  }
+  addSizeRow = (color_id) => {
+    let { color } = this.state; // get all colors
+    let color_obj = color.filter((color) => color._id == color_id); // get current color obj
+
+    // get index of color i all colors object
+    const index = color.findIndex(
+      (color_obj) => color_obj.id == color_id
+    );
+
+    color_obj[0].sizes.push({
+      id: shortid.generate(),
+      size: "",
+      price: "",
+      qty: "",
+    })
+
+    color[index] = color_obj[0];
+
+    this.setState({ color: color });
+
+  }
+
+
+  addEditSizeRow = (color_id) => {
+    let { color } = this.state; // get all colors
+    let color_obj = color.filter((color) => (color._id || color._id) == color_id); // get current color obj
+    // get index of color i all colors object
+    const index = color.findIndex(
+      (color_obj) => color_obj._id == color_id
+    );
+
+    color_obj[0].sizes.push({
+      id: shortid.generate(),
+      size: "",
+      price: "",
+      qty: "",
+    })
+
+    color[index] = color_obj[0];
+
+    this.setState({ color: color });
+  }
+
+  addColorBox = (id) => {
+
+    let { color } = this.state; // get all colors
+    color.push({
+      _id: shortid.generate(),
+      colorname: "",
+      sizes: []
+    })
+    this.setState({ color, isEdit: true });
+  }
+
+
+  addSizeRow = (color_id) => {
+    let { color } = this.state; // get all colors
+    let color_obj = color.filter((color) => color._id == color_id); // get current color obj
+
+    // get index of color i all colors object
+    const index = color.findIndex(
+      (color_obj) => color_obj.id == color_id
+    );
+
+    color_obj[0].sizes.push({
+      id: shortid.generate(),
+      size: "",
+      price: "",
+      qty: "",
+    })
+
+    color[index] = color_obj[0];
+
+    this.setState({ color: color });
+
+
+  }
+
+  removeSizeRow = (color_id, size_id) => {
+    let { color } = this.state;
+    let color_obj = color.filter((color) => color._id == color_id); // get current color obj
+    if (size_id != '') {
+      let { sizes } = color_obj[0];
+      const sizeIndex = sizes.findIndex(
+        (size) => size.id == size_id
+      );
+      sizes.splice(sizeIndex, 1)
+
+      this.setState({
+        ...sizes
+      })
     }
   }
 
-  handleChange = (e, id = "") => {
+  removeColorBox = (color_id) => {
+    let { color } = this.state;
+    color = color.filter((color) => color._id !== color_id); // get current color obj
+    this.setState({ color });
+  }
+
+  getColors = () => {
+    let { color } = this.state;
+
+    return color.map((color) => (
+      <div className="row color-row" key={color._id || color._id}>
+        <div className="left" style={{ 'width': '95%', 'paddingLeft': '25px', 'paddingRight': '10px' }}>
+
+          <div className="form-group">
+
+            <input
+              type="text"
+              className="form-control mm-input "
+              placeholder="Color"
+              value={color.colorname}
+              name="colorname"
+              required
+              onChange={(e) => this.handleChange(e, color._id)} />
+          </div>
+
+        </div>
+        <div className="right text-center" style={{ 'paddingRight': '0px' }}>
+          <button
+            type="button"
+            onClick={() => this.removeColorBox(color._id)}
+            className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
+            <i className="fa fa-minus"></i>
+          </button>
+
+
+
+        </div>
+        <div className="col-md-12">
+          {this.getSizeboxes(color._id)}
+        </div>
+        <div className="row">
+          <div className="col-md-12 btn-cont">
+            <div className="form-group mb-0">
+
+              <button
+                type="button"
+                onClick={() => this.addSizeRow(color._id)}
+                className="btn "><i className="fa fa-plus"></i> Add another
+              Size</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))
+
+  }
+
+  handleChange = (e, color_id = "", size_id = "") => {
+    let name = e.target.name;
+    let value = e.target.value;
+    if(name = "qty"){
+      this.QtyCheck(e,color_id,size_id)
+    }
+    // get all colors
+    let { color } = this.state;
+    // get current color obj
+    let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
+    // get index of color obj in all colors
+    const colorIndex = color.findIndex(
+      (color) => color._id == color_id
+    );
+    if (size_id != '') {
+      // get all sizes
+      let { sizes } = color_obj;
+
+      // find current size obj in current color obj
+      let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
+
+      // get index of size obj in all sizes 
+      const sizeIndex = sizes.findIndex(
+        (size) => size.id == size_id
+      );
+
+      // update value inside size object
+      size_obj[name] = value;
+      // update sizes arr
+      sizes[sizeIndex] = size_obj;
+      // update curernt color obj
+      color[colorIndex].sizes = sizes;
+    } else {
+      color[colorIndex][name] = value;
+    }
+
+    // update state
+    this.setState({ color });
+  };
+
+  getSizeboxes = (color_id) => {
+    let { color } = this.state; // get all colors
+    if (color_id) {
+      let color_obj = color.filter((color) => color._id == color_id); // get current color obj
+      return color_obj[0].sizes.map((size) => (
+        <div className="sizes_box" key={size.id}>
+          <div className="row">
+            <div className="left" style={{ 'width': '95%', 'paddingLeft': '40px', 'paddingRight': '10px' }}>
+              <input
+                type="text"
+                name="size"
+                className="form-control mm-input s-input"
+                placeholder="Size"
+                onChange={(e) => this.handleChange(e, color_id, size.id)}
+                value={size.size}
+                required
+              />
+
+              <input
+                type="text"
+                name="qty"
+                className="form-control mm-input s-input"
+                placeholder="Quantity"
+                // onInput={(e) => this.QtyCheck(e, color_id, size.id)}
+                onChange={(e) =>this.handleChange(e, color_id, size.id)}
+                value={size.qty}
+                required
+              />
+              <input
+                type="text"
+                name="price"
+                className="form-control mm-input s-input"
+                placeholder="Price"
+                onChange={(e) => this.handleChange(e, color_id, size.id)}
+                value={size.price}
+                required
+              />
+            </div>
+            <div className="right">
+
+              <button
+                type="button"
+                onClick={() => this.removeSizeRow(color_id, size.id)}
+                className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
+                <i className="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      ))
+
+    }
+  }
+
+  QtyCheck = (e, color_id, size_id) => {
+    e.preventDefault();
+    let sizeQty;
+    const value = e.target.value;
+    const { product } = this.props;
+    let { color } = product;
+    let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
+    let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
+    console.log(size_obj)
+    
+      if (size_obj.qty > value) {
+        OCAlert.alertError(`Quantity must be greater than ${size_obj.qty}`)
+
+    }
+  }
+
+
+
+  _onChange = (e, id = "") => {
+    this.setState({
+      [e.target.name]: e.target.files[0],
+      imgUpd: true,
+      src: URL.createObjectURL(e.target.files[0])
+    });
+  }
+
+
+
+  handleChangeName = (e) => {
     this.setState({ [e.target.name]: e.target.value });
+
   };
 
-  // return sorted products for barcodes
-  getSortedData = (products) => {
-    // looping through prducts
-    let rows = [];
-    products.forEach((product, p_index) => {
-      let product_name = product.name;
-      let product_id = product._id;
-      let product_image = product.image;
 
-      // looping through each color of current product
-      if (product.color) {
-        product.color.forEach((color, c_index) => {
-          let color_name = color.colorname;
-          let color_id = color._id;
-
-          // looping through sizes of current color
-          if (color.sizes) {
-            color.sizes.forEach((size, s_index) => {
-              let size_name = size.size;
-              let size_id = size.id;
-              let price = size.price;
-              let totalQty = size.qty;
-              let length;
-
-              // show sizes with barcode
-              if (size.barcodes) {
-                // if barcodes availble then length should be qty - barcodes length
-                length = size.barcodes.length;
-              } else {
-                length = 0;
-              }
-              let i;
-              for (i = 0; i < length; i++) {
-                let row = {
-                  product_id: product_id,
-                  product_image: product_image,
-                  prduct_totalQty: totalQty,
-                  color_id: color_id,
-                  size_id: size_id,
-                  barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
-                  title: product_name + " | " + color_name + " | " + size_name,
-                  barcode: size.barcodes ? size.barcodes[i].barcode : "",
-                  price: price,
-                };
-                rows.push(row);
-              }
-            });
-          }
-        });
-      }
-    }); // products foreach ends here
-    return rows;
-  };
-
-  calculateTotals = (products) => {
-    // looping through prducts
-    let rows = [];
-    products.forEach((product, p_index) => {
+  calculateTotals = (product) => {
+    if (product) {
       // looping through each color of current product
       if (product.color) {
         let product_total = 0;
         product.color.forEach((color, c_index) => {
+
           let color_size_total = 0;
           // looping through sizes of current color
           if (color.sizes) {
             color.sizes.forEach((size, s_index) => {
               color_size_total += parseInt(size.qty);
-              size.is_open = false;
             });
             color.total = color_size_total;
-            color.is_open = false;
           }
 
           product_total += parseInt(color.total);
         });
         product.total = product_total;
       }
-      // break tags by comma
-      if (product.tags && typeof product.tags == "string") {
-        let tags_arr = product.tags.split(",");
-        product.tags = tags_arr;
-      }
-      rows.push(product);
-    }); // products foreach ends here
-    this.setState({ formated_products: rows });
-  };
 
-  toggleColor = (e, product_i, color_i) => {
-    const { formated_products } = this.state;
-
-    formated_products[product_i].color[color_i].is_open = !formated_products[product_i].color[color_i].is_open;
-    this.setState({ formated_products });
-    this.getTAble();
-  };
-
-  toggleSize = (e, product_i, color_i, size_i) => {
-    const { formated_products } = this.state;
-
-    formated_products[product_i].color[color_i].sizes[
-      size_i
-    ].is_open = !formated_products[product_i].color[color_i].sizes[size_i]
-      .is_open;
-    this.setState({ formated_products });;
-  };
-  getTAble = () => {
-    console.log('getTAble');
-    const { formated_products } = this.state;
-
-    if (formated_products) {
-      let tbl_sno = 1;
-      if (formated_products) {
-        if (formated_products.length === 0) {
-          return (
-            <tr>
-              <td colSpan={10} className="text-center">
-                No product Found
-              </td>
-            </tr>
-          );
-        }
-        
-        return formated_products.map((product, i) => (
-          <div className="tb_container" key={i}>
-            <div className="tb_row">
-              <div className="tb_top">
-                <div className="tb_t_left">
-                  <img
-                    className="media-object round-media"
-                    src={`${product.image}`}
-                    alt="Generic placeholder image"
-                  />
-                </div>
-                <div className="tb_t_right">
-                  <span className={"badge badge-"+((product.disabled == "true") ? "secondary":"info")+ " float-right"}>{(product.disabled == "false") ? "active":"disabled"}</span>
-                  <h2>
-                    <strong>Product ID # </strong> {product.productId}
-                  </h2>
-                  <h2>
-                    <strong>Total Items : </strong> {product.total}
-                  </h2>
-                </div>
-              </div>
-              <div className="clearfix"></div>
-
-              <div className="tb_center">
-                {product.color &&
-                  product.color.map((color, color_i) => (
-                    <div className={`tb_color_box`} key={color_i}>
-                      <button
-                        type="button"
-                        name="button"
-                        className="tb_arrow-btn color_btn"
-                        onClick={(e) =>
-                          this.toggleColor(e, i, color_i)
-                        }
-                      >
-                        <i 
-                        className={color.is_open ? "ft-arrow-down" : "ft-arrow-right"}
-                        ></i>
-                      </button>{" "}
-                      <p>
-                        {color.colorname} : {color.total}
-                      </p>
-                      <div
-                        className={`tb_color_box_content ${
-                          color.is_open ? "show_it" : "hide_it"
-                        }`}
-                      >
-                        {color.sizes &&
-                          color.sizes.map((size, size_i) => (
-                            <div className="tb_size_box" key={size_i}>
-                              <button
-                                type="button"
-                                name="button"
-                                className="tb_arrow-btn size_btn"
-                                onClick={(e) =>
-                                  this.toggleSize(e, i, color_i, size_i)
-                                }
-                              >
-                                <i 
-                                className={size.is_open ? "ft-arrow-down" : "ft-arrow-right"}
-                                ></i>
-                              </button>{" "}
-                              <p>
-                                {size.size} : {size.qty}{" "}
-                              </p>
-                              <div
-                                className={`tb_size_box_content ${
-                                  size.is_open ? "show_it" : "hide_it"
-                                }`}
-                              >
-                                <div className="tb_barcodes_box">
-                                  <ul>
-                                    {size.barcodes &&
-                                      size.barcodes.map(
-                                        (barcode, barcode_i) => (
-                                          <li key={barcode_i}>
-                                            BARCODE ID # {barcode.barcode}
-                                          </li>
-                                        )
-                                      )}
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-
-              <div className="tb_bottom">
-                <p>
-                  Tags:
-                  {product.tags &&
-                    product.tags.map((tag, tag_i) => (
-                      <span className="ttag" key={tag_i}>
-                        {tag}
-                      </span>
-                    ))}
-                </p>
-
-                <Link 
-                to={{
-                  pathname: `/product/editproduct/${product._id}`,
-                  data: product
-                }}
-                 className="btn btn-primary pull-right mbtn">
-                    {" "}
-                  <i className="fa fa-pencil"></i> Edit{" "}
-                </Link>
-                <button type="button" onClick={(e) => this.toggleStatus(product.disabled, product._id)} className="btn btn-primary pull-right mbtn">
-                  {" "}
-                  <i className={"ft-" + ((product.disabled == "true") ? "play":"pause")}></i> {(product.disabled == "true") ? "Reactivate":"Disable"}
-                </button>
-              </div>
-
-              <div className="clearfix"></div>
-            </div>
-          </div>
-        ));
-      }
+      return product;
     }
+    return false;
+
   };
-  async searchTable() {
-    const searchVal = this.state.search;
-    if (searchVal) {
-      await this.props.findProducts(searchVal);
+
+
+  onSubmit = async (e) => {
+    e.preventDefault();
+    var productId = Math.floor(Math.random() * 899999 + 100000);
+    this.setState({ saving: true });
+    const state = { ...this.state };
+
+    const totalFromState = this.calculateTotals(state);
+    if (state.totalFromProps > state.total) {
+OCAlert.alertError(`${"Quantity cannot be less than"} ${state.totalFromProps}`)
+      this.setState({ saving: false });
+      return;
+    }
+
+    let m_color = [];
+    state.color.forEach((color, color_i) => {
+      m_color.push({
+        "colorname": color.colorname,
+        "sizes": color.sizes,
+        "total": color.total,
+      });
+    })
+
+    const formData = new FormData();
+    formData.append('name', state.name)
+    formData.append('productId', productId)
+    if (state.image != "") {
+      formData.append('image', state.image)
+    }
+    else {
+      OCAlert.alertError("Please Upload Product Image")
+      this.setState({ saving: false });
+      return;
+    }
+    formData.append('tags', state.tags)
+    formData.append('color', JSON.stringify(m_color))
+
+    if (state.id === "") {
+      await this.props.addNewProduct(formData);
+
     } else {
-      await this.props.getAllProducts();
+      // await this.props.updateProduct(this.state.color, state.id);
+      await this.props.updateProduct(formData, state.id);
     }
   }
-
-  async toggleStatus(status, product_id) {
-    if(status == "true") {
-      status = "false";
-    } else {
-      status = "true";
-    }
-    // this.setState({formated_products: null});
-    await this.props.changeStatus(status, product_id);
-    await this.props.getAllProducts();
-    const { products } = this.props;
-    if (products) {
-      this.calculateTotals(products);
-    }
-  };
 
   render() {
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
     }
-    const { products } = this.props;
-    const { filter } = this.state;
+    if (this.props.saved) {
+      return <Redirect to="/product" />;
+    }
+
 
     return (
       <React.Fragment>
         <Loader />
         <div className="wrapper menu-collapsed">
-          <Header />
-          <Sidebar location={this.props.location} />
+          <Sidebar location={this.props.location} >
+          </Sidebar>
+          <Header>
+          </Header>
+
           <div className="main-panel">
             <div className="main-content">
               <div className="content-wrapper">
-                <section id="extended">
-                  <div className="row">
-                    <div className="col-sm-12">
-                      <div className="card">
-                        <div className="card-header">
-                          <h4 className="card-title">All Products</h4>
-                        </div>
-                        <div className="card-content">
-                          <div className="card-body table-responsive">
-                            <div className="row">
-                              <div className="col-md-4">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="search"
-                                  onChange={(e) => this.handleChange(e)}
-                                />
-                              </div>
-                              <div className="col-md-4">
-                                <a
-                                  className="btn btn-success"
-                                  onClick={() => this.searchTable()}
-                                >
-                                  <i className="fa fa-search"></i> Search{" "}
-                                </a>
-                              </div>
-                              <div className="col-md-4">
-                                <Link
-                                  to="/product/addproduct"
-                                  className="btn btn-primary pull-right"
-                                >
-                                  {" "}
-                                  <i className="fa fa-plus"></i> New Product
-                                </Link>
+                <section id="form-action-layouts">
+                  <div className="form-body">
+                    <div className="card">
+                      <div className="card-header">
+                        <h4 className="form-section">
+                          {/* <i className="icon-social-dropbox"></i> */}
+                          {this.state.id === ""
+                            ? "Add New Product"
+                            : "Update Product"}</h4>
+                      </div>
+
+                      <div className="card-body">
+
+                        <form
+                          encType="multipart/form-data"
+                          action="/upload"
+                          method="POST"
+                          onSubmit={(e) => this.onSubmit(e)}>
+
+                          <Alert />
+                          <div className="form-group">
+
+                            <input
+                              name="image"
+                              type="file"
+                              className="form-control-file file btn btn-raised gradient-purple-bliss white input-div shadow-z-1-hover"
+                              id="projectinput8"
+                              accept='image/*,.pdf,.jpg'
+                              onChange={(e) => this._onChange(e)} />
+                            {this.state.isEdit === true && this.state.imgUpd === false ?
+                              <img
+                                className="media-object round-media"
+                                src={`${this.state.image}`}
+                                alt="Product image"
+                                height={100}
+                              />
+                              : ""}
+                            {this.state.imgUpd === true ?
+                              <img
+                                className="media-object round-media"
+                                src={`${this.state.src}`}
+                                alt="Product image"
+                                height={100}
+                              />
+                              : ""}
+
+
+                          </div>
+
+                          <div className="form-group">
+                            <input
+                              type="text"
+                              id="projectinput1"
+                              className="form-control mm-input"
+                              placeholder="Product Name"
+                              value={this.state.name}
+                              name="name"
+                              required
+                              onChange={(e) => this.handleChangeName(e)} />
+
+                          </div>
+                          <div className="form-group">
+                            <input
+                              type="text"
+                              id="projectinput1"
+                              className="form-control mm-input"
+                              placeholder="Tags"
+                              value={this.state.tags}
+                              name="tags"
+                              required
+                              onChange={(e) => this.handleChangeName(e)} />
+
+                          </div>
+
+                          <div className="row">
+                            <div className="col-md-12">
+                              <h3>Colors</h3>
+                            </div>
+                          </div>
+                          <div id="colors_box">
+                            {this.getColors()}
+                            {/* {this.state.isEdit !== true ? this.getColors() : this.getEditColors()} */}
+                          </div>
+
+
+                          <br />
+                          <br />
+
+                          <div className="row">
+                            <div className="col-md-12 btn-cont">
+                              <div className="form-group mb-0">
+                                <button
+                                  type="button"
+                                  onClick={() => this.addColorBox(this.state.id)}
+                                  className="btn"><i className="fa fa-plus"></i> Add another
+                                       Color</button>
                               </div>
                             </div>
-                            <Alert />
-                            {this.getTAble()}
                           </div>
-                        </div>
+                          <OCAlertsProvider />
+                          <div className="form-actions top">
+                            {this.state.id === ""
+                              ? <>
+
+                                {this.state.saving ? (
+                                  <button
+                                    type="button"
+                                    className="mb-2 mr-2 btn btn-raised btn-primary"
+                                  >
+                                    <div
+                                      className="spinner-grow spinner-grow-sm "
+                                      role="status"
+                                    ></div>
+                                &nbsp; Adding
+                                  </button>
+                                ) : (
+                                    <button
+                                      type="submit"
+                                      className="mb-2 mr-2 btn btn-raised btn-primary"
+                                    >
+                                      <i className="ft-check" /> Add Product
+                                    </button>
+                                  )}
+                              </>
+                              : <>
+
+                                {this.state.saving ? (
+                                  <button
+                                    type="button"
+                                    className="mb-2 mr-2 btn btn-raised btn-primary"
+                                  >
+                                    <div
+                                      className="spinner-grow spinner-grow-sm "
+                                      role="status"
+                                    ></div>
+                                &nbsp; Updating
+                                  </button>
+                                ) : (
+                                    <button
+                                      type="submit"
+                                      className="mb-2 mr-2 btn btn-raised btn-primary"
+                                    >
+                                      <i className="ft-check" /> Update Product
+                                    </button>
+                                  )}
+                              </>}
+                          </div>
+
+                        </form>
                       </div>
                     </div>
                   </div>
                 </section>
+
               </div>
             </div>
-<footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-                        </footer>
+
+            <footer className="footer footer-static footer-light">
+              <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
+                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+            </footer>
+
           </div>
 
-          <footer className="footer footer-static footer-light">
-            <p className="clearfix text-muted text-sm-center px-2">
-              <span>
-                Powered by &nbsp;{" "}
-                <a
-                  href="https://www.alphinex.com"
-                  id="pixinventLink"
-                  target="_blank"
-                  className="text-bold-800 primary darken-2"
-                >
-                  Alphinex Solutions{" "}
-                </a>
-                , All rights reserved.{" "}
-              </span>
-            </p>
-          </footer>
         </div>
+
       </React.Fragment>
+
     );
   }
 }
 
-ViewProduct.propTypes = {
-  auth: PropTypes.object,
-  getAllProducts: PropTypes.func.isRequired,
+
+AddProduct.propTypes = {
+  saved: PropTypes.bool,
+  addNewProduct: PropTypes.func.isRequired,
   getProductById: PropTypes.func.isRequired,
-  deleteProduct: PropTypes.func.isRequired,
-  findProducts: PropTypes.func.isRequired,
-  changeStatus: PropTypes.func.isRequired,
-  products: PropTypes.array,
-  product: PropTypes.array,
+  auth: PropTypes.object,
+  updateProduct: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  products: state.product.products,
   product: state.product.product,
-
+  saved: state.product.saved,
   auth: state.auth,
+
 });
 export default connect(mapStateToProps, {
-  getAllProducts,
-  changeStatus,
-  deleteProduct,
-  getProductById,
-  findProducts,
-})(ViewProduct);
+  addNewProduct, getProductById, updateProduct
+})(AddProduct);

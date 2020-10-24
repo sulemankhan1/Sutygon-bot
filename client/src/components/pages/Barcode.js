@@ -51,7 +51,7 @@ class Barcode extends Component {
 
               let length;
               if(this.state.dataType == "without_barcode") { // show sizes without barcodes
-                // if we have some barcodes then skip that
+                // if we have some barcodes then skip that 
                 // number of rows for the current size
                 if(size.barcodes) {
                   // if barcodes availble then length should be qty - barcodes length
@@ -93,7 +93,7 @@ class Barcode extends Component {
   };
 
   getTAbleRows = () => {
-
+    
     let products = this.props.products;
     if(products) {
       let sortedProducts = this.getSortedData(products);
@@ -188,7 +188,7 @@ class Barcode extends Component {
       });
     }
     }
-
+    
   };
 
   // runs when existing barcode is scanned
@@ -222,6 +222,7 @@ class Barcode extends Component {
         {
           label: "Yes",
           onClick: () => {
+            console.log(1);
             this.deleteItem(e, product_id, color_id, size_id, barcodeIndex);
           },
         },
@@ -238,7 +239,10 @@ class Barcode extends Component {
     // get product by id
     await this.props.getProductById(product_id);
     const { product } = this.props;
+    // console.log(product);
+    // return;
 
+    let total_qty = 0;
     if(product && product.color) {
       // loop through product colors
       product.color.forEach((color, c_index) => {
@@ -247,21 +251,24 @@ class Barcode extends Component {
           // get right size obj
           if(color.sizes) {
             color.sizes.forEach((size, s_index) => {
-
+              total_qty += parseInt(size.qty);
               if(size.id == size_id) {
 
                 // decrease size qty
-                size.qty = parseInt(size.qty) - 1;
+                // size.qty = parseInt(size.qty) - 1; 
 
                 // if barcode is availble remove it too
                 if(typeof barcodeIndex !== "undefined") {
-                  size.barcodes.splice(barcodeIndex, 1);
+                  // size.barcodes.splice(barcodeIndex, 1);
                 }
               }
             })
           }
         }
       })
+
+      console.log('overall product qty', total_qty);
+      return;
 
       // update product for barcode only
       await this.props.deleteItem(product, product_id);
@@ -305,7 +312,7 @@ class Barcode extends Component {
 
   // saves the barcode in specific item > color > size object
   saveBarCode = async (barcode, product_id, color_id, size_id, mode='add', barcodeIndex='') => {
-
+    
     // get product by id
     await this.props.getProductById(product_id);
     const { product } = this.props;
@@ -321,7 +328,7 @@ class Barcode extends Component {
               if(size.id == size_id) {
                 // check if current size obj contain barcodes or not
                 if(size.barcodes) {
-
+                  
                   if(mode == 'add') {
                     size.barcodes.push({barcode});  // Add barcode
                   } else {
@@ -355,7 +362,7 @@ class Barcode extends Component {
     //   return <Redirect to="/barcode" />;
     // }
 
-
+    
     return (
       <React.Fragment>
         <Loader />
@@ -416,7 +423,7 @@ class Barcode extends Component {
                               <th>Product ID</th>
                               <th>Product</th>
                               {(this.state.dataType == "with_barcode") && (
-                                <th>Barcode</th>
+                                <th>Barcode</th>  
                               )}
                               <th>Change Barcode</th>
                               <th>Scan Barcode</th>
@@ -436,9 +443,21 @@ class Barcode extends Component {
             </div>
 
             <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-                        </footer>
+              <p className="clearfix text-muted text-sm-center px-2">
+                <span>
+                  Powered by &nbsp;{" "}
+                  <a
+                    href="https://www.alphinex.com"
+                    id="pixinventLink"
+                    target="_blank"
+                    className="text-bold-800 primary darken-2"
+                  >
+                    Alphinex Solutions{" "}
+                  </a>
+                  , All rights reserved.{" "}
+                </span>
+              </p>
+            </footer>
           </div>
         </div>
         {/* Alerts */}
