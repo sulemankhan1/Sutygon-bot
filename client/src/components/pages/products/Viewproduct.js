@@ -3,10 +3,10 @@ import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import {
   getAllProducts,
-  updateProduct,
   deleteProduct,
   getProductById,
   findProducts,
+  changeStatus
 } from "../../../actions/product";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -101,9 +101,10 @@ class ViewProduct extends Component {
           let color_size_total = 0;
           // looping through sizes of current color
           if (color.sizes) {
+         
             color.sizes.forEach((size, s_index) => {
-              color_size_total += parseInt(size.qty);
-              size.is_open = false;
+               color_size_total += parseInt(size.qty);
+             size.is_open = false;
             });
             color.total = color_size_total;
             color.is_open = false;
@@ -127,7 +128,8 @@ class ViewProduct extends Component {
     const { formated_products } = this.state;
 
     formated_products[product_i].color[color_i].is_open = !formated_products[product_i].color[color_i].is_open;
-    this.setState({ formated_products });;
+    this.setState({ formated_products });
+    this.getTAble();
   };
 
   toggleSize = (e, product_i, color_i, size_i) => {
@@ -154,7 +156,6 @@ class ViewProduct extends Component {
             </tr>
           );
         }
-        console.log(formated_products)
         return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">
@@ -163,11 +164,12 @@ class ViewProduct extends Component {
                   <img
                     className="media-object round-media"
                     src={`${product.image}`}
-                    alt="Generic placeholder image"
+                    alt="Product image"
                   />
                 </div>
                 <div className="tb_t_right">
-                <h2>
+                  <span className={"badge badge-"+((product.disabled == "true") ? "secondary":"info")+ " float-right"}>{(product.disabled == "false") ? "active":"disabled"}</span>
+                  <h2>
                     <strong>Product Name</strong> {product.name}
                   </h2>
                   <h2>
@@ -192,16 +194,17 @@ class ViewProduct extends Component {
                           this.toggleColor(e, i, color_i)
                         }
                       >
-                        <i
-                          className={color.is_open ? "ft-arrow-down" : "ft-arrow-right"}
+                        <i 
+                        className={color.is_open ? "ft-arrow-down" : "ft-arrow-right"}
                         ></i>
                       </button>{" "}
                       <p>
                         {color.colorname} : {color.total}
                       </p>
                       <div
-                        className={`tb_color_box_content ${color.is_open ? "show_it" : "hide_it"
-                          }`}
+                        className={`tb_color_box_content ${
+                          color.is_open ? "show_it" : "hide_it"
+                        }`}
                       >
                         {color.sizes &&
                           color.sizes.map((size, size_i) => (
@@ -214,20 +217,21 @@ class ViewProduct extends Component {
                                   this.toggleSize(e, i, color_i, size_i)
                                 }
                               >
-                                <i
-                                  className={size.is_open ? "ft-arrow-down" : "ft-arrow-right"}
+                                <i 
+                                className={size.is_open ? "ft-arrow-down" : "ft-arrow-right"}
                                 ></i>
                               </button>{" "}
                               <p>
                                 {size.size} : {size.qty}{" "}
                               </p>
                               <div
-                                className={`tb_size_box_content ${size.is_open ? "show_it" : "hide_it"
-                                  }`}
+                                className={`tb_size_box_content ${
+                                  size.is_open ? "show_it" : "hide_it"
+                                }`}
                               >
                                 <div className="tb_barcodes_box">
                                   <ul>
-                                    {size.barcodes &&
+                                    {size.barcodes && 
                                       size.barcodes.map(
                                         (barcode, barcode_i) => (
                                           <li key={barcode_i}>
@@ -256,19 +260,19 @@ class ViewProduct extends Component {
                     ))}
                 </p>
 
-                <Link
-                  to={{
-                    pathname: `/product/editproduct/${product._id}`,
-                    data: product
-                  }}
-                  className="btn btn-primary pull-right mbtn">
-                  {" "}
+                <Link 
+                to={{
+                  pathname: `/product/editproduct/${product._id}`,
+                  data: product
+                }}
+                 className="btn btn-primary pull-right mbtn">
+                    {" "}
                   <i className="fa fa-pencil"></i> Edit{" "}
                 </Link>
-                <a href="#" className="btn btn-primary pull-right mbtn">
+                <button type="button" onClick={(e) => this.toggleStatus(product.disabled, product._id)} className="btn btn-primary pull-right mbtn">
                   {" "}
-                  <i className="fa fa-trash"></i> Disable{" "}
-                </a>
+                  <i className={"ft-" + ((product.disabled == "true") ? "play":"pause")}></i> {(product.disabled == "true") ? "Reactivate":"Disable"}
+                </button>
               </div>
 
               <div className="clearfix"></div>
@@ -287,48 +291,19 @@ class ViewProduct extends Component {
     }
   }
 
-  async onDelete(product) {
-    const { barcode, barcodeIndex, color_id, size_id, product_id } = product;
-    let color = this.disableBarCode(
-      barcode,
-      product_id,
-      color_id,
-      size_id,
-      barcodeIndex
-    );
-    await this.props.updateProduct(color, product_id);
-  }
-
-  disableBarCode = async (
-    barcode,
-    product_id,
-    color_id,
-    size_id,
-    barcodeIndex
-  ) => {
-    // get product by id
-    await this.props.getProductById(product_id);
-    const { product } = this.props;
-    if (product && product.color) {
-      // loop through product colors
-      product.color.forEach((color, c_index) => {
-        // get right color obj
-        if (color._id == color_id) {
-          // get right size obj
-          if (color.sizes) {
-            color.sizes.forEach((size, s_index) => {
-              if (size.id == size_id) {
-                // check if current size obj contain barcodes or not
-                if (size.barcodes) {
-                  size.barcodes[barcodeIndex].isDisable = true; // Disable barcode
-                }
-              }
-            });
-          }
-        }
-        return color;
-        // disable selected barcode only
-      });
+  async toggleStatus(status, product_id) {
+    
+    if(status == "true") {
+      status = "false";
+    } else {
+      status = "true";
+    }
+    // this.setState({formated_products: null});
+    await this.props.changeStatus(status, product_id);
+    await this.props.getAllProducts();
+    const { products } = this.props;
+    if (products) {
+      this.calculateTotals(products);
     }
   };
 
@@ -425,7 +400,7 @@ ViewProduct.propTypes = {
   getProductById: PropTypes.func.isRequired,
   deleteProduct: PropTypes.func.isRequired,
   findProducts: PropTypes.func.isRequired,
-  updateProduct: PropTypes.func.isRequired,
+  changeStatus: PropTypes.func.isRequired,
   products: PropTypes.array,
   product: PropTypes.array,
 };
@@ -438,7 +413,7 @@ const mapStateToProps = (state) => ({
 });
 export default connect(mapStateToProps, {
   getAllProducts,
-  updateProduct,
+  changeStatus,
   deleteProduct,
   getProductById,
   findProducts,

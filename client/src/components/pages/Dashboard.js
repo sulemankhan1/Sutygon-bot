@@ -22,6 +22,9 @@ class Dashboard extends Component {
     await this.props.getShop();
   }
 
+  
+
+
   async changeShopStatus(status) {
     await this.props.changeShopStatus(status);
     await this.props.getShop();

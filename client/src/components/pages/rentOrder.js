@@ -111,7 +111,7 @@ class RentOrder extends Component {
 
     const { order, auth } = this.props;
     if (order) {
-       const invoice = {
+      const invoice = {
         order_id: order[0]._id,
         customer_id: order[0].customer,
         user_id: auth.user._id,
@@ -257,6 +257,7 @@ class RentOrder extends Component {
               name="barcode"
               id="widthBr"
               style={{ width: "60%" }}
+              readOnly
               value={
                 product &&
                 product[0].title &&
@@ -270,6 +271,7 @@ class RentOrder extends Component {
               placeholder="Price"
               id="setSize"
               name="total"
+              readOnly
               value={`${"$"}${product && product[0].price}`}
             />
           </div>
@@ -309,7 +311,9 @@ class RentOrder extends Component {
             placeholder="Barcode"
             name="barcode"
             id="widthBr"
+            readOnly
             style={{ width: "280px", color: 'black' }}
+            readOnly
             value={
               product &&
               product[0].title &&
@@ -322,6 +326,7 @@ class RentOrder extends Component {
             className="form-control mm-input s-input text-center"
             placeholder="Price"
             id="setSize"
+            readOnly
             name="total"
             style={{ color: 'black', width: '80px' }}
             value={`${"$"}${product && product[0].price}`}
@@ -371,6 +376,14 @@ class RentOrder extends Component {
     this.state.total = sum;
     return sum;
   };
+  //   generateOrderBarcode =(orderNumber)=>{
+  //  const orderBarcode = shortid.generate();
+  //     // this.setState({
+  //     //   orderBarcode:orderBarcode
+  //     // })
+  //     return orderBarcode;
+
+  //   }
 
   render() {
     const { auth, order } = this.props;
@@ -400,7 +413,7 @@ class RentOrder extends Component {
                         <h4 className="card-title">Rent a Product</h4>
                       </div>
                       <div className="card-content">
-                        <div className="card-body table-responsive">
+                        <div className="card-body table-responsive background-container">
                           <div id="colors_box">
                             <div className="row color-row">
                               <div className="col-md-12">
@@ -442,6 +455,8 @@ class RentOrder extends Component {
                                               placeholder="Total"
                                               name="total_amt"
                                               id="setSizeFloat"
+                                              required
+                                              readOnly
                                               onChange={(e) =>
                                                 this.onHandleChange(e)
                                               }
@@ -476,6 +491,7 @@ class RentOrder extends Component {
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Tax"
                                               id="setSizeFloat"
+                                              required
                                               value={`${this.state.taxper}`}
                                               onChange={(e) =>
                                                 this.onHandleChange(e)
@@ -506,6 +522,7 @@ class RentOrder extends Component {
                                                   ? `${"$"}${this.calculateTax()}`
                                                   : ""
                                               }
+                                              readOnly
                                             />
                                           </div>{" "}
                                         </div>
@@ -528,6 +545,9 @@ class RentOrder extends Component {
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Insurance"
                                               id="setSizeFloat"
+                                              required
+                                              readOnly
+
                                               value={
                                                 this.state.total_amt
                                                   ? `${"$"}${this.calculateInsuranceAmt()}`
@@ -568,6 +588,7 @@ class RentOrder extends Component {
                                                 type="radio"
                                                 name="leaveID"
                                                 value={false}
+
                                                 onChange={(e) => this.onHandleChange(e)}
                                                 checked={this.state.leaveID === "false"}
                                               />
@@ -613,6 +634,8 @@ class RentOrder extends Component {
                                           data-trigger="hover"
                                           data-placement="top"
                                           data-title="Rent Date"
+                                          required
+
                                           onChange={(e) =>
                                             this.onHandleChange(e)
                                           }
@@ -631,6 +654,8 @@ class RentOrder extends Component {
                                           data-toggle="tooltip"
                                           data-trigger="hover"
                                           data-placement="top"
+                                          required
+
                                           data-title="Return Date"
                                           onChange={(e) =>
                                             this.onHandleChange(e)
@@ -654,6 +679,8 @@ class RentOrder extends Component {
                                               type="text"
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Total"
+                                              required
+                                              readOnly
                                               id="setSizeFloat"
                                               value={
                                                 this.state.total_amt
@@ -696,18 +723,40 @@ class RentOrder extends Component {
                     </div>
                   </div>
 
-                  {/* Invoice Modal */}
-                  <div class="modal fade text-left" id="primary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel8"
+                
+                </section>
+              </div>
+            </div>
+
+           
+
+            <footer className="footer footer-static footer-light">
+              <p className="clearfix text-muted text-sm-center px-2">
+                <span>
+                  Powered by &nbsp;{" "}
+                  <a
+                    href="https://www.alphinex.com"
+                    id="pixinventLink"
+                    target="_blank"
+                    className="text-bold-800 primary darken-2"
+                  >
+                    Alphinex Solutions{" "}
+                  </a>
+                  , All rights reserved.{" "}
+                </span>
+              </p>
+            </footer>
+          </div>
+             {/* Invoice Modal */}
+             <div className="modal fade text-left" id="primary" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel8"
                     aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary white">
-                          <h4 class="modal-title text-center" id="myModalLabel8">Invoice</h4>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
+                    <div className="modal-dialog" role="document">
+                      <div className="modal-content">
+                        <div className="modal-header bg-primary white">
+                          <h4 className="modal-title text-center" id="myModalLabel8">Invoice</h4>
+                          
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
                           <div id="colors_box">
                             <div className="row color-row">
                               <div className="col-md-12">
@@ -782,7 +831,7 @@ class RentOrder extends Component {
                                       <div className="text-center" style={{ 'width': '300%' }}>
                                         <input
                                           type="text"
-
+                                          readOnly
                                           className="form-control mm-input s-input text-center"
                                           placeholder="Total"
                                           style={{ 'color': 'black' }}
@@ -874,14 +923,16 @@ class RentOrder extends Component {
                                   <div className="col-md-12">
 
                                     <table>
-                                      <tr>
-                                        <td className="col-md-6" style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '15px' }}>OrderID <br/>
-                                                    {(order && order.length>0 )? `${order[0]._id}`:""}<br />
-                                          { (order && order.length>0 )?shortid.generate():""}
-                                        </td>
-                                        <td className="col-md-6" style={{ 'textAlign': 'center', 'padding': '15px' }}> Authorized by <br />
+                                      <tbody>
+                                        <tr>
+                                          <td className="col-md-6" style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>OrderID <br />
+                                            {(order && !!order.length) ? `${order[0]._id}` : ""}<br />
+                                            {(order && !!order.length) ? shortid.generate() : ""}
+                                          </td>
+                                          <td className="col-md-6" style={{ 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}> Authorized by <br />
                                                         Sutygon-Bot</td>
-                                      </tr>
+                                        </tr>
+                                      </tbody>
                                     </table>
 
 
@@ -895,18 +946,28 @@ class RentOrder extends Component {
 
                                 </div>
                               </div>
-
+                              <div className="col-md-12">
+                                <div className="row justify-content-center">
+                              <button type="button" 
+                         className="close text-center" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                         id="btnSize2">Finish</span>
+                          </button>
+                          </div>
+                            </div>
                             </div>
 
-                          </div>
-                        </div>
-                        <hr />
 
+                           
+                          </div>
+                        
+                        </div>
+                     
                       </div>
 
                     </div>
                   </div>
-                </section>
+ </section>
               </div>
             </div>
 
@@ -929,7 +990,7 @@ RentOrder.propTypes = {
   addNewRentProduct: PropTypes.func.isRequired,
   getProductById: PropTypes.func.isRequired,
   updateProduct: PropTypes.func.isRequired,
-  getOrderb: PropTypes.func.isRequired,
+  // getOrder: PropTypes.func.isRequired,
   getOrderbyOrderNumber: PropTypes.func.isRequired,
   addNewInvoice: PropTypes.func.isRequired,
   auth: PropTypes.object,
