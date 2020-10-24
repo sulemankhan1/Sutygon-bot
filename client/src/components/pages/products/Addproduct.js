@@ -212,12 +212,20 @@ class AddProduct extends Component {
 
   }
 
-  handleChange = (e, color_id = "", size_id = "") => {
+  handleChange = (e, color_id = "", size_id = "", field="") => {
     let name = e.target.name;
     let value = e.target.value;
     if(name = "qty"){
       this.QtyCheck(e,color_id,size_id)
     }
+
+    // if(field == "qty") {
+    //   alert('qty changed');
+    // } else {
+    //   alert('othe filed');
+    // }
+
+
     // get all colors
     let { color } = this.state;
     // get current color obj
@@ -276,7 +284,7 @@ class AddProduct extends Component {
                 className="form-control mm-input s-input"
                 placeholder="Quantity"
                 // onInput={(e) => this.QtyCheck(e, color_id, size.id)}
-                onChange={(e) =>this.handleChange(e, color_id, size.id)}
+                onChange={(e) =>this.handleChange(e, color_id, size.id, "qty")}
                 value={size.qty}
                 required
               />
@@ -308,18 +316,18 @@ class AddProduct extends Component {
 
   QtyCheck = (e, color_id, size_id) => {
     e.preventDefault();
-    let sizeQty;
-    const value = e.target.value;
-    const { product } = this.props;
-    let { color } = product;
-    let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
-    let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
-    console.log(size_obj)
+    // let sizeQty;
+    // const value = e.target.value;
+    // const { product } = this.props;
+    // let { color } = product;
+    // let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
+    // let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
+    // console.log(size_obj)
     
-      if (size_obj.qty > value) {
-        OCAlert.alertError(`Quantity must be greater than ${size_obj.qty}`)
+    //   if (size_obj.qty > value) {
+    //     OCAlert.alertError(`Quantity must be greater than ${size_obj.qty}`)
 
-    }
+    // }
   }
 
 

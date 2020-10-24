@@ -239,7 +239,10 @@ class Barcode extends Component {
     // get product by id
     await this.props.getProductById(product_id);
     const { product } = this.props;
+    // console.log(product);
+    // return;
 
+    let total_qty = 0;
     if(product && product.color) {
       // loop through product colors
       product.color.forEach((color, c_index) => {
@@ -248,21 +251,24 @@ class Barcode extends Component {
           // get right size obj
           if(color.sizes) {
             color.sizes.forEach((size, s_index) => {
-              
+              total_qty += parseInt(size.qty);
               if(size.id == size_id) {
 
                 // decrease size qty
-                size.qty = parseInt(size.qty) - 1; 
+                // size.qty = parseInt(size.qty) - 1; 
 
                 // if barcode is availble remove it too
                 if(typeof barcodeIndex !== "undefined") {
-                  size.barcodes.splice(barcodeIndex, 1);
+                  // size.barcodes.splice(barcodeIndex, 1);
                 }
               }
             })
           }
         }
       })
+
+      console.log('overall product qty', total_qty);
+      return;
 
       // update product for barcode only
       await this.props.deleteItem(product, product_id);
