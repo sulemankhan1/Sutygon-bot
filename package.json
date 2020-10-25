@@ -1,5 +1,5 @@
 {
-  "name": "inventory",
+  "name": "Sutygon-bot System",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -9,7 +9,7 @@
     "server": "nodemon server",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-  "author": "",
+  "author": "Calum Nguyen",
   "license": "ISC",
   "dependencies": {
     "@opuscapita/react-alerts": "^3.1.0",
