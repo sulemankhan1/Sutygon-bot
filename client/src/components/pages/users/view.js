@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import { getUser } from "../../../actions/user";
-
-import { Link } from "react-router-dom";
-
-import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -28,12 +25,10 @@ class View extends Component {
         } if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
         }
-        if (this.props.saved) {
-            return <Redirect to="/dashboard" />;
-        }
-
+       
         return (
             <React.Fragment>
+                <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
@@ -148,8 +143,8 @@ class View extends Component {
                         </div>
 
                         <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                         </footer>
 
                     </div>

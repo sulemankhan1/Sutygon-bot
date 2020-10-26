@@ -5,23 +5,19 @@ import { connect } from "react-redux";
 import { login } from "../actions/auth";
 // import "../login.css";
 import Alert from "./layout/Alert";
-
-const styles = {
-  'padding': '0 !important',
-  'padding-right': '0 !important',
-  'padding-left': '0 !important',
-}
-
+import {getShop} from "../actions/dashboard";
 
 class Login extends Component {
-
-
   state = {
     formData: {
       email: "",
       password: "",
     },
   };
+
+  async componentDidMount() {
+    this.props.getShop();
+  }
 
   onChange = (e) => {
     let { formData } = this.state;
@@ -32,24 +28,61 @@ class Login extends Component {
   onSubmit = async (e) => {
     e.preventDefault();
     const { login } = this.props;
-    const { email, password } = this.state.formData;
-    login(email, password);
 
-  };
+    const { username, password } = this.state.formData;
+    login(username, password);
+
+  }
 
   render() {
     // Redirect if logged in
-    if (this.props.AuthLoading === false && this.props.isAuthenticated) {
+    const { shop } = this.props;
+    const { user } = this.props.auth;
+
+if(user && user.type == "Employee") {
+  if(shop){
+    let openShop = shop[0]
+    if(openShop){
+    if (this.props.AuthLoading === false && this.props.isAuthenticated){
+    if( openShop.status == "on") {
       return <Redirect to="/dashboard" />;
     }
+
+    else if(openShop.status == "off"){
+      // setAlert("Shop is closed", "danger", 5000);
+    }
+  }
+
+  }}
+  }
+    // if(user && user.type == "User") {
+    //   if(shop){
+    //   let openShop = shop[0]
+    //   console.log(openShop)
+    //    if(openShop && openShop.status === "off"){
+    //     console.log("USer")
+    //     localStorage.clear();
+    //     this.props.history.push("/");
+    //     window.location.reload();
+    //     setAlert("Shop is closed", "danger", 5000);
+    //    }
+    // };
+    // }
+
+    if(user && user.type == "Admin") {
+      if (this.props.AuthLoading === false && this.props.isAuthenticated) {
+        return <Redirect to="/dashboard" />;
+      }
+    }
+
     return (
 
       <div className="wrapper menu-collapsed">
         <div className="main-panel">
-          <div className="" style={styles} >
-            <div className="" style={styles}>
-              <section id="login" style={styles} >
-                <div className="container-fluid" style={styles}>
+          <div className=""  >
+            <div className="" >
+              <section id="login"  >
+                <div className="container-fluid" >
                   <div className="row full-height-vh m-0">
                     <div className="col-12 d-flex align-items-center justify-content-center">
                       <div className="card mx-5">
@@ -67,20 +100,23 @@ class Login extends Component {
                               <div className="logo-img text-center align-middle">
                                   <img src="assets/img/logos/logo.png" height={100} width={100} />
                                 </div>
-                                <h4 className="mb-2 card-title text-center align-middle" style={{  }}>Login</h4>
+                                <h4 className="mb-2 card-title text-center align-middle" style={{  }}>Đăng Nhập</h4>
                                 <p className="card-text mb-3 text-center align-middle">
-                                  Welcome back, please login to your account.
+                                Đăng Nhập Với Một Nụ Cười Nào
                   </p>
                                 <form onSubmit={(e) => this.onSubmit(e)}>
+                                <Alert/>
 
                                   <input type="text"
                                     className="form-control mb-3"
-                                    placeholder="Email"
+                                    placeholder="Username"
+                                    required
                                     onChange={(e) => this.onChange(e)}
-                                    name="email" />
+                                    name="username" />
                                   <input type="password"
                                     className="form-control mb-1"
-                                    placeholder="Password"
+placeholder="Password"
+                                    required
                                     onChange={(e) => this.onChange(e)}
                                     name="password" />
 
@@ -90,7 +126,7 @@ class Login extends Component {
                                       <input
                                         className="btn btn-primary btn-lg btn-block"
                                         type="submit"
-                                        value="login"
+                                        value="Tôi đã sẵn sàng để chăm sóc khách hàng"
                                       />
                                     </div>
                                   </div>
@@ -113,21 +149,24 @@ class Login extends Component {
 
     );
   }
-}
+  }
+
 
 Login.propTypes = {
   auth: PropTypes.object,
   login: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
+  getShop:PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   AuthLoading: state.auth.loading,
   auth: state.auth,
+  shop: state.dashboard.shop
 
 });
 
 export default connect(mapStateToProps, {
-  login,
+  login,getShop
 })(Login);

@@ -14,7 +14,7 @@ import {
 
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
+import { ReactReduxContext } from "react-redux";
 
 
 // Add new product
@@ -25,7 +25,8 @@ export const addNewProduct = (product) => async (dispatch) => {
           'content-type': 'multipart/form-data'
       }
   }
-    try {
+  try {
+
       const res = await axios.post("/api/products/add", product, config);
   
       dispatch({
@@ -63,9 +64,45 @@ export const getAllProducts = () => async (dispatch) => {
   }
 };
 
+  // Find products
+  export const findProducts = (search) => async (dispatch) => {
+    dispatch({ type: PRODUCT_LOADING });
+    try {
+      const res = await axios.get(`/api/products/search/${search}`);
+  
+      dispatch({
+        type: GET_PRODUCTS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: PRODUCTS_ERROR,
+        payload: err.response,
+      });
+    }
+  };
 
 
-// Get User by ID
+  // Find products
+  export const searchBarcode = (search) => async (dispatch) => {
+    dispatch({ type: PRODUCT_LOADING });
+    try {
+      const res = await axios.get(`/api/products/searchBarcode/${search}`);
+  
+      dispatch({
+        type: GET_PRODUCTS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: PRODUCTS_ERROR,
+        payload: err.response,
+      });
+    }
+  };
+
+
+
 export const getProduct = (name) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });
  
@@ -83,19 +120,114 @@ export const getProduct = (name) => async (dispatch) => {
   }
 };
 
-
-// Update User
-export const updateProduct = (product, id) => async (dispatch) => {
-
+export const getProductById = (id) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });
+ 
+  try {
+    const res = await axios.get(`/api/products/${id}`);
+    dispatch({
+      type: GET_PRODUCT,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: PRODUCTS_ERROR,
+      payload: err.response,
+    });
+  }
+};
+
+
+// Update product
+
+
+export const updateProduct = (product, id) => async (dispatch) => {
+  dispatch({ type: PRODUCTS_LOADING });
+  
   const config = {
     headers: {
         'content-type': 'multipart/form-data'
     }
 }
+  const body = JSON.stringify(product);
+  try {
+    const res = await axios.post(`/api/products/${id}`,product, config);
+
+    dispatch({
+      type: PRODUCT_UPDATED,
+      payload: res.data,
+    });
+    dispatch(setAlert(res.data.msg, "success"));
+    dispatch(getAllProducts());
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: PRODUCTS_ERROR,
+    });
+  }
+};
+// changeStatus
+
+
+export const changeStatus = (status, id) => async (dispatch) => {
+  dispatch({ type: PRODUCTS_LOADING });
+  
+  try {
+    const res = await axios.post(`/api/products/changeStatus/${id}/${status}`);
+
+    dispatch({
+      type: PRODUCT_UPDATED,
+      payload: res.data,
+    });
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: PRODUCTS_ERROR,
+    });
+  }
+};
+
+
+export const barcodeUpdateProduct = (product, id) => async (dispatch) => {
+
+  dispatch({ type: PRODUCTS_LOADING });
 
   try {
-    const res = await axios.post(`/api/products/${id}`, product, config);
+    // const res = await axios.post(`/api/products/${id}`,product, config);
+    const res = await axios.post(`/api/products/barcode_update/${id}`,product);
+
+    dispatch({
+      type: PRODUCT_UPDATED,
+      payload: res.data,
+    });
+    dispatch(setAlert(res.data.msg, "success"));
+    dispatch(getAllProducts());
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: PRODUCTS_ERROR,
+    });
+  }
+};
+
+export const deleteItem = (product, id) => async (dispatch) => {
+
+  dispatch({ type: PRODUCTS_LOADING });
+
+  try {
+    const res = await axios.post(`/api/products/item_delete/${id}`,product);
 
     dispatch({
       type: PRODUCT_UPDATED,
@@ -115,14 +247,43 @@ export const updateProduct = (product, id) => async (dispatch) => {
   }
 };
   
-  // Delete User
-export const deleteProduct = (id) => async (dispatch) => {
+
+
+// Update User
+export const updateProductQty = (product, id) => async (dispatch) => {
+
   dispatch({ type: PRODUCTS_LOADING });
   const config = {
     headers: {
       "Content-Type": "application/json",
     },  
   };
+  const body = JSON.stringify(product);
+  try {
+    const res = await axios.post(`/api/products/updateQty/${id}`,body, config);
+
+    dispatch({
+      type: PRODUCT_UPDATED,
+      payload: res.data,
+    });
+    dispatch(setAlert(res.data.msg, "success"));
+    dispatch(getAllProducts());
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    }
+    dispatch({
+      type: PRODUCTS_ERROR,
+    });
+  }
+};
+
+  // Delete User
+export const deleteProduct = (id) => async (dispatch) => {
+  dispatch({ type: PRODUCTS_LOADING });
+ 
 
    try {
 

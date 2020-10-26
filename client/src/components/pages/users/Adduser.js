@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import Sidebar from "../../layout/Sidebar";
 import Header from "../../layout/Header";
 import { addNewUser, updateUser, getUser } from "../../../actions/user";
-import axios, { post } from 'axios';
-import { Link } from "react-router-dom";
-
 import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -18,6 +16,7 @@ class AddUser extends Component {
         email: "",
         contactnumber: "",
         password: "",
+        type:"SuperAdmin",
         gender: "",
         avatar: "",
         saving: false,
@@ -37,13 +36,14 @@ class AddUser extends Component {
                     avatar: user.avatar,
                     email: user.email,
                     contactnumber: user.contactnumber,
-                    password: user.password
+                    password: user.password,
+                    type:user.type,
+                    gender: user.gender
 
                 });
             }
         }
     }
-
 
     _onChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.files[0] });
@@ -51,7 +51,6 @@ class AddUser extends Component {
     
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
-
     };
 
     onSubmit = async (e) => {
@@ -61,8 +60,10 @@ class AddUser extends Component {
         formData.append('avatar',this.state.avatar)
         formData.append('username',this.state.username)
         formData.append('fullname',this.state.fullname)
+        formData.append('contactnumber',this.state.contactnumber)
         formData.append('email',this.state.email)
         formData.append('password',this.state.password)
+        formData.append('type',this.state.type)
         formData.append('gender',this.state.gender)
         
             if (this.state.id === "") {
@@ -78,12 +79,11 @@ class AddUser extends Component {
             return <Redirect to="/" />;
         }
         if (this.props.saved) {
-            return <Redirect to="/dashboard" />;
+            return <Redirect to="/user" />;
         }
-               
-
         return (
             <React.Fragment>
+                <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
@@ -102,9 +102,10 @@ class AddUser extends Component {
                                                     : "Update User"}
                                             </h4>
                                         </div>
-                                        <Alert />
+                                     
 
                                         <div className="card-body">
+                                        <Alert />
                                             <form
                                                 encType="multipart/form-data"
                                                 action="/upload"
@@ -120,29 +121,21 @@ class AddUser extends Component {
                                                             className="form-control-file"
                                                             id="projectinput8"
                                                             accept='image/*,.pdf,.jpg'
-
                                                             // accept='file_extension|image/*|media_type'
                                                             // value={this.state.avatar}
                                                             onChange={(e) => this._onChange(e)} />
-
-
-
                                                     </div>
 
                                                     <div className="form-group col-12 mb-2">
                                                         {/* <button
                                                             name=""
-value="submit"
+                                                            value="submit"
                                                             type="submit"
-                                                            
+
                                                             // accept='file_extension|image/*|media_type'
                                                             // value={this.state.avatar}
                                                         > Submit
                                                             </button> */}
-
-
-
-                                                   
                                                 </div> 
                                                  </div>
                                                 <div className="row">
@@ -169,7 +162,7 @@ value="submit"
                                                         />
                                                     </div>
                                                 </div>
-{/* </form> */}
+
                                                 <div className="row">
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput3">E-mail</label>
@@ -199,12 +192,15 @@ value="submit"
                                                         ?
                                                         <>
                                                             <div className="form-group col-6 mb-2">
-                                                                <label htmlFor="projectinput5">Password</label>
+                                                                <label htmlFor="projectinput5" >Password </label>
                                                                 <input type="password"
                                                                     id="projectinput5"
                                                                     className="form-control"
                                                                     placeholder="Password"
                                                                     name="password"
+                                                                    required 
+                                                                    data-validation-required-message="This field is required"
+                                                                    minLength="6" maxLength="10"
                                                                     onChange={(e) => this.handleChange(e)}
                                                                     value={this.state.password}
                                                                 />
@@ -212,6 +208,18 @@ value="submit"
                                                         </>
                                                         : ""}
 
+                                                    <div className="form-group col-md-6 mb-2">
+                                                    <label htmlFor="projectinput6">Select Type</label>
+                                                    <select
+                                                        id="type"
+                                                        name="type"
+                                                        className="form-control"
+                                                        onChange={(e) => this.handleChange(e)} >
+                                                        <option selected = {"SuperAdmin" === this.state.type} value="SuperAdmin"> Super Admin </option>
+                                                        <option selected = {"Employee" === this.state.type} value="Employee"> Employee </option>
+
+                                                    </select>
+                                                    </div>
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput6">Gender</label><br></br>
                                                         <label className="radio-inline">
@@ -222,8 +230,8 @@ value="submit"
                                                                 checked={this.state.gender === "male"}
                                                                 value="male"
 
-                                                            />Male
-                       </label>
+                                                            /> Male
+                                                        </label>
                                                         <label className="radio-inline">
                                                             <input
                                                                 type="radio"
@@ -232,8 +240,8 @@ value="submit"
                                                                 onChange={(e) => this.handleChange(e)}
                                                                 checked={this.state.gender === "female"}
 
-                                                            />Female
-                         </label>
+                                                            /> Female
+                                                        </label>
                                                         <label className="radio-inline">
                                                             <input
                                                                 type="radio"
@@ -242,33 +250,58 @@ value="submit"
                                                                 onChange={(e) => this.handleChange(e)}
                                                                 checked={this.state.gender === "other"}
 
-                                                            />Others
-                       </label>
+                                                            /> Others
+                                                        </label>
                                                     </div>
                                                 </div>
 
                                                 <div className="form-actions top">
-                                                    {this.state.saving ? (
-                                                        <button
-                                                            type="button"
-                                                            className="mb-2 mr-2 btn btn-raised btn-primary"
-                                                        >
-                                                            <div
-                                                                className="spinner-grow spinner-grow-sm "
-                                                                role="status"
-                                                            ></div>
-                                &nbsp; Saving
-                                                        </button>
-                                                    ) : (
-                                                            <button
-                                                                type="submit"
-                                                                className="mb-2 mr-2 btn btn-raised btn-primary"
-                                                            >
-                                                                <i className="fa fa-check" /> Add User
-                                                            </button>
-                                                        )}
-
-                                                </div>
+                                                    {this.state.id === ""
+                                                        ? <>
+                          
+                          {this.state.saving ? (
+                            <button
+                              type="button"
+                              className="mb-2 mr-2 btn btn-raised btn-primary"
+                            >
+                              <div
+                                className="spinner-grow spinner-grow-sm "
+                                role="status"
+                              ></div>
+                                &nbsp; Adding
+                            </button>
+                          ) : (
+                              <button
+                                type="submit"
+                                className="mb-2 mr-2 btn btn-raised btn-primary"
+                              >
+                                <i className="ft-check" /> Add User
+                              </button>
+                            )}
+                          </>
+                          : <>
+                          
+                          {this.state.saving ? (
+                            <button
+                              type="button"
+                              className="mb-2 mr-2 btn btn-raised btn-primary"
+                            >
+                              <div
+                                className="spinner-grow spinner-grow-sm "
+                                role="status"
+                              ></div>
+                                &nbsp; Updating
+                            </button>
+                          ) : (
+                              <button
+                                type="submit"
+                                className="mb-2 mr-2 btn btn-raised btn-primary"
+                              >
+                                <i className="ft-check" /> Update User
+                              </button>
+                            )}
+                          </>}            
+              </div>
                                                 </form>
 
                                         </div>
@@ -278,8 +311,8 @@ value="submit"
                         </div>
 
                         <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                         </footer>
 
                     </div>
@@ -306,7 +339,6 @@ const mapStateToProps = (state) => ({
     saved: state.user.saved,
     auth: state.auth,
     user: state.user.profile,
-
 
 });
 export default connect(mapStateToProps, {

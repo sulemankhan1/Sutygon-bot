@@ -8,36 +8,40 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { getAllAppointmens } from "../../actions/appointment";
+import { getAllAppointments } from "../../actions/appointment";
 
 
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
-class Calender extends Component {
+
+class AppointmentCalendar extends Component {
+    state = {
+        id: "",
+        start: "",
+        end: "",
+        title: ""
+    }
+    
     async componentDidMount() {
-           this.props.getAllAppointmens();
-           console.log(this.props,"props")
-
+        await this.props.getAllAppointments();
     }
 
+
     render() {
-        const dummyEvents = [
-            {
-              allDay: false,
-              endDate: new Date('December 10, 2017 11:13:00'),
-              startDate: new Date('December 09, 2017 11:13:00'),
-              title: 'hi',
-            },
-            {
-              allDay: true,
-              endDate: new Date('December 09, 2017 11:13:00'),
-              startDate: new Date('December 09, 2017 11:13:00'),
-              title: 'All Day Event',
-            },
-            ];
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
+        }
+        const { calendar } = this.props;
+        let newEvents;
+        if (calendar) {
+
+            newEvents = calendar.map(event => ({
+                title: event.title,
+                start: new Date(event.start),
+                end: new Date(event.end)
+            })
+            );
         }
 
         return (
@@ -61,15 +65,22 @@ class Calender extends Component {
                                             <Alert />
 
                                             <div className="card-body">
-                                            <div>
-    <Calendar
-    localizer={localizer}
-      events={dummyEvents}
-      startAccessor="startDate"
-      endAccessor="endDate"
-    //   style={{ height: 500 }}
-    />
-  </div>
+                                                {newEvents ?
+                                                    <Calendar
+                                                        localizer={localizer}
+                                                        events={newEvents}
+                                                        defaultDate={new Date()}
+                                                        views={{
+                                                            month: true,
+                                                        week:true,
+                                                        day:true   
+                                                          }}               
+                                                        startAccessor="start"
+                                                        endAccessor="end"
+                                                        style={{ height: 500 }}
+                                                        
+                                                    />
+                                                    : ""}
                                             </div>
                                         </div>
                                     </div>
@@ -79,8 +90,8 @@ class Calender extends Component {
                         </div>
 
                         <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                         </footer>
 
                     </div>
@@ -93,22 +104,22 @@ class Calender extends Component {
     }
 }
 
-Calender.propTypes = {
+AppointmentCalendar.propTypes = {
     saved: PropTypes.bool,
     auth: PropTypes.object,
-    getAllAppointmens:PropTypes.func.isRequired
+    getAllAppointments: PropTypes.func.isRequired,
+    calendar: PropTypes.array,
     // getAllCustomers: PropTypes.func.isRequired,
     // getAllProducts: PropTypes.func.isRequired,
 
 };
 
 const mapStateToProps = (state) => ({
-    saved: state.appointment.saved,
     auth: state.auth,
-   calendar:state.appointment
+    calendar: state.appointment.appointments
 
 });
 export default connect(mapStateToProps, {
-getAllAppointmens
-})(Calender);
+    getAllAppointments
+})(AppointmentCalendar);
 

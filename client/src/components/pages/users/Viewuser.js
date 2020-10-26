@@ -5,23 +5,27 @@ import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getAllUsers, deleteUser,blockUser } from "../../../actions/user";
+import { getAllUsers, deleteUser,blockUser,findUsers } from "../../../actions/user";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Alert from "../../layout/Alert";
+import Loader from "../../layout/Loader";
 
 class ViewUser extends Component {
+  
+    state = {
+        search: ""
+    }
+
   async componentDidMount() {
     await this.props.getAllUsers();
   }
 
   getTAble = () => {
     const { auth } = this.props;
-const auth_user = auth.user;
+    const auth_user = auth.user;
     const { users } = this.props;
     let tbl_sno = 1;
-    // const {user} = this.props.auth;
-
     if (users) {
       if (users.length === 0) {
         return (
@@ -33,15 +37,13 @@ const auth_user = auth.user;
         );
       }
       return users.map((user) => (
-        // console.log(user)
-        //  <img className="media-object round-media" src="../../uploads/avatar-1599780670164-862543959" alt="Generic placeholder image" height={75} />
-        <tr>
+       
+       <tr key={user._id}>
           <td className="text-center text-muted">{tbl_sno++}</td>
           <td className="text-center">
             <img className="media-object round-media" src={`${user.avatar}`} alt="Generic placeholder image" height={75} />
           </td>
-          {/* E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\E:\Alphinex\Sutygon-bot\Sutygon-bot\client\src\uploads\8a8d8ee8-f05f-4a80-91cd-5eea99c8d8bc.jpg*/}
-
+       
 
           <td className="text-center">{user.username}</td>
           <td className="text-center">{user.contactnumber}</td>
@@ -49,45 +51,48 @@ const auth_user = auth.user;
           <td className="text-center">{user.gender}</td>
           <td className="text-center">
             {user.accountStatus === "active" && (
-              <span className="badge badge-warning">Active</span>
+              <span className="badge badge-success">Active</span>
             )}
             {user.accountStatus === "block" && (
-              <span className="badge badge-success">Block</span>
+              <span className="badge badge-warning">Block</span>
             )}
           </td>
           {/* <td className="text-center">{user.accountStatus}</td> */}
           <td className="text-center">
-            {auth_user && auth_user.type === "Admin" ?
-                <Link
-                  to={{ pathname: `/user/changeStatus/${user._id}` }}
-
-                  onClick={() => this.onBlock(user._id)}
-                  className="info p-0">
-                  <i className="ft-alert-triangle font-medium-3 mr-2"></i>
-                </Link>
-
-               : ""}
             <Link
               to={{ pathname: `/user/view/${user._id}` }}
 
               className="info p-0">
-              <i className="ft-user font-medium-3 mr-2"></i>
+              <i className="ft-user font-medium-3 mr-2"  title="View Profile"></i>
             </Link>
             <Link
               to={{ pathname: `/user/edituser/${user._id}` }}
               className="success p-0">
-              <i className="ft-edit-2 font-medium-3 mr-2"></i>
+              <i className="ft-edit-2 font-medium-3 mr-2 "  title="Edit User"></i>
             </Link>
-            <Link to="/user/viewuser"
+            <Link to="/user"
               onClick={() => this.onDelete(user._id)}
               className="danger p-0">
-              <i className="ft-x font-medium-3 mr-2"></i>
+              <i className="ft-x font-medium-3 mr-2"  title="Delete"></i>
             </Link>
+            {auth_user && auth_user.type === "Admin" ?
+                <Link
+                  to={{ pathname: `/user` }}
+                  onClick={() => this.onBlock(user._id)}
+                  className="info p-0">
+                  <i className="ft-alert-triangle font-medium-3 mr-2" title="Block User"></i>
+                </Link>
+
+               : ""}
           </td>
         </tr>
       ));
     }
   };
+
+    handleChange = (e, id = "") => {
+        this.setState({ 'search': e.target.value });
+    };
 
 
   onDelete = (id) => {
@@ -100,8 +105,7 @@ const auth_user = auth.user;
           onClick: () => {
             this.props.deleteUser(id);
           },
-        },
-        {
+        }, {
           label: "No",
           onClick: () => { },
         },
@@ -130,6 +134,16 @@ const auth_user = auth.user;
     });
   };
 
+    async searchTable() {
+        const searchVal = this.state.search;
+        if(searchVal) {
+            await this.props.findUsers(searchVal);
+        } else {
+            await this.props.getAllUsers();
+        }
+        
+    }
+
 
 
   render() {
@@ -138,32 +152,37 @@ const auth_user = auth.user;
       return <Redirect to="/" />;
     }
 
-    // if (this.props.saved) {
-    //     return <Redirect to="/dashboard" />;
-    //   }
-
     return (
       <React.Fragment>
+        <Loader />
         <div className="wrapper menu-collapsed">
           <Sidebar location={this.props.location} >
           </Sidebar>
           <Header>
           </Header>
           <div className="main-panel">
-
-            <div class="main-content">
-              <div class="content-wrapper">
+            <div className="main-content">
+              <div className="content-wrapper">
                 <section id="simple-table">
-                  <div class="row">
-                    <div class="col-sm-12">
-                      <div class="card">
-                        <div class="card-header">
-                          <h4 class="card-title">View User</h4>
+                  <div className="row">
+                    <div className="col-sm-12">
+                      <div className="card">
+                        <div className="card-header">
+                          <h4 className="card-title">All Users</h4>
                         </div>
-                        <div class="card-content">
-                          <div class="card-body">
+                        <div className="card-content">
+                          <div className="card-body">
+                              <div className="row">
+                                <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
+                                <div className="col-md-4">
+                                    <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
+                                </div>
+                                <div className="col-md-4">
+                                  <Link to="/user/adduser" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New User</Link>
+                                </div>
+                              </div>
                             <Alert />
-                            <table class="table">
+                            <table className="table">
                               <thead>
                                 <tr>
                                   <th className="text-center">#</th>
@@ -176,12 +195,10 @@ const auth_user = auth.user;
                                   <th className="text-center">Gender</th>
                                   <th className="text-center">Account Status</th>
                                   <th className="text-center">Actions</th>
-
                                 </tr>
                               </thead>
                               <tbody>
                                 {this.getTAble()}
-
                               </tbody>
                             </table>
                           </div>
@@ -193,17 +210,12 @@ const auth_user = auth.user;
               </div>
             </div>
           </div>
-
           <footer className="footer footer-static footer-light">
-            <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-              <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
-          </footer>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+                        </footer>
         </div>
-
-
-
       </React.Fragment>
-
     );
   }
 }
@@ -213,16 +225,13 @@ ViewUser.propTypes = {
   auth: PropTypes.object,
   deleteUser: PropTypes.func.isRequired,
   blockUser: PropTypes.func.isRequired,
-
-  users: PropTypes.object,
+  findUsers: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   users: state.user.users,
   auth: state.auth,
-
 });
 export default connect(mapStateToProps, {
-  getAllUsers, deleteUser,blockUser
+  getAllUsers, deleteUser,blockUser, findUsers
 })(ViewUser);
-

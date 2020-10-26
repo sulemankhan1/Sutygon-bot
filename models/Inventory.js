@@ -6,15 +6,26 @@ const InventorySchema = new mongoose.Schema({
   product: {
     type: Schema.Types.ObjectId,
     ref: "product",
-},
+  },
   quantity: {
     type: String,
     required: true,
   },
-   date: {
-    type: String,
-    set: date => moment(date.now).format('DD MMM YYYY')
-  },
+  reservations:
+    [
+      {
+        _id: {
+          type: Schema.Types.ObjectId,
+          ref: "product",
+        },
+        quantity: {
+          type: String
+        },
+        createdOn: {
+          type: Date
+        }
+      },
+    ],
 
 },
 );

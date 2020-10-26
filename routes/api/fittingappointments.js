@@ -10,10 +10,9 @@ const { check, validationResult } = require("express-validator");
 router.post(
     "/add",
     [
-        check("appointmentNumber", "Appointment Number Required").not().isEmpty(),
-        check("trackingNumber", "Tracking Number Required").not().isEmpty(),
+        // check("appointmentNumber", "Appointment Number Required").not().isEmpty(),
         check("customer", "Customer Name Required").not().isEmpty(),
-        check("appointmentDate", "Appointment Date Name Required").not().isEmpty(),
+        check("start", "Appointment Date Name Required").not().isEmpty(),
        
     ],
    
@@ -23,7 +22,7 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
         }
-
+console.log("req.body",req.body)
         try {
             let appointment = new FittingAppointment(req.body);
             await appointment.save();

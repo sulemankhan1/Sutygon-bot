@@ -11,11 +11,9 @@ router.post(
     "/add",
     [
         check("name", "Customer Name Required").not().isEmpty(),
-        check("contactnumber", "Contact Number Required").not().isEmpty(),
+        check("contactnumber", "Contact Number Required").isLength({ min: 10 }),
         check("email", "Email Required").not().isEmpty(),
         check("address", "Address Required").not().isEmpty(),
-        check("noOfOrders", "No of Orders Required").not().isEmpty(),
-
     ],
     auth,
 
@@ -41,6 +39,33 @@ router.post(
         }
     }
 );
+
+// @route  POST api/customers/:id
+// @desc   Update a Customer
+// @access Private
+router.post(
+    "/:id",
+       auth,
+    async (req, res) => {
+        try {
+           const body = req.body; // req.body = [Object: null prototype] { title: 'product' }
+    
+            await Product.updateOne({ _id: req.params.id }, {
+                $set: {
+                    name: body.orderNumber,
+                  }
+            });
+            res
+                .json({ msg: "Product Updated Successfully" });
+        } catch (err) {
+            console.error(err.message);
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+        }
+    }
+);
+
 
 // @route   GET api/customers
 // @desc    Get all customers

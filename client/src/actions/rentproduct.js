@@ -5,17 +5,19 @@ import {
  RENTPRODUCT_SAVED,
   RENTPRODUCT_ERROR,
   GET_RENTPRODUCT,
+  GET_RENTPRODUCTS,
   RENTPRODUCTS_ERROR,
   RENTPRODUCTS_LOADING,
   RENTPRODUCT_DELETED,
-  RENTPRODUCT_UPDATED,
+  RENTPRODUCT_UPDATED,GET_CUSTOMER,CUSTOMER_LOADING,CUSTOMER_ERROR
 } from "./types";
 import { setAlert } from "./alert";
 
 
-// Add new product
+  // Add new product
 export const addNewRentProduct = (product) => async (dispatch) => {
     dispatch({ type: RENTPRODUCT_LOADING });
+
   
     const config = {
       headers: {
@@ -44,6 +46,26 @@ export const addNewRentProduct = (product) => async (dispatch) => {
     }
   };
 
+  
+  // get All Users
+export const getAllRentedProducts = () => async (dispatch) => {
+  dispatch({ type: RENTPRODUCT_LOADING });
+  try {
+    const res = await axios.get(`/api/rentedproducts`);
+
+    dispatch({
+      type: GET_RENTPRODUCTS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: RENTPRODUCTS_ERROR,
+      payload: err.response,
+    });
+  }
+};
+
+
 
 
 // Get User by ID
@@ -65,7 +87,7 @@ export const getProduct = (id) => async (dispatch) => {
 
 
 // Update User
-export const updateProduct = (product, id) => async (dispatch) => {
+export const updateRentedProduct = (product, id) => async (dispatch) => {
   dispatch({ type: RENTPRODUCTS_LOADING });
   const config = {
     headers: {
@@ -96,7 +118,7 @@ export const updateProduct = (product, id) => async (dispatch) => {
 };
   
   // Delete User
-export const deleteProduct = (id) => async (dispatch) => {
+export const deleteRentedProduct = (id) => async (dispatch) => {
   dispatch({ type: RENTPRODUCTS_LOADING });
   const config = {
     headers: {
@@ -112,7 +134,7 @@ export const deleteProduct = (id) => async (dispatch) => {
       payload: res.data,
     });
     dispatch(setAlert(res.data.msg, "success"));
-    // dispatch(getAllProducts());
+     dispatch(getAllRentedProducts());
   
   } catch (err) {
     const errors = err.response.data.errors;
@@ -121,6 +143,33 @@ export const deleteProduct = (id) => async (dispatch) => {
     }
     dispatch({
       type: RENTPRODUCTS_ERROR,
+    });
+  }
+};
+
+
+
+
+// Get Customer
+export const getCustomer = (number) => async (dispatch) => {
+  dispatch({ type:CUSTOMER_LOADING });
+
+    try { 
+ 
+    const res = await axios.get(`/api/rentedproducts/search`, {
+      params: {
+        "number": number,
+      } }
+    )
+ 
+      dispatch({
+      type: GET_CUSTOMER,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type:CUSTOMER_ERROR,
+      payload: err.response,
     });
   }
 };

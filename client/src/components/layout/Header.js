@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logout } from "../../actions/auth";
@@ -13,7 +12,18 @@ class Header extends Component {
   };
 
   componentDidMount() {
-    loadjs(`${process.env.PUBLIC_URL}/assets/test.js`, () => {});
+    loadjs(`/assets/vendors/js/core/jquery-3.2.1.min.js`);
+    loadjs(`/assets/vendors/js/core/popper.min.js`);
+    loadjs(`/assets/vendors/js/core/bootstrap.min.js`);
+    loadjs(`/assets/vendors/js/perfect-scrollbar.jquery.min.js`);
+    loadjs(`/assets/vendors/js/prism.min.js`);
+    loadjs(`/assets/vendors/js/jquery.matchHeight-min.js`);
+    loadjs(`/assets/vendors/js/screenfull.min.js`);
+    loadjs(`/assets/vendors/js/pace/pace.min.js`);
+    loadjs(`/assets/js/app-sidebar.js`);
+    loadjs(`/assets/js/notification-sidebar.js`);
+    loadjs(`/assets/js/customizer.js`);
+    loadjs(`/assets/js/view_product.js`);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -49,7 +59,7 @@ class Header extends Component {
                     <p className="d-none">User Settings</p></a>
                   <div ngbdropdownmenu="" aria-labelledby="dropdownBasic3" className="dropdown-menu text-left dropdown-menu-right">
                   
-                      <a href={`/edituser/${this.state.id}`}
+                      <a href={`/user/edituser/${this.state.id}`}
                        className="dropdown-item py-1"><i className="ft-edit mr-2"></i><span>Edit Profile</span></a>
                      
                     

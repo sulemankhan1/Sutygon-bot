@@ -36,7 +36,7 @@ export const loadUser = () => async (dispatch) => {
 };
 
 // Login 
-export const login = (email, password) => async (dispatch) => {
+export const login = (username, password) => async (dispatch) => {
   dispatch({
     type: AUTH_LOADING,
   });
@@ -47,7 +47,7 @@ export const login = (email, password) => async (dispatch) => {
   };
 
   const body = JSON.stringify({
-    email,
+    username,
     password,
   });
 

@@ -14,8 +14,6 @@ import {
 
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
-
 
 // Add new user
 export const addNewUser = (user) => async (dispatch) => {
@@ -46,7 +44,7 @@ export const addNewUser = (user) => async (dispatch) => {
     }
   };
 
-  // get All Users
+// get All Users
 export const getAllUsers = () => async (dispatch) => {
   dispatch({ type: USER_LOADING });
   try {
@@ -63,6 +61,24 @@ export const getAllUsers = () => async (dispatch) => {
     });
   }
 };
+
+  // Find user
+  export const findUsers = (searchVal) => async (dispatch) => {
+    dispatch({ type: USER_LOADING });
+    try {
+      const res = await axios.get(`/api/users/search/${searchVal}`);
+  
+      dispatch({
+        type: GET_USERS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USERS_ERROR,
+        payload: err.response,
+      });
+    }
+  };
 
 
 
@@ -115,7 +131,7 @@ export const updateUser = (user, id) => async (dispatch) => {
   }
 };
 
-export const blockUser = (user, id) => async (dispatch) => {
+export const blockUser = (id) => async (dispatch) => {
   dispatch({ type: USERS_LOADING });
   const config = {
     headers: {
@@ -124,7 +140,7 @@ export const blockUser = (user, id) => async (dispatch) => {
 }
   
   try {
-    const res = await axios.post(`/api/users/changestatus/${id}`, user, config);
+    const res = await axios.post(`/api/users/changestatus/${id}`,  config);
 
     dispatch({
       type: USER_UPDATED,
@@ -147,11 +163,6 @@ export const blockUser = (user, id) => async (dispatch) => {
   // Delete User
 export const deleteUser = (id) => async (dispatch) => {
   dispatch({ type: USERS_LOADING });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
 
    try {
 

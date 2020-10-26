@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
-const Order = require("../../models/Orders");
 const  RentedProduct= require("../../models/RentedProducts");
 const  FittingAppointment= require("../../models/FittingAppointment");
 const moment = require("moment")
@@ -52,10 +51,10 @@ const moment = require("moment")
 
 
 // @route  GET api/reports
-// @desc   Get Order (Search for Order by customer,employee,custom date)
+// @desc   Get Order (Search for Order by customer,user,custom date)
 // @access Private
 router.get('',
-//  auth,
+ auth,
     async (req, res) => {
         try {
             let result;
@@ -64,20 +63,19 @@ router.get('',
             if (req.query.reportType === "order") {
             const result = await RentedProduct.find({
                 customer: { $eq: req.query.customer },
-                employee: { $eq: req.query.employee },
+                user: { $eq: req.query.user },
                 deliveryDate: { $gte:(req.query.start), $lte:(req.query.end) }
 
-            }).populate("customer").populate("product");
+            }).populate("customer").populate("product").populate("user");
             return res.json(result);
 
        }
        else if (req.query.reportType === "appointment") {
-
              result = await FittingAppointment.find({
                 customer: { $eq: req.query.customer },
-                employee: { $eq: req.query.employee },
-                deliveryDate: { $gte: req.query.start, $lte: req.query.end }
-            }).populate("customer").populate("product");
+                user: { $eq: req.query.user },
+                start: { $gte: req.query.start, $lte: req.query.end }
+            }).populate("customer").populate("user")
             return res.json(result);
 
         }

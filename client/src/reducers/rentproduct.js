@@ -42,7 +42,7 @@ import {
       case RENTPRODUCT_SAVED:
         return {
           ...state,
-          saved: true,
+          // saved: true,
           loading: false,
         };
       case RENTPRODUCTS_ERROR:

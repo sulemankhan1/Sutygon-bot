@@ -2,31 +2,34 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ProductSchema = new mongoose.Schema({
+  productId:{
+    type: String,
+  },
   name: {
     type: String,
   },
   image: {
     type: String,
   },
-  color: {
-    type: Array,
+  tags:{
+    type:String
   },
-  size: {
-    type: Array,
+  disabled: {
+  type:String,
+    default:false
   },
-  fabric: {
-    type: String,
-  },
-  inStock: {
-    type: String,
-  },
-  availableQuantity: {
-    type: String,
-  },
-  rentedQuantity: {
-    type: String,
-  },
-   date: {
+  color: [
+    {
+      colorname: {
+        type: String,
+
+      },
+      sizes: {
+        type: Array,
+      }
+    }
+  ],
+  date: {
     type: Date,
     default: Date.now,
   },

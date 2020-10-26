@@ -8,13 +8,10 @@ import { connect } from "react-redux";
 import { getReport } from "../../../actions/report";
 import { getAllUsers } from "../../../actions/user";
 import { getAllCustomers } from "../../../actions/customer";
-import moment from "moment"
 import Alert from "../../layout/Alert";
-import report from "../../../reducers/report";
+import Loader from "../../layout/Loader";
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
 
 
 
@@ -23,7 +20,7 @@ class Report extends Component {
     state = {
         id: "",
         customer: "",
-        employee: "",
+        user: "",
         start: "",
         end: "",
         reportType: "",
@@ -49,7 +46,7 @@ class Report extends Component {
         const { user } = this.props.auth;
 
         const report = {
-            employee: user._id,
+            user: user._id,
             customer: state.customer,
             start: state.start,
             end: state.end,
@@ -133,11 +130,12 @@ class Report extends Component {
         if (this.props.saved) {
             return <Redirect to="/dashboard" />;
         }
-        const { employee, customer } = this.state;
+        const { user, customer } = this.state;
         const { customers } = this.props.customers;
         const { users } = this.props;
         return (
             <React.Fragment>
+                <Loader />
                 <div className="wrapper menu-collapsed">
                     <Sidebar location={this.props.location} >
                     </Sidebar>
@@ -180,9 +178,9 @@ class Report extends Component {
                                                             </select>
                                                         </div>
                                                         <div className="form-group col-6 mb-2">
-                                                            <label htmlFor="issueinput5">Select Employee</label>
+                                                            <label htmlFor="issueinput5">Select User</label>
                                                             <select
-                                                                name="employee"
+                                                                name="user"
                                                                 className="form-control"
                                                                 onChange={(e) => this.handleChange(e)}
 
@@ -193,7 +191,7 @@ class Report extends Component {
                                                                         <option
                                                                             key={record._id}
                                                                             value={record._id}
-                                                                            selected={record._id === employee}
+                                                                            selected={record._id === user}
                                                                         >
                                                                             {record.username}
                                                                         </option>
@@ -301,7 +299,13 @@ class Report extends Component {
                                                             <Link
                                                                 to={{
                                                                     pathname: "/report",
-                                                                    data: this.props.report.reports // your data array of objects
+                                                                    data: {
+                                                                    report :this.props.report.reports,
+                                                                    reportType:this.state.reportType,
+                                                                    startDate:this.state.start,
+                                                                    endDate:this.state.end
+                                                                
+                                                                } // your data array of objects
                                                                 }}
                                                                 className="mb-2 mr-2 btn btn-raised btn-primary"
                                                             >
@@ -313,37 +317,7 @@ class Report extends Component {
 
                                                     </div>
                                                 </form>
-                                                {/* <div className="row" id="page">
-                                                    <div className="col-sm-12">
-                                                        <div className="card">
-                                                            <div className="card-header">
-                                                                <h4 className="card-title">Order Report</h4>
-                                                            </div>
-                                                            <div className="card-content">
-                                                                <div className="card-body table-responsive">
-                                                                    <table className="table text-center">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>#</th>
-                                                                                <th></th>
-                                                                                <th>Order Number</th>
-                                                                                <th>Customer</th>
-                                                                                <th>Product</th>
-                                                                                <th>Employee</th>
-                                                                                <th>Delivery Date</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            {this.getTAble()}
-
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div> */}
+                                          
                                             </div>
                                         </div>
                                     </div>
@@ -354,9 +328,9 @@ class Report extends Component {
                     </div>
 
                     <footer className="footer footer-static footer-light">
-                        <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                            <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
-                    </footer>
+                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+                        </footer>
 
 
                 </div>

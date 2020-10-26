@@ -9,12 +9,10 @@ import {
   APPOINTMENTS_ERROR,
   APPOINTMENTS_LOADING,
   APPOINTMENT_DELETED,
-  APPOINTMENT_UPDATED
  
 
 } from "./types";
 import { setAlert } from "./alert";
-import setAuthToken from "../utils/setAuthToken";
 
 
 // Add new product
@@ -49,11 +47,10 @@ export const addNewAppointment = (appointment) => async (dispatch) => {
   };
 
   // get All Users
-export const getAllAppointmens = () => async (dispatch) => {
+export const getAllAppointments = () => async (dispatch) => {
   dispatch({ type: APPOINTMENT_LOADING });
   try {
-    const res = await axios.get(`/api/products`);
-
+    const res = await axios.get(`/api/appointments`);
     dispatch({
       type: GET_APPOINTMENTS,
       payload: res.data,
@@ -90,13 +87,7 @@ export const getAppointment = (id) => async (dispatch) => {
   // Delete User
 export const deleteAppointment = (id) => async (dispatch) => {
   dispatch({ type: APPOINTMENTS_LOADING });
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },  
-  };
-
-   try {
+    try {
 
     const res = await axios.delete(`/api/appointmnets/${id}`);
     dispatch({
@@ -104,7 +95,7 @@ export const deleteAppointment = (id) => async (dispatch) => {
       payload: res.data,
     });
     dispatch(setAlert(res.data.msg, "success"));
-    dispatch(getAllAppointmens());
+    dispatch(getAllAppointments());
   
   } catch (err) {
     const errors = err.response.data.errors;
