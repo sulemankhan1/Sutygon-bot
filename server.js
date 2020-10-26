@@ -33,7 +33,7 @@ app.use('/api/appointments', require('./routes/api/fittingappointments'))
 app.use('/api/rentedproducts', require('./routes/api/rentaproduct'))
 app.use('/api/reports', require('./routes/api/report'))
 app.use('/api/returnproducts', require('./routes/api/returnproduct'))
-app.use('/api/invoices', require('./routes/api/invoices'))
+app.use('/api/invoices', require('./routes/api/Invoices'))
 
 const port = process.env.PORT || 5000
 app.listen(port, () => console.log(`Server Running on port: ${port}`))
