@@ -101,9 +101,27 @@ class MatchBarcodes extends Component {
     return rows;
   };
 
+  customerOwe = () => {
+    const { insuranceAmt, missingItmCharges } = this.state;
+    let customerOwe;
+    if(missingItmCharges > insuranceAmt){
+      customerOwe = missingItmCharges - insuranceAmt
+    }
+    else if(missingItmCharges <= insuranceAmt){
+      customerOwe = insuranceAmt - missingItmCharges
+    }
+    return customerOwe;
+  }
+
   returnAmt = () => {
-    const { customerOwe, insuranceAmt, missingItmCharges } = this.state;
-    const returnAmt = Number(customerOwe) + Number(insuranceAmt) + Number(missingItmCharges);
+    const { insuranceAmt, missingItmCharges } = this.state;
+    let returnAmt;
+    if(missingItmCharges > insuranceAmt){
+      returnAmt = missingItmCharges - insuranceAmt
+    }
+    else if(missingItmCharges <= insuranceAmt){
+      returnAmt = insuranceAmt - missingItmCharges
+    }
     return returnAmt;
   }
 
@@ -116,7 +134,7 @@ class MatchBarcodes extends Component {
     let productarray = [];
     let { order } = this.props.location.data;
     let { barcodesArray } = this.state;
-    console.log("barcodesArray",barcodesArray)
+    console.log("barcodesArray", barcodesArray)
     const { products } = this.props;
     if (products && barcodesArray) {
       let sortedAray = this.getSortedData(products);
@@ -135,7 +153,7 @@ class MatchBarcodes extends Component {
         <div id="sizes_box" key={b_index}>
           <div className="row" >
 
-            <div style={{ float: "left",width:"100%" }} >
+            <div style={{ float: "left", width: "100%" }} >
               <input
                 type="text"
                 value={`${b[0].title} ${"|"} ${b[0].barcode}`}
@@ -160,7 +178,7 @@ class MatchBarcodes extends Component {
             <br />
 
           </div>
-          
+
         </div>
 
       </>
@@ -173,15 +191,15 @@ class MatchBarcodes extends Component {
     let { order } = this.props.location.data;
     let { orderedBarcode } = this.props.location.data;
     let { barcodesArray } = this.state;
-for(var i = 0 ; i < orderedBarcode.length; i++){
-  const m_product = orderedBarcode.filter((f) => f != barcodesArray)
-  console.log("m_product",m_product)
+    for (var i = 0; i < orderedBarcode.length; i++) {
+      const m_product = orderedBarcode.filter((f) => f != barcodesArray)
+      console.log("m_product", m_product)
 
-}
-let m_barcodeArray = [];
+    }
+    let m_barcodeArray = [];
 
-    console.log("m_barcodeArray",m_barcodeArray)
-return;
+    console.log("m_barcodeArray", m_barcodeArray)
+    return;
     const { products } = this.props;
     if (products && barcodesArray) {
       let sortedAray = this.getSortedData(products);
@@ -200,7 +218,7 @@ return;
         <div id="sizes_box" key={b_index}>
           <div className="row" >
 
-            <div style={{ float: "left",width:"100%" }} >
+            <div style={{ float: "left", width: "100%" }} >
               <input
                 type="text"
                 value={`${b[0].title} ${"|"} ${b[0].barcode}`}
@@ -225,7 +243,7 @@ return;
             <br />
 
           </div>
-          
+
         </div>
 
       </>
@@ -345,7 +363,7 @@ return;
   };
 
   render() {
-    
+
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
@@ -353,8 +371,8 @@ return;
 
     const { customer } = this.props;
     const { data } = this.props.location;
-    if(this.props.location.data == undefined){
-       return <Redirect to="/returnproduct" />;
+    if (this.props.location.data == undefined) {
+      return <Redirect to="/returnproduct" />;
 
     }
     const { order } = data;
@@ -414,8 +432,8 @@ return;
                                   {this.productBox()}
                                   <br />
 
-<h3>Missing Products</h3>
-{this.missingProducts()}
+                                  <h3>Missing Products</h3>
+                                  {this.missingProducts()}
                                   <div className="row">
                                     <div className="col-md-12">
                                       <div className="form-group">
@@ -484,6 +502,7 @@ to customer</h4>
                                             id="setSizeFloat"
                                             value={customerOwe}
                                             required
+                                            value={(insuranceAmt && missingItmCharges) ? `${this.customerOwe()}` : "0"}
                                             onChange={(e) => this.handleChange(e)}
                                           />
                                         </div>
@@ -508,7 +527,7 @@ to customer</h4>
                                             className="form-control mm-input s-input text-center"
                                             placeholder=""
                                             id="setSizeFloat"
-                                            value={(customerOwe && insuranceAmt && missingItmCharges) ? `${this.returnAmt()}` : "$0"}
+                                            value={(customerOwe && insuranceAmt && missingItmCharges) ? `${this.returnAmt()}` : "0"}
                                             onChange={(e) => this.handleChange(e)}
 
                                           />
