@@ -496,15 +496,9 @@ class Barcode extends Component {
               </div>
             </div>
             <footer className="footer footer-static footer-light">
-<<<<<<< HEAD
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-                        </footer>
-=======
               <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
                 <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
->>>>>>> 7a5e4f77e0a28620f7f84ddd03d94fe82e72d9b2
           </div>
         </div>
         <OCAlertsProvider />

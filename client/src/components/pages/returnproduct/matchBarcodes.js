@@ -733,7 +733,7 @@ to customer</h4>
                             <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
                               <h6 >
 
-                                {(this.state.customerOwe && this.state.insuranceAmt && this.state.missingItmCharges) ? `${this.returnAmt()}` : "$0"}
+                                {(customerOwe && insuranceAmt && missingItmCharges) ? `${this.returnAmt()}` : "0"}
                               </h6>
                             </div>
 
