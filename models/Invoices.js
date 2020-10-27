@@ -17,6 +17,9 @@ const RentInvoiceSchema = new mongoose.Schema({
     },
     type:{
         type:String
+    },
+    orderBarcode:{
+        type:String
     }
 },
 

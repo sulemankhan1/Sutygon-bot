@@ -154,7 +154,6 @@ class ViewProduct extends Component {
             </tr>
           );
         }
-console.log(formated_products)
         return formated_products.map((product, i) => (
           <div className="tb_container" key={i}>
             <div className="tb_row">
@@ -304,7 +303,6 @@ console.log(formated_products)
     await this.props.getProductById(product_id);
     const { product } = this.props;
     product.disabled = status;
-    console.log(product);
     await this.props.updateProduct(product, product_id);
   };
 

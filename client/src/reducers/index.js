@@ -11,6 +11,7 @@ import rentproduct from "./rentproduct";
 import returnproduct from "./returnproduct";
 import appointment from "./appointment";
 import report from "./report";
+import invoice from "./invoice";
 
 
 export default combineReducers({
@@ -25,5 +26,6 @@ export default combineReducers({
   appointment,
   report,
   dashboard,
+  invoice,
 
 });

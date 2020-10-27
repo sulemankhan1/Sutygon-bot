@@ -28,7 +28,7 @@ export default function (state = initialState, action) {
                 ...state,
                 returnproduct: payload,
                 loading: false,
-                saved: false,
+                saved: true,
             };
             case GET_RETURNORDER:
                 return {

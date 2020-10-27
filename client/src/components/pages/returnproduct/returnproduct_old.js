@@ -172,7 +172,6 @@ class ReturnProduct extends Component {
   CutomerBox = () => {
     const { order } = this.props;
     const { customer } = this.props;
-    console.log("order",order)
     // let returningOrders = order.filter((f => f.status !== "Completed"))
     
     // if (order.length > 0 && customer ) {
@@ -215,10 +214,8 @@ class ReturnProduct extends Component {
   }
 selectedOrder = (e,order_id)=>{
   let orderID = order_id;
-  console.log("order_id",orderID)
   const {order} = this.props;
       const seletedOrder = order.filter((f) => f._id === orderID);
-      console.log("seletedOrder",seletedOrder)
       return seletedOrder;
 }
 

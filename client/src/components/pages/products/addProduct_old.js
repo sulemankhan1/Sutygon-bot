@@ -314,7 +314,6 @@ class AddProduct extends Component {
     let { color } = product;
     let color_obj = color.filter((color) => color._id == color_id)[0]; // get current color obj
     let size_obj = color_obj.sizes.filter((size) => size.id == size_id)[0];
-    console.log(size_obj)
     
       if (size_obj.qty > value) {
         OCAlert.alertError(`Quantity must be greater than ${size_obj.qty}`)

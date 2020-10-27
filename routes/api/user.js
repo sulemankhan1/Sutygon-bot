@@ -25,12 +25,6 @@ const FILE_PATH = 'client/public/uploads/user';
 
   var upload = multer({ storage: storage })
 
-// router.post('/test', upload.single('avatar'), function (req, res, next) {
-//   console.log(req.file)
-//   console.log(req.body)
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
-// })
 // @route   POST /api/users/add
 // @desc    Add new user
 // @access  Private
@@ -89,7 +83,7 @@ router.post("/add",
       if(req.file == undefined){
        userBody = {
           username: body.username,
-          fullname: body.fullname,
+          fullname: body.username,
           email: body.email,
           password: password,
           gender: body.gender,
@@ -101,7 +95,7 @@ router.post("/add",
       else {
        userBody = {
         username: body.username,
-        fullname: body.fullname,
+        fullname: body.username,
         email: body.email,
         password: password,
         gender: body.gender,
@@ -249,7 +243,7 @@ router.post(
         await User.updateOne({ _id: req.params.id }, {
         $set: {
           username: body.username,
-          fullname: body.fullname,
+          fullname: body.username,
           email: body.email,
           gender: body.gender,
           contactnumber: body.contactnumber,
@@ -262,7 +256,7 @@ router.post(
       await User.updateOne({ _id: req.params.id }, {
         $set: {
           username: body.username,
-          fullname: body.fullname,
+          fullname: body.username,
           email: body.email,
           gender: body.gender,
           contactnumber: body.contactnumber,
@@ -276,8 +270,7 @@ router.post(
         .json({ msg: "User Updated Successfully" });
     }
     catch (err) {
-      console.log("err message");
-      console.log(err.message);
+      console.log(err);
       res
         .status(500)
         .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
@@ -290,7 +283,6 @@ router.post(
 // @access Private
 router.post(
   "/changestatus/:id",
-  // [check("accountStatus", "Please Provide a Required").not().isEmpty()],
   auth,
   async (req, res) => {
     try {

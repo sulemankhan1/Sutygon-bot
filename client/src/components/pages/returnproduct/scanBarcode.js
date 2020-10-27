@@ -10,6 +10,7 @@ import Loader from "../../layout/Loader";
 import { getCustomer } from "../../../actions/customer";
 import { OCAlertsProvider } from '@opuscapita/react-alerts';
 import { OCAlert } from '@opuscapita/react-alerts';
+import { barcodeUpdateProduct } from "../../../actions/product";
 
 class ScanBarcode extends Component {
   state = {
@@ -24,7 +25,6 @@ class ScanBarcode extends Component {
     const { data } = this.props.location;
     if (data) {
       this.setState({
-        // id: id,
         customer_id: data.customer,
         barcode:data.order[0].barcodes,
         order:data.order
@@ -60,8 +60,9 @@ class ScanBarcode extends Component {
     //   OCAlert.alertError(`This barcode is already scanned. Please try again!`); 
     //   return;
     // }
+    
       let isMatch=barcode.includes(barcodeFromInput)
-      if(isMatch===true){
+      if(isMatch==true){
         matchedBarcodes.push({
           barcode: barcodeFromInput,
         });
@@ -133,7 +134,11 @@ class ScanBarcode extends Component {
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
     }
+    const { data } = this.props.location;
+    if(this.props.location.data == undefined){
+      return <Redirect to="/returnproduct" />;
 
+   }
     if (this.props.saved) {
       return <Redirect to="/orders" />;
     }
@@ -203,6 +208,8 @@ class ScanBarcode extends Component {
                                               customer:this.props.customer[0]._id,
                                               barcodesArray: this.state.matchedBarcodes,
                                               order:this.state.order,
+                                              orderedBarcode: this.state.barcode,
+
 
                                             },
                                           }}
@@ -241,13 +248,11 @@ class ScanBarcode extends Component {
 }
 
 ScanBarcode.propTypes = {
-  saved: PropTypes.bool,
   auth: PropTypes.object,
   customer: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
-  saved: state.returnproduct.saved,
   auth: state.auth,
   customer: state.customer.customer,
 });

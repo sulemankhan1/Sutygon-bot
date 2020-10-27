@@ -21,15 +21,10 @@ import RentProduct from "./components/pages/rentproduct";
 import Checkout from "./components/pages/checkout";
 import ReturnProduct from "./components/pages/returnproduct/returnproduct";
 import ScanBarcode from "./components/pages/returnproduct/scanBarcode";
-
 import RentOrder from "./components/pages/rentOrder";
-import RentInvoice from "./components/pages/RentInvoice";
-
 import Report from "./components/pages/report/report";
 import ReportOrder from "./components/pages/report/reportOrder";
-
 import MatchBarcodes from "./components/pages/returnproduct/matchBarcodes";
-// import Calender from "./components/pages/calender";
 
 // Redux
 import { Provider } from "react-redux";
@@ -52,8 +47,10 @@ const Main = () => {
 
           <Route exact path="/" component={Login} />
           <Route exact path="/Login" component={Login} />
+          
           {/* Dashboard */}
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
+
           {/* users */}
           <PrivateRoute exact path="/user/adduser" component={AddUser} />
           <PrivateRoute exact path="/user" component={ViewUser} />
@@ -63,6 +60,7 @@ const Main = () => {
           {/* customers */}
           <PrivateRoute exact path="/customer/addcustomer" component={AddCustomer} />
           <PrivateRoute exact path="/customer" component={ViewCustomer} />
+
           {/* products */}
           <PrivateRoute exact path="/product/addproduct" component={AddProduct} />
           <PrivateRoute exact path="/product" component={ViewProduct} />
@@ -73,13 +71,11 @@ const Main = () => {
           <PrivateRoute exact path="/rentproduct" component={RentProduct} />
           <PrivateRoute exact path="/checkout" component={Checkout} />
           <PrivateRoute exact path="/rentorder" component={RentOrder} />
-          <PrivateRoute exact path="/rentinvoice" component={RentInvoice} />
 
           {/* return product */}
           <PrivateRoute exact path="/returnproduct" component={ReturnProduct} />
           <PrivateRoute exact path="/matchbarcodes" component={MatchBarcodes} />
           <PrivateRoute exact path="/scanbarcode" component={ScanBarcode} />
-
 
           {/* orders */}
           <PrivateRoute exact path="/orders" component={Orders} />

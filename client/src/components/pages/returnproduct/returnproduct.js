@@ -4,18 +4,12 @@ import Header from "../../layout/Header";
 import { getOrderbyCustomerNumber, getOrderbyOrderNumber, getOrderbyID } from "../../../actions/returnproduct";
 import { getAllProducts } from "../../../actions/product";
 import { getCustomer } from "../../../actions/customer";
-import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 import { Link } from "react-router-dom";
-
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
 import "../../../custom.css"
-// import e from "express";
-// import c from "config";
-
 
 class ReturnProduct extends Component {
   state = {
@@ -43,11 +37,11 @@ class ReturnProduct extends Component {
     orderNumber.value = ""
   }
 
-
+//handle change for input fields
   handleChange = (e, id = "") => {
     this.setState({ [e.target.name]: e.target.value });
   };
-
+//search by Customer Number
   onSubmitCustomer = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
@@ -56,7 +50,7 @@ class ReturnProduct extends Component {
     await this.props.getOrderbyCustomerNumber(state.customer);
     this.setState({ saving: false });
   };
-
+//search by order number
   onSubmitOrderNumber = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
@@ -114,6 +108,8 @@ class ReturnProduct extends Component {
     }); // products foreach ends here
     return rows;
   };
+  
+
   productBox = () => {
     const { seletedOrder } = this.state;
     let productarray = [];
@@ -124,34 +120,28 @@ class ReturnProduct extends Component {
       if (sortedAray) {
         barcodes.forEach((element) => {
           productarray.push(
-            sortedAray.filter((f) => f.barcode === element)
+            sortedAray.filter((f) => f.barcode == element)
           );
           return productarray;
         });
       }
     }
     return productarray.map((b, b_index) => (
-      //  console.log(b)
       <>
-
-        {
-          <div className="form-group">
-            <div className="row" key={b_index}>
-              <input
-                type="text"
-                value={`${b[0].title} ${"|"} ${b[0].barcode}`}
-                className="form-control mm-input s-input text-center text-dark"
-                placeholder="Barcode"
-                id="setSize1"
-                style={{ 'width': '110%' }}
-                readOnly
-              />
-
-            </div>
-          </div>}
-
-
-    //   </>
+        <div className="form-group">
+          <div className="row" key={b_index}>
+            <input
+              type="text"
+              value={`${b[0].title} ${"|"} ${b[0].barcode}`}
+              className="form-control mm-input s-input text-center text-dark"
+              placeholder="Barcode"
+              id="setSize1"
+              style={{ 'width': '110%' }}
+              readOnly
+            />
+          </div>
+        </div>
+      </>
     ))
   }
 
@@ -159,12 +149,8 @@ class ReturnProduct extends Component {
     const { orders } = this.props;
     const { customer } = this.props;
     let returningOrders = orders.filter((f => f.status !== "Completed"))
-
-    // if (order.length > 0 && customer ) {
     return returningOrders.map((o, o_index) => (
-
       <>
-
         <div className="col-md-12" key={o_index}>
           <div className="row form-group">
             <div className="col-md-11">
@@ -176,36 +162,28 @@ class ReturnProduct extends Component {
                 value={(o && customer[0]) ? `${"Order#"}${o.orderNumber}${"             "}${customer[0].name}${"             "}${"OrderStatus-"}${o.status}` : "No Order Found"}
                 readOnly />
             </div>
-            <div className="col-md-1" style={{margin:'auto'}}>
+            <div className="col-md-1" style={{ margin: 'auto' }}>
               <input
-                // type="button"
                 type="radio"
                 name="selectedOrder"
                 value={true}
                 onChange={(e) => this.handleChange(e)}
-                // checked={this.state.selectedOrder === "true"}
                 onClick={(e) => this.selectedOrder(e, o._id)}
 
               />
             </div>
           </div>
-
-
-
         </div>
-
-
-
       </>
 
     ))
-    // }
   }
+
   selectedOrder = (e, order_id) => {
     const orderID = order_id
 
     const { orders } = this.props;
-    const seletedOrder = orders.filter((f) => f._id === orderID);
+    const seletedOrder = orders.filter((f) => f._id == orderID);
     this.setState({
       seletedOrder: seletedOrder
     })
@@ -216,12 +194,9 @@ class ReturnProduct extends Component {
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
     }
-    if (this.props.saved) {
-      //   return <Redirect to="/product" />;
-    }
+   
     const { orders } = this.props;
     const { customer } = this.props;
-
 
     return (
       <React.Fragment>
@@ -240,7 +215,6 @@ class ReturnProduct extends Component {
                     <div className="card">
                       <div className="card-header">
                         <h4 className="form-section">
-                          {/* <i className="icon-social-dropbox"></i> */}
                           Return Product
                           </h4>
                       </div>
@@ -260,26 +234,20 @@ class ReturnProduct extends Component {
                                   className="form-control round"
                                   id="contactnumber"
                                   min="0"
-                                  // max="10"
                                   ref="contactnumber"
-
                                   onChange={(e) => this.handleChange(e)}
-
                                 />
                                 <div className="form-control-position">
                                   <button
                                     type="submit"
-                                    className="mb-2 mr-2 btn ft-search"
-                                  >
+                                    className="mb-2 mr-2 btn ft-search">
                                   </button>
                                 </div>
                               </div>
                             </div>
-
                           </form>
 
                           <form onSubmit={(e) => this.onSubmitOrderNumber(e)}>
-
                             <div className="form-group">
                               <h3>Or Scan/Enter Order Number</h3>
                               <div className="position-relative has-icon-right">
@@ -290,22 +258,16 @@ class ReturnProduct extends Component {
                                   className="form-control round"
                                   id="orderNumber"
                                   min="0"
-                                  // max="10"
                                   ref="orderNumber"
-
-                                  onChange={(e) => this.handleChange(e)}
-
-                                />
+                                  onChange={(e) => this.handleChange(e)} />
                                 <div className="form-control-position">
                                   <button
                                     type="submit"
-                                    className="mb-2 mr-2 btn ft-search"
-                                  >
+                                    className="mb-2 mr-2 btn ft-search">
                                   </button>
                                 </div>
                               </div>
                             </div>
-
                           </form>
 
                           {this.props.orders ? <>
@@ -316,7 +278,7 @@ class ReturnProduct extends Component {
                                     <h3>Is this the One</h3>
                                   </div>
                                 </div>
-                                {(this.props.orders && this.props.orders.length > 0) ? this.CutomerBox() :
+                                {(this.props.orders && !!this.props.orders.length) ? this.CutomerBox() :
 
                                   <div className="col-md-12" >
                                     <div className="form-group">
@@ -328,9 +290,6 @@ class ReturnProduct extends Component {
                                         value={"No Order Found"}
                                         readOnly />
                                     </div>
-
-
-
                                   </div>
                                 }
 
@@ -341,9 +300,7 @@ class ReturnProduct extends Component {
                                       className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1 text-center"
                                       onClick={(e) => this.tryAgain(e)}
                                       id="btnSize" ><i className="ft-rotate-cw"></i> Try Again
-                    </button>
-
-
+                                    </button>
                                   </div>
                                 </div>
                               </div>
@@ -351,23 +308,18 @@ class ReturnProduct extends Component {
                           </> : ""}
                           <div id="colors_box">
                             {(this.props.orders && this.state.selectedOrder === "true") ?
-
                               <div className="row color-row" id="statusBox1">
                                 <div className="col-md-12">
                                   <div className="form-group">
                                     <div style={{ 'float': 'left' }}>
-
                                       <h3>{(customer) ? `${customer[0].name}${"#"}${customer[0].contactnumber}` : ""}</h3>
                                     </div>
                                     <div style={{ 'float': 'right' }}>
                                       <h3>{(orders) ? `${"Order"}${"#"} ${orders[0].orderNumber}` : ""}</h3>
-
                                     </div>
                                   </div>
                                 </div>
-
                                 <div className="col-md-12">
-
                                   {(this.state.selectedOrder === "true") ?
                                     <>
                                       <div id="colors_box">
@@ -387,45 +339,23 @@ class ReturnProduct extends Component {
                                               id="btnSize2" ><i className="ft-check"></i> Next</Link>
                                           </div>
                                         </div>
-                                      </div>
-
-                                    </> : ""}
-
+                                      </div> </> : ""}
                                 </div>
-
-
-                              </div>
-                              : ""}
-
+                              </div> : ""}
                           </div>
-
-
-
-
-
                         </div>
                       </div>
                     </div>
-
-
-
                   </div>
-
                 </section>
-
               </div>
             </div>
-
-            <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-                        </footer>
-
+          <footer className="footer footer-static footer-light">
+              <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+            </footer>
           </div>
-
         </div>
-
-
       </React.Fragment>
 
     );
@@ -438,25 +368,25 @@ ReturnProduct.propTypes = {
   getCustomer: PropTypes.func.isRequired,
   getAllProducts: PropTypes.func.isRequired,
   getOrderbyID: PropTypes.func.isRequired,
-  saved: PropTypes.bool,
+  // saved: PropTypes.bool,
   orders: PropTypes.array,
   customer: PropTypes.array,
-
   auth: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
-  // saved: state.rentedproduct.saved,
   products: state.product.products,
   orders: state.returnproduct.returnproduct,
   customer: state.customer.customer,
-  // order: state.returnproduct.returnproduct,
-
   auth: state.auth,
 
 });
 export default connect(mapStateToProps, {
-  getOrderbyCustomerNumber, getOrderbyOrderNumber, getCustomer, getAllProducts, getOrderbyID
+  getOrderbyCustomerNumber,
+  getOrderbyOrderNumber,
+  getCustomer,
+  getAllProducts,
+  getOrderbyID
 
 
 })(ReturnProduct);

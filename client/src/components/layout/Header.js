@@ -8,8 +8,12 @@ import loadjs from 'loadjs';
 
 class Header extends Component {
   state = {
-      id:"",
+    username: "",
+    userType: "",
+    id:"",
+    avatar:""
   };
+  
 
   componentDidMount() {
     loadjs(`/assets/vendors/js/core/jquery-3.2.1.min.js`);
@@ -24,28 +28,27 @@ class Header extends Component {
     loadjs(`/assets/js/notification-sidebar.js`);
     loadjs(`/assets/js/customizer.js`);
     loadjs(`/assets/js/view_product.js`);
+    const { user } = this.props.auth;
+    if(user != undefined) {
+      this.setState({
+      username: user.fullName,
+      userType: user.type,
+      id:user._id,
+      avatar:user.avatar
+    });
+    }
+
   }
 
-  componentWillReceiveProps(nextProps) {
-      const { user } = nextProps.auth;
-      if(user != undefined) {
-        this.setState({
-        username: user.fullName,
-        userType: user.type,
-        id:user._id,
-        avatar:user.avatar
-      });
-      }
-     }
-   
-  
+ 
   render() {
   
     return (
       <nav className="navbar navbar-expand-lg navbar-light bg-faded header-navbar">
         <div className="container-fluid">
           <div className="navbar-header">
-            <button type="button" data-toggle="collapse" className="navbar-toggle d-lg-none float-left"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button><span className="d-lg-none navbar-right navbar-collapse-toggle"><a aria-controls="navbarSupportedContent" href="#" className="open-navbar-container black"><i className="ft-more-vertical"></i></a></span>
+            <button type="button" data-toggle="collapse" className="navbar-toggle d-lg-none float-left"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button><span className="d-lg-none navbar-right navbar-collapse-toggle">
+              <a aria-controls="navbarSupportedContent" className="open-navbar-container black"><i className="ft-more-vertical"></i></a></span>
             <form className="navbar-form navbar-right mt-1">
               <div className="position-relative has-icon-right">
               </div>
@@ -59,7 +62,7 @@ class Header extends Component {
                     <p className="d-none">User Settings</p></a>
                   <div ngbdropdownmenu="" aria-labelledby="dropdownBasic3" className="dropdown-menu text-left dropdown-menu-right">
                   
-                      <a href={`/user/edituser/${this.state.id}`}
+                      <a href={this.state.id ? `/user/edituser/${this.state.id}`:"" }
                        className="dropdown-item py-1"><i className="ft-edit mr-2"></i><span>Edit Profile</span></a>
                      
                     
