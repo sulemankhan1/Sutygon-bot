@@ -20,10 +20,7 @@ class RentProduct extends Component {
   CutomerBox = () => {
     const { customer } = this.props;
     return <>
-
-
       <div id="colors_box">
-
         <div className="row color-row">
           <div className="row">
             <div className="col-md-12">
@@ -40,30 +37,24 @@ class RentProduct extends Component {
                 value={customer[0] ? customer[0].name : "No Customer Found"}
                 readOnly />
             </div>
-
-
-
           </div>
           <div className="col-md-12">
             <div id="sizes_box">
               <div className="row justify-content-center">
-                  <button
-                    type="button"
-                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                    onClick={(e) => this.tryAgain(e)}
-                    id="btnSize" ><i className="ft-rotate-cw"></i> Try Again</button>
-
-                  <Link to="/customer/addcustomer"
-                    type="button"
-                    target={"_blank"}
-
-                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                    id="btnSize1"><i className="ft-user"></i> New Customer</Link>
+                <button
+                  type="button"
+                  className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                  onClick={(e) => this.tryAgain(e)}
+                  id="btnSize" ><i className="ft-rotate-cw"></i> Try Again</button>
+                <Link to="/customer/addcustomer"
+                  type="button"
+                  target={"_blank"}
+                  className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                  id="btnSize1"><i className="ft-user"></i> New Customer</Link>
               </div>
             </div>
           </div>
         </div>
-
         {customer[0] ?
           <div className="row color-row">
             <div className="col-md-12">
@@ -109,43 +100,35 @@ class RentProduct extends Component {
               </div>
               <br />
               <div className="row justify-content-center">
-                {/* <div className="col-md-12 btn-cont"> */}
-                  <div className="form-group">
-                    <Link
-                      to={{
-                        pathname: "/checkout",
-                        data: this.props.customer[0].id,
-                        // your data array of objects
-                      }}
-                      type="button"
-                      className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                      id="btnSize2" ><i className="ft-check"></i> Next</Link>
-                  </div>
-                {/* </div> */}
+                <div className="form-group">
+                  <Link
+                    to={{
+                      pathname: "/checkout",
+                      data: this.props.customer[0].id,
+                    }}
+                    type="button"
+                    className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                    id="btnSize2" ><i className="ft-check"></i> Next</Link>
+                </div>
               </div>
             </div>
-          </div> : ""
-        }
+          </div> : ""}
       </div>
     </>
   }
 
   tryAgain = (e) => {
     e.preventDefault();
-
     var contactnumber = document.getElementById("number");
     var contact = document.getElementById("customer");
-
     contactnumber.focus();
     contactnumber.value = "";
     contact.value = "";
-
   }
 
   onSubmitCustomer = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
-
     const state = { ...this.state };
     await this.props.getCustomer(state.customer);
     this.setState({ saving: false });
@@ -158,9 +141,7 @@ class RentProduct extends Component {
       return <Redirect to="/" />;
     }
 
-    if (this.props.saved) {
-      return <Redirect to="/orders" />;
-    }
+   
     return (
       <React.Fragment>
         <Loader />
@@ -193,7 +174,6 @@ class RentProduct extends Component {
                                   className="form-control round"
                                   id="number"
                                   min="0"
-                                  // max="10"
                                   ref="contactnumber"
 
                                   onChange={(e) => this.handleChange(e)}
@@ -211,10 +191,6 @@ class RentProduct extends Component {
 
                           </form>
                           {this.props.customer ? this.CutomerBox() : ""}
-
-
-
-
                         </div>
                       </div>
 
@@ -229,14 +205,14 @@ class RentProduct extends Component {
 
             </div>
             <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-                        </footer>
+              <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+            </footer>
 
           </div>
         </div>
       </React.Fragment>
-  
+
     );
   }
 }

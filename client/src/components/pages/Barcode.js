@@ -191,17 +191,52 @@ class Barcode extends Component {
 
   };
 
+  // return sorted products for barcodes
+  getBarcodeData = (products) => {
+    // looping through prducts
+    let barcodes = [];
+    products.forEach((product, p_index) => {
+      if (product.color) {
+        product.color.forEach((color, c_index) => {
+          if (color.sizes) {
+            color.sizes.forEach((size, s_index) => {
+              let length;
+              if (size.barcodes) {
+                length = size.barcodes.length;
+              } else {
+                length = 0;
+              }
+              for (var i = 0; i < length; i++) {
+                barcodes.push(size.barcodes[i].barcode);
+              }
+            });
+          }
+        });
+      }
+    }); // products foreach ends here
+    return barcodes;
+  };
+
   // runs when existing barcode is scanned
   OnSubmitScanBarcode = async (e, product_id, color_id, size_id) => {
     e.preventDefault();
+    const {products}=this.props;
+    const barcodesData = this.getBarcodeData(products);
     // get barcode input value
     let barcode = e.target[0].value;
+    const isInclude = barcodesData.includes(barcode)
+    if(isInclude === true){
+          // error message
+      OCAlert.alertError('This barcode already exist! Try again');
+      return;
+    }
     // empty barcode input
+    else if(isInclude === false){
     e.target[0].value = '';
     this.saveBarCode(barcode, product_id, color_id, size_id);
     // success message
     OCAlert.alertSuccess('Barcode Scanned and Added Successfully!');
-
+  }
   }
 
   // generate and print random bar code
@@ -222,7 +257,6 @@ class Barcode extends Component {
         {
           label: "Yes",
           onClick: () => {
-            console.log(1);
             this.deleteItem(e, product_id, color_id, size_id, barcodeIndex);
           },
         },
@@ -239,7 +273,6 @@ class Barcode extends Component {
     // get product by id
     await this.props.getProductById(product_id);
     const { product } = this.props;
-    // console.log(product);
     // return;
 
     let total_qty = 0;
@@ -462,14 +495,18 @@ class Barcode extends Component {
                 </section>
               </div>
             </div>
-
             <footer className="footer footer-static footer-light">
+<<<<<<< HEAD
                             <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
                                 <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                         </footer>
+=======
+              <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+            </footer>
+>>>>>>> 7a5e4f77e0a28620f7f84ddd03d94fe82e72d9b2
           </div>
         </div>
-        {/* Alerts */}
         <OCAlertsProvider />
       </React.Fragment>
     );

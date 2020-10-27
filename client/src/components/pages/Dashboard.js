@@ -22,53 +22,39 @@ class Dashboard extends Component {
     await this.props.getShop();
   }
 
-  
-
-
   async changeShopStatus(status) {
     await this.props.changeShopStatus(status);
     await this.props.getShop();
   }
   getPendingOrder = () => {
-    // e.preventDefault()
     const { rentedproducts } = this.props;
     if (rentedproducts) {
-
       let events = rentedproducts.filter(a => (new Date(a.returnDate)) - (new Date()) > 0);
-
       return events.length;
-
     }
   }
   getOverDueOrder = () => {
-    // e.preventDefault()
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
       let events = rentedproducts.filter(a => (moment(moment(a.returnDate).format('MM/DD/YYYY')).isBefore(currentdate)));
-      if(events.length > 0){
-      let returningOrders = events.filter((f => f.status !== "Completed"))
-      return returningOrders.length;
-  
-    }
-      
+      if (events.length > 0) {
+        let returningOrders = events.filter((f => f.status !== "Completed"))
+        return returningOrders.length;
+
+      }
     }
   }
-  
+
   getTodaysOrder = () => {
-    // e.preventDefault()
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
-
-
       let events = rentedproducts.filter(a => (moment(moment(a.createdAt).format('MM/DD/YYYY')).isSame(currentdate)));
       return events.length;
     }
-
-
   }
-  orderPickUpToday = () =>{
+  orderPickUpToday = () => {
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
@@ -76,32 +62,23 @@ class Dashboard extends Component {
       let returningOrders = events.filter((f => f.status !== "Completed"))
       return returningOrders.length;
     }
-
   }
   getReturnOrder = () => {
-    // e.preventDefault()
     const { rentedproducts } = this.props;
     if (rentedproducts) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
       let events = rentedproducts.filter(a => (moment(moment(a.returnDate).format('MM/DD/YYYY')).isSame(currentdate)));
       return events.length;
     }
-
-
   }
   getTodaysAppointment = () => {
-    // e.preventDefault()
     const { appointment } = this.props;
     if (appointment) {
       var currentdate = moment(new Date).format('MM/DD/YYYY');
       let events = appointment.filter(a => (moment(moment(a.start).format('MM/DD/YYYY')).isSame(currentdate)));
       return events.length;
-
     }
   }
-
-
-
   render() {
     const { shop } = this.props;
     const { user } = this.props.auth;
@@ -112,7 +89,6 @@ class Dashboard extends Component {
           localStorage.clear();
           this.props.history.push("/");
           window.location.reload();
-
           // setAlert("Shop is closed", "danger", 5000);
         }
       };
@@ -125,20 +101,18 @@ class Dashboard extends Component {
           </Sidebar>
           <Header>
           </Header>
-
           <div className="main-panel">
             <div className="main-content">
               <div className="content-wrapper">
                 <div className="row">
-                <div className="col-xl-4 col-lg-6 col-md-6 col-12">
+                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
                     <div className="card gradient-red-pink">
                       <div className="card-content">
                         <div className="card-body pt-2 pb-0">
                           <div className="media">
                             <div className="media-body white text-left">
                               <h3 className="font-large-1 mb-0">{this.getTodaysAppointment()}</h3>
-<a href="/calender" style={{'textDecoration':'none' , 'color':'white'}}>Today's Appointment
-                         </a>
+                              <a href="/calender" style={{ 'textDecoration': 'none', 'color': 'white' }}>Today's Appointment                    </a>
                             </div>
                             <div className="media-right white text-right">
                               <i className="icon-pie-chart font-large-1"></i>
@@ -196,7 +170,7 @@ class Dashboard extends Component {
                         <div className="card-body pt-2 pb-0">
                           <div className="media">
                             <div className="media-body white text-left">
-<h3 className="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
+                              <h3 className="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
                               <span>Order Pickup Today</span>
                             </div>
                             <div className="media-right white text-right">
@@ -215,7 +189,7 @@ class Dashboard extends Component {
                         <div className="card-body pt-2 pb-0">
                           <div className="media">
                             <div className="media-body white text-left">
-<h3 className="font-large-1 mb-0">{}</h3>
+                              <h3 className="font-large-1 mb-0">{}</h3>
                               <span>Order Needs Alteration</span>
                             </div>
                             <div className="media-right white text-right">
@@ -229,12 +203,12 @@ class Dashboard extends Component {
                     </div>
                   </div>
                   <div className="col-xl-4 col-lg-6 col-md-6 col-12">
-                  <div className="card gradient-orange">
+                    <div className="card gradient-orange">
                       <div className="card-content">
                         <div className="card-body pt-2 pb-0">
                           <div className="media">
                             <div className="media-body white text-left">
-<h3 className="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
+                              <h3 className="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
                               <span>Today's Orders</span>
                             </div>
                             <div className="media-right white text-right">
@@ -285,8 +259,8 @@ class Dashboard extends Component {
             </div>
 
             <footer className="footer footer-static footer-light">
-                <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                    <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+              <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
 
           </div>
@@ -318,11 +292,15 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   products: state.product.products,
   appointment: state.appointment.appointments,
-  // orders: state.order.orders,
   shop: state.dashboard.shop,
   rentedproducts: state.rentproduct.rentproducts
 
 });
 export default connect(mapStateToProps, {
-  getAllAppointments, getAllOrders, getAllProducts, getAllRentedProducts, changeShopStatus, getShop
+  getAllAppointments,
+  getAllOrders,
+  getAllProducts,
+  getAllRentedProducts,
+  changeShopStatus,
+  getShop
 })(Dashboard);

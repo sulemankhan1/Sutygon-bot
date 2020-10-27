@@ -9,7 +9,6 @@ import { connect } from "react-redux";
 
 class View extends Component {
     async componentDidMount() {
-        // check form is to Add or Edit
         if (this.props.match.params.id) {
             const id = this.props.match.params.id;
             let res = await this.props.getUser(id);
@@ -25,7 +24,7 @@ class View extends Component {
         } if (!auth.loading && !auth.isAuthenticated) {
             return <Redirect to="/" />;
         }
-       
+
         return (
             <React.Fragment>
                 <Loader />
@@ -42,19 +41,15 @@ class View extends Component {
                                     <div className="card">
                                         <div className="card-header">
                                             <h4 className="form-section"><i className="ft-user"></i>
-                          View User
-                          </h4>
+                                              View User
+                                            </h4>
                                         </div>
-
                                         <div className="card-body">
-
                                             <div className="row">
-
                                                 <div className="form-group col-md-6 mb-2 text-center">
                                                     {user ?
                                                         <>
                                                             <img
-                                                                // className="form-control"
                                                                 id="projectinput8"
                                                                 src={`${user.avatar}`}
                                                                 height={290} width={250}
@@ -141,18 +136,13 @@ class View extends Component {
                                 </div>
                             </div>
                         </div>
-
                         <footer className="footer footer-static footer-light">
                             <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
                                 <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                         </footer>
-
                     </div>
-
                 </div>
-
             </React.Fragment>
-
         );
     }
 }
@@ -160,7 +150,6 @@ class View extends Component {
 View.propTypes = {
     saved: PropTypes.bool,
     getUser: PropTypes.func.isRequired,
-
     auth: PropTypes.object,
 
 };

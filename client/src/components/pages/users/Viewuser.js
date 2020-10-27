@@ -5,17 +5,17 @@ import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getAllUsers, deleteUser,blockUser,findUsers } from "../../../actions/user";
+import { getAllUsers, deleteUser, blockUser, findUsers } from "../../../actions/user";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Alert from "../../layout/Alert";
 import Loader from "../../layout/Loader";
 
 class ViewUser extends Component {
-  
-    state = {
-        search: ""
-    }
+
+  state = {
+    search: ""
+  }
 
   async componentDidMount() {
     await this.props.getAllUsers();
@@ -37,13 +37,13 @@ class ViewUser extends Component {
         );
       }
       return users.map((user) => (
-       
-       <tr key={user._id}>
+
+        <tr key={user._id}>
           <td className="text-center text-muted">{tbl_sno++}</td>
           <td className="text-center">
-            <img className="media-object round-media" src={`${user.avatar}`} alt="Generic placeholder image" height={75} />
+            <img className="media-object round-media" src={`${user.avatar}`} alt="Profile Picture" height={75} />
           </td>
-       
+
 
           <td className="text-center">{user.username}</td>
           <td className="text-center">{user.contactnumber}</td>
@@ -57,42 +57,41 @@ class ViewUser extends Component {
               <span className="badge badge-warning">Block</span>
             )}
           </td>
-          {/* <td className="text-center">{user.accountStatus}</td> */}
           <td className="text-center">
             <Link
               to={{ pathname: `/user/view/${user._id}` }}
 
               className="info p-0">
-              <i className="ft-user font-medium-3 mr-2"  title="View Profile"></i>
+              <i className="ft-user font-medium-3 mr-2" title="View Profile"></i>
             </Link>
             <Link
               to={{ pathname: `/user/edituser/${user._id}` }}
               className="success p-0">
-              <i className="ft-edit-2 font-medium-3 mr-2 "  title="Edit User"></i>
+              <i className="ft-edit-2 font-medium-3 mr-2 " title="Edit User"></i>
             </Link>
             <Link to="/user"
               onClick={() => this.onDelete(user._id)}
               className="danger p-0">
-              <i className="ft-x font-medium-3 mr-2"  title="Delete"></i>
+              <i className="ft-x font-medium-3 mr-2" title="Delete"></i>
             </Link>
             {auth_user && auth_user.type === "Admin" ?
-                <Link
-                  to={{ pathname: `/user` }}
-                  onClick={() => this.onBlock(user._id)}
-                  className="info p-0">
-                  <i className="ft-alert-triangle font-medium-3 mr-2" title="Block User"></i>
-                </Link>
+              <Link
+                to={{ pathname: `/user` }}
+                onClick={() => this.onBlock(user._id)}
+                className="info p-0">
+                <i className="ft-alert-triangle font-medium-3 mr-2" title="Block User"></i>
+              </Link>
 
-               : ""}
+              : ""}
           </td>
         </tr>
       ));
     }
   };
 
-    handleChange = (e, id = "") => {
-        this.setState({ 'search': e.target.value });
-    };
+  handleChange = (e, id = "") => {
+    this.setState({ 'search': e.target.value });
+  };
 
 
   onDelete = (id) => {
@@ -113,7 +112,7 @@ class ViewUser extends Component {
     });
   };
 
-  
+
 
   onBlock = (id) => {
     confirmAlert({
@@ -134,15 +133,15 @@ class ViewUser extends Component {
     });
   };
 
-    async searchTable() {
-        const searchVal = this.state.search;
-        if(searchVal) {
-            await this.props.findUsers(searchVal);
-        } else {
-            await this.props.getAllUsers();
-        }
-        
+  async searchTable() {
+    const searchVal = this.state.search;
+    if (searchVal) {
+      await this.props.findUsers(searchVal);
+    } else {
+      await this.props.getAllUsers();
     }
+
+  }
 
 
 
@@ -172,15 +171,15 @@ class ViewUser extends Component {
                         </div>
                         <div className="card-content">
                           <div className="card-body">
-                              <div className="row">
-                                <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
-                                <div className="col-md-4">
-                                    <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
-                                </div>
-                                <div className="col-md-4">
-                                  <Link to="/user/adduser" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New User</Link>
-                                </div>
+                            <div className="row">
+                              <div className="col-md-4"><input type="text" className="form-control" name="search" onChange={(e) => this.handleChange(e)} /></div>
+                              <div className="col-md-4">
+                                <a className="btn btn-success" onClick={() => this.searchTable()}><i className="fa fa-search"></i> Search </a>
                               </div>
+                              <div className="col-md-4">
+                                <Link to="/user/adduser" className="btn btn-primary pull-right"> <i className="fa fa-plus"></i> New User</Link>
+                              </div>
+                            </div>
                             <Alert />
                             <table className="table">
                               <thead>
@@ -189,7 +188,6 @@ class ViewUser extends Component {
                                   <th className="text-center">Avatar</th>
 
                                   <th className="text-center">Full Name</th>
-                                  {/* <th>Last Name</th> */}
                                   <th className="text-center" >Contact</th>
                                   <th className="text-center">E-mail</th>
                                   <th className="text-center">Gender</th>
@@ -197,9 +195,7 @@ class ViewUser extends Component {
                                   <th className="text-center">Actions</th>
                                 </tr>
                               </thead>
-                              <tbody>
-                                {this.getTAble()}
-                              </tbody>
+                              <tbody> {this.getTAble()}</tbody>
                             </table>
                           </div>
                         </div>
@@ -211,9 +207,9 @@ class ViewUser extends Component {
             </div>
           </div>
           <footer className="footer footer-static footer-light">
-                            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-                        </footer>
+            <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+              <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
+          </footer>
         </div>
       </React.Fragment>
     );
@@ -233,5 +229,8 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 export default connect(mapStateToProps, {
-  getAllUsers, deleteUser,blockUser, findUsers
+  getAllUsers,
+  deleteUser,
+  blockUser,
+  findUsers
 })(ViewUser);

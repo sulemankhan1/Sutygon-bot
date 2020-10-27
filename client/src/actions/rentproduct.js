@@ -47,7 +47,7 @@ export const addNewRentProduct = (product) => async (dispatch) => {
   };
 
   
-  // get All Users
+  // get All Products
 export const getAllRentedProducts = () => async (dispatch) => {
   dispatch({ type: RENTPRODUCT_LOADING });
   try {
@@ -68,7 +68,7 @@ export const getAllRentedProducts = () => async (dispatch) => {
 
 
 
-// Get User by ID
+// Get User by Product
 export const getProduct = (id) => async (dispatch) => {
   dispatch({ type: RENTPRODUCTS_LOADING });
   try {

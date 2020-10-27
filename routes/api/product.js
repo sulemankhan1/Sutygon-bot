@@ -3,8 +3,6 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const Product = require("../../models/Product");
 const { check, validationResult } = require("express-validator");
-
-
 var multer = require('multer')
 var upload = multer({ dest: 'client/public/uploads/products' })
 
@@ -85,16 +83,15 @@ router.post(
         }
     }
 );
-// @route  POST api/products/barcode_update/:id
-// @desc   Update a Product for Barcode
+// @route  POST api/products/index_update/:id
+// @desc   Update a Product after renting
 // @access Private
 router.post(
-    "/update_Index/:id",
+    "/index_update/:id",
     auth,
     async (req, res) => {
         try {
             const body = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
-
             await Product.updateOne({ _id: req.params.id }, {
                 $set: {
                     color: body.color,
