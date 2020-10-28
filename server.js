@@ -13,15 +13,6 @@ connectDB()
 // Middlewares
 app.use(express.json({ extended: false }))
 app.use(express.static(path.join(__dirname, '/public')))
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'))
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html')) // relative path
-  })
-}
-
 // Routes
 app.use('/api/dashboard', require('./routes/api/dashboard'))
 app.use('/api/users', require('./routes/api/user'))
@@ -34,6 +25,14 @@ app.use('/api/rentedproducts', require('./routes/api/rentaproduct'))
 app.use('/api/reports', require('./routes/api/report'))
 app.use('/api/returnproducts', require('./routes/api/returnproduct'))
 app.use('/api/invoices', require('./routes/api/Invoices'))
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'))
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html')) // relative path
+  })
+}
 
 const port = process.env.PORT || 5000
 app.listen(port, () => console.log(`Server Running on port: ${port}`))
