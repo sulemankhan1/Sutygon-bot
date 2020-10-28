@@ -12,8 +12,9 @@ module.exports = function (req, res, next) {
 
   // verify token
   try {
-    const decoded = jwt.verify(token, process.env.jwtSecret)
+    const decoded = jwt.verify(token, config.get('jwtSecret'))
 
+    console.log(decoded)
     req.user = decoded.user
     next()
   } catch (err) {
