@@ -12,11 +12,7 @@
     "start": "node server.js",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
-<<<<<<< HEAD
-  "author": "Calum Nguyen",
-=======
-  "author": "Alphinex solutions www.alphinex.com",
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
+"author": "Calum Nguyen",
   "license": "ISC",
   "dependencies": {
     "@opuscapita/react-alerts": "^3.1.0",
