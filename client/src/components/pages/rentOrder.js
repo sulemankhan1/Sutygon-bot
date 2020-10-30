@@ -54,25 +54,23 @@ class RentOrder extends Component {
     const { rentDate, returnDate } = this.state;
     if (moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)) {
 
-      OCAlert.alertError('Return Date should be after rent date');
-       
-     
-      // returnDate.value = ''
+      OCAlert.alertError('Return Date should be after rent date', { timeOut: 3000 });
     }
     var startDate = moment(rentDate);
-    var endDate = moment(returnDate);
-
-    var resultHours = endDate.diff(startDate, 'hours', true);
-
-  console.log("resultHours",resultHours/24)
+    var threeDaysAfter = (new Date().getTime()+(2*24*60*60*1000));
+    console.log("threeDaysAfter",threeDaysAfter)
+    var momentthreeDaysAfter = moment(threeDaysAfter);
+   console.log("momentthreeDaysAfter",momentthreeDaysAfter)
+  //   var resultHours = endDate.diff(startDate, 'hours', true);
+  // console.log("resultHours",resultHours/24)
 
   }
-
+  
   rentDateValidity = () => {
     const { rentDate, } = this.state;
     var currentdate = moment(new Date).format('MM/DD/YYYY');
     if (moment(moment(rentDate).format('MM/DD/YYYY')).isBefore(currentdate)) {
-      OCAlert.alertError(`Rent Date should be after today's date`);
+      OCAlert.alertError(`Rent Date should be after today's date`, { timeOut: 3000 });
 
 
 
@@ -315,7 +313,7 @@ class RentOrder extends Component {
 
     ));
   }
-
+  
   getInvoiceBarcodeRecord() {
     let { product_Array } = this.state;
     return product_Array.map((product, b_index) => (

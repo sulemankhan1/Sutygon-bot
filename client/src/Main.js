@@ -1,32 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect } from "react";
-import Dashboard from "./components/pages/Dashboard";
-import Login from "./components/Login";
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
-import { loadUser } from "./actions/auth";
-import setAuthToken from "./utils/setAuthToken";
-import PrivateRoute from "./routing/PrivateRoute";
-import AddUser from "./components/pages/users/Adduser";
-import View from "./components/pages/users/view";
-import ViewUser from "./components/pages/users/Viewuser";
-import AddCustomer from "./components/pages/customers/Addcustomer";
-import AddProduct from "./components/pages/products/Addproduct";
-import Orders from "./components/pages/orders/orders";
-import AddOrder from "./components/pages/orders/AddOrder";
-import Calender from "./components/pages/calender";
-import AddAppointment from "./components/pages/appointment";
-import ViewCustomer from "./components/pages/customers/Viewcustomer";
-import ViewProduct from "./components/pages/products/Viewproduct";
-import Product from "./components/pages/products/Product";
-import RentProduct from "./components/pages/rentproduct";
-import Checkout from "./components/pages/checkout";
-import ReturnProduct from "./components/pages/returnproduct/returnproduct";
-import ScanBarcode from "./components/pages/returnproduct/scanBarcode";
-import RentOrder from "./components/pages/rentOrder";
-import Report from "./components/pages/report/report";
-import ReportOrder from "./components/pages/report/reportOrder";
-import MatchBarcodes from "./components/pages/returnproduct/matchBarcodes";
-=======
 import React, { useEffect } from 'react'
 import Dashboard from './components/pages/Dashboard'
 import Login from './components/Login'
@@ -52,14 +23,13 @@ import ReturnProduct from './components/pages/returnproduct/returnproduct'
 import ScanBarcode from './components/pages/returnproduct/scanBarcode'
 
 import RentOrder from './components/pages/rentOrder'
-import RentInvoice from './components/pages/RentInvoice'
+// import RentInvoice from './components/pages/RentInvoice'
 
 import Report from './components/pages/report/report'
 import ReportOrder from './components/pages/report/reportOrder'
 
 import MatchBarcodes from './components/pages/returnproduct/matchBarcodes'
 // import Calender from "./components/pages/calender";
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
 
 // Redux
 import { Provider } from 'react-redux'
@@ -78,7 +48,6 @@ const Main = () => {
     <Provider store={store}>
       <Router>
         <Switch>
-<<<<<<< HEAD
 
           <Route exact path="/" component={Login} />
           <Route exact path="/Login" component={Login} />
@@ -86,12 +55,6 @@ const Main = () => {
           {/* Dashboard */}
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
 
-=======
-          <Route exact path='/' component={Login} />
-          <Route exact path='/Login' component={Login} />
-          {/* Dashboard */}
-          <PrivateRoute exact path='/dashboard' component={Dashboard} />
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
           {/* users */}
           <PrivateRoute exact path='/user/adduser' component={AddUser} />
           <PrivateRoute exact path='/user' component={ViewUser} />
@@ -99,18 +62,12 @@ const Main = () => {
           <PrivateRoute exact path='/user/view/:id' component={View} />
 
           {/* customers */}
-<<<<<<< HEAD
-          <PrivateRoute exact path="/customer/addcustomer" component={AddCustomer} />
-          <PrivateRoute exact path="/customer" component={ViewCustomer} />
-
-=======
           <PrivateRoute
             exact
             path='/customer/addcustomer'
             component={AddCustomer}
           />
           <PrivateRoute exact path='/customer' component={ViewCustomer} />
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
           {/* products */}
           <PrivateRoute
             exact
@@ -130,26 +87,15 @@ const Main = () => {
           />
 
           {/* rent product */}
-<<<<<<< HEAD
-          <PrivateRoute exact path="/rentproduct" component={RentProduct} />
-          <PrivateRoute exact path="/checkout" component={Checkout} />
-          <PrivateRoute exact path="/rentorder" component={RentOrder} />
-
-          {/* return product */}
-          <PrivateRoute exact path="/returnproduct" component={ReturnProduct} />
-          <PrivateRoute exact path="/matchbarcodes" component={MatchBarcodes} />
-          <PrivateRoute exact path="/scanbarcode" component={ScanBarcode} />
-=======
           <PrivateRoute exact path='/rentproduct' component={RentProduct} />
           <PrivateRoute exact path='/checkout' component={Checkout} />
           <PrivateRoute exact path='/rentorder' component={RentOrder} />
-          <PrivateRoute exact path='/rentinvoice' component={RentInvoice} />
+          {/* <PrivateRoute exact path='/rentinvoice' component={RentInvoice} /> */}
 
           {/* return product */}
           <PrivateRoute exact path='/returnproduct' component={ReturnProduct} />
           <PrivateRoute exact path='/matchbarcodes' component={MatchBarcodes} />
           <PrivateRoute exact path='/scanbarcode' component={ScanBarcode} />
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
 
           {/* orders */}
           <PrivateRoute exact path='/orders' component={Orders} />

@@ -25,15 +25,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 
-<<<<<<< HEAD
-=======
-// router.post('/test', upload.single('avatar'), function (req, res, next) {
-//   console.log(req.file)
-//   console.log(req.body)
-// req.file is the `avatar` file
-// req.body will hold the text fields, if there were any
-// })
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
+
 // @route   POST /api/users/add
 // @desc    Add new user
 // @access  Private
@@ -111,25 +103,8 @@ router.post(
           avatar: `/uploads/user/${req.file.originalname}`,
         }
       }
-<<<<<<< HEAD
-      else {
-       userBody = {
-        username: body.username,
-        fullname: body.username,
-        email: body.email,
-        password: password,
-        gender: body.gender,
-        contactnumber: body.contactnumber,
-        type: body.type,
-        avatar:`/uploads/user/${req.file.originalname}`,
-      };
-    }
-      let user = new User(userBody);
-      await user.save();
-=======
       let user = new User(userBody)
       await user.save()
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
 
       res.status(200).json({ user, msg: 'User Added Successfully' })
     } catch (err) {
@@ -244,45 +219,6 @@ router.post(
       }
 
       const avatar = gravatar.url(body.email, {
-<<<<<<< HEAD
-        s: "200",
-        r: "pg",
-        d: "mm",
-      });
-
-        if(req.file== undefined){
-        await User.updateOne({ _id: req.params.id }, {
-        $set: {
-          username: body.username,
-          fullname: body.username,
-          email: body.email,
-          gender: body.gender,
-          contactnumber: body.contactnumber,
-          type: body.type,
-          avatar:avatar
-        }
-  })
-  }
-      else {
-      await User.updateOne({ _id: req.params.id }, {
-        $set: {
-          username: body.username,
-          fullname: body.username,
-          email: body.email,
-          gender: body.gender,
-          contactnumber: body.contactnumber,
-          type: body.type,
-          avatar:`/uploads/user/${req.file.originalname}`,
-        }
-      });
-      }
-      res
-        .status(200)
-        .json({ msg: "User Updated Successfully" });
-    }
-    catch (err) {
-      console.log(err);
-=======
         s: '200',
         r: 'pg',
         d: 'mm',
@@ -323,7 +259,6 @@ router.post(
     } catch (err) {
       console.log('err message')
       console.log(err.message)
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
       res
         .status(500)
         .json({ errors: [{ msg: 'Server Error: Something went wrong' }] })
@@ -335,12 +270,7 @@ router.post(
 // @desc   Change Account status (blocked/active)
 // @access Private
 router.post(
-<<<<<<< HEAD
-  "/changestatus/:id",
-=======
-  '/changestatus/:id',
-  // [check("accountStatus", "Please Provide a Required").not().isEmpty()],
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
+
   auth,
   async (req, res) => {
     try {

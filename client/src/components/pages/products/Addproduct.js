@@ -277,7 +277,7 @@ class AddProduct extends Component {
     })
     e.preventDefault()
     if(this.state.sizeQty > e.target.value){
-      OCAlert.alertError(`value can't be less than ${this.state.sizeQty}`)
+      OCAlert.alertError(`value can't be less than ${this.state.sizeQty}`, { timeOut: 3000 })
     }
    
   }
@@ -331,7 +331,7 @@ class AddProduct extends Component {
 
     const totalFromState = this.calculateTotals(state);
     if (state.totalFromProps > state.total) {
-      OCAlert.alertError(`${"Quantity cannot be less than"} ${state.totalFromProps}`)
+      OCAlert.alertError(`${"Quantity cannot be less than"} ${state.totalFromProps}`, { timeOut: 3000 })
       this.setState({ saving: false });
       return;
     }
@@ -352,7 +352,7 @@ class AddProduct extends Component {
       formData.append('image', state.image)
     }
     else {
-      OCAlert.alertError("Please Upload Product Image")
+      OCAlert.alertError("Please Upload Product Image", { timeOut: 3000 })
       this.setState({ saving: false });
       return;
     }

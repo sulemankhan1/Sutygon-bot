@@ -26,23 +26,6 @@ class Dashboard extends Component {
     await this.props.getShop()
   }
   getPendingOrder = () => {
-<<<<<<< HEAD
-    const { rentedproducts } = this.props;
-    if (rentedproducts) {
-      let events = rentedproducts.filter(a => (new Date(a.returnDate)) - (new Date()) > 0);
-      return events.length;
-    }
-  }
-  getOverDueOrder = () => {
-    const { rentedproducts } = this.props;
-    if (rentedproducts) {
-      var currentdate = moment(new Date).format('MM/DD/YYYY');
-      let events = rentedproducts.filter(a => (moment(moment(a.returnDate).format('MM/DD/YYYY')).isBefore(currentdate)));
-      if (events.length > 0) {
-        let returningOrders = events.filter((f => f.status !== "Completed"))
-        return returningOrders.length;
-
-=======
     // e.preventDefault()
     const { rentedproducts } = this.props
     if (rentedproducts) {
@@ -64,23 +47,11 @@ class Dashboard extends Component {
       if (events.length > 0) {
         let returningOrders = events.filter((f) => f.status !== 'Completed')
         return returningOrders.length
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
       }
     }
   }
 
   getTodaysOrder = () => {
-<<<<<<< HEAD
-    const { rentedproducts } = this.props;
-    if (rentedproducts) {
-      var currentdate = moment(new Date).format('MM/DD/YYYY');
-      let events = rentedproducts.filter(a => (moment(moment(a.createdAt).format('MM/DD/YYYY')).isSame(currentdate)));
-      return events.length;
-    }
-  }
-  orderPickUpToday = () => {
-    const { rentedproducts } = this.props;
-=======
     // e.preventDefault()
     const { rentedproducts } = this.props
     if (rentedproducts) {
@@ -94,7 +65,6 @@ class Dashboard extends Component {
   }
   orderPickUpToday = () => {
     const { rentedproducts } = this.props
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
     if (rentedproducts) {
       var currentdate = moment(new Date()).format('MM/DD/YYYY')
       let events = rentedproducts.filter((a) =>
@@ -105,12 +75,8 @@ class Dashboard extends Component {
     }
   }
   getReturnOrder = () => {
-<<<<<<< HEAD
-    const { rentedproducts } = this.props;
-=======
     // e.preventDefault()
     const { rentedproducts } = this.props
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
     if (rentedproducts) {
       var currentdate = moment(new Date()).format('MM/DD/YYYY')
       let events = rentedproducts.filter((a) =>
@@ -120,15 +86,6 @@ class Dashboard extends Component {
     }
   }
   getTodaysAppointment = () => {
-<<<<<<< HEAD
-    const { appointment } = this.props;
-    if (appointment) {
-      var currentdate = moment(new Date).format('MM/DD/YYYY');
-      let events = appointment.filter(a => (moment(moment(a.start).format('MM/DD/YYYY')).isSame(currentdate)));
-      return events.length;
-    }
-  }
-=======
     // e.preventDefault()
     const { appointment } = this.props
     if (appointment) {
@@ -140,25 +97,17 @@ class Dashboard extends Component {
     }
   }
 
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
   render() {
     const { shop } = this.props
     const { user } = this.props.auth
     if (user && user.type == 'User') {
       if (shop) {
         let openShop = shop[0]
-<<<<<<< HEAD
-        if (openShop && openShop.status === "off") {
-          localStorage.clear();
-          this.props.history.push("/");
-          window.location.reload();
-=======
         if (openShop && openShop.status === 'off') {
           localStorage.clear()
           this.props.history.push('/')
           window.location.reload()
 
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
           // setAlert("Shop is closed", "danger", 5000);
         }
       }
@@ -166,25 +115,6 @@ class Dashboard extends Component {
     return (
       <React.Fragment>
         <Loader />
-<<<<<<< HEAD
-        <div className="wrapper menu-collapsed">
-          <Sidebar location={this.props.location} >
-          </Sidebar>
-          <Header>
-          </Header>
-          <div className="main-panel">
-            <div className="main-content">
-              <div className="content-wrapper">
-                <div className="row">
-                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div className="card gradient-red-pink">
-                      <div className="card-content">
-                        <div className="card-body pt-2 pb-0">
-                          <div className="media">
-                            <div className="media-body white text-left">
-                              <h3 className="font-large-1 mb-0">{this.getTodaysAppointment()}</h3>
-                              <a href="/calender" style={{ 'textDecoration': 'none', 'color': 'white' }}>Today's Appointment                    </a>
-=======
         <div className='wrapper menu-collapsed'>
           <Sidebar location={this.props.location}></Sidebar>
           <Header></Header>
@@ -211,7 +141,6 @@ class Dashboard extends Component {
                               >
                                 Today's Appointment
                               </a>
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
                             </div>
                             <div className='media-right white text-right'>
                               <i className='icon-pie-chart font-large-1'></i>
@@ -272,15 +201,6 @@ class Dashboard extends Component {
                       </div>
                     </div>
                   </div>
-<<<<<<< HEAD
-                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div className="card gradient-mini">
-                      <div className="card-content">
-                        <div className="card-body pt-2 pb-0">
-                          <div className="media">
-                            <div className="media-body white text-left">
-                              <h3 className="font-large-1 mb-0">{this.orderPickUpToday()}</h3>
-=======
                   <div className='col-xl-4 col-lg-6 col-md-6 col-12'>
                     <div className='card gradient-mini'>
                       <div className='card-content'>
@@ -290,7 +210,6 @@ class Dashboard extends Component {
                               <h3 className='font-large-1 mb-0'>
                                 {this.orderPickUpToday()}
                               </h3>
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
                               <span>Order Pickup Today</span>
                             </div>
                             <div className='media-right white text-right'>
@@ -305,15 +224,6 @@ class Dashboard extends Component {
                       </div>
                     </div>
                   </div>
-<<<<<<< HEAD
-                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div className="card gradient-brown-brown">
-                      <div className="card-content">
-                        <div className="card-body pt-2 pb-0">
-                          <div className="media">
-                            <div className="media-body white text-left">
-                              <h3 className="font-large-1 mb-0">{}</h3>
-=======
                   <div className='col-xl-4 col-lg-6 col-md-6 col-12'>
                     <div className='card gradient-brown-brown'>
                       <div className='card-content'>
@@ -321,7 +231,6 @@ class Dashboard extends Component {
                           <div className='media'>
                             <div className='media-body white text-left'>
                               <h3 className='font-large-1 mb-0'>{}</h3>
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
                               <span>Order Needs Alteration</span>
                             </div>
                             <div className='media-right white text-right'>
@@ -336,15 +245,6 @@ class Dashboard extends Component {
                       </div>
                     </div>
                   </div>
-<<<<<<< HEAD
-                  <div className="col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div className="card gradient-orange">
-                      <div className="card-content">
-                        <div className="card-body pt-2 pb-0">
-                          <div className="media">
-                            <div className="media-body white text-left">
-                              <h3 className="font-large-1 mb-0">{this.getTodaysOrder()}</h3>
-=======
                   <div className='col-xl-4 col-lg-6 col-md-6 col-12'>
                     <div className='card gradient-orange'>
                       <div className='card-content'>
@@ -354,7 +254,6 @@ class Dashboard extends Component {
                               <h3 className='font-large-1 mb-0'>
                                 {this.getTodaysOrder()}
                               </h3>
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
                               <span>Today's Orders</span>
                             </div>
                             <div className='media-right white text-right'>
@@ -450,11 +349,6 @@ class Dashboard extends Component {
               </div>
             </div>
 
-<<<<<<< HEAD
-            <footer className="footer footer-static footer-light">
-              <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
-                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
-=======
             <footer className='footer footer-static footer-light'>
               <p className='clearfix text-muted text-sm-center px-2'>
                 <span>
@@ -470,7 +364,6 @@ class Dashboard extends Component {
                   , All rights reserved.{' '}
                 </span>
               </p>
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3
             </footer>
           </div>
         </div>
@@ -507,10 +400,5 @@ export default connect(mapStateToProps, {
   getAllProducts,
   getAllRentedProducts,
   changeShopStatus,
-<<<<<<< HEAD
-  getShop
-})(Dashboard);
-=======
   getShop,
 })(Dashboard)
->>>>>>> 1a23a1dfc4c41c92d44f4512b71f381c9025dff3

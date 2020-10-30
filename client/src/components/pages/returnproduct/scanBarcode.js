@@ -57,7 +57,7 @@ class ScanBarcode extends Component {
 
     //   if(matchedBarcodes.includes(barcodeFromInput))
     //  { 
-    //   OCAlert.alertError(`This barcode is already scanned. Please try again!`); 
+    //   OCAlert.alertError(`This barcode is already scanned. Please try again!`alertError); 
     //   return;
     // }
     
@@ -71,7 +71,7 @@ class ScanBarcode extends Component {
       }
       else {
         OCAlert.alertError(`The barcode you enter does not match with any item
-        in this order. Please try again!`);
+        in this order. Please try again!`, { timeOut: 3000 });
 
       }
      
