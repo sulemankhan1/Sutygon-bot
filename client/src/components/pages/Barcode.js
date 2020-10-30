@@ -227,7 +227,7 @@ class Barcode extends Component {
     const isInclude = barcodesData.includes(barcode)
     if(isInclude === true){
           // error message
-      OCAlert.alertError('This barcode already exist! Try again');
+      OCAlert.alertError('This barcode already exist! Try again', { timeOut: 3000 });
       return;
     }
     // empty barcode input
