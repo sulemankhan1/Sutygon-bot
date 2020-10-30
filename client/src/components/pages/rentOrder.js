@@ -35,7 +35,7 @@ class RentOrder extends Component {
     saving: false,
     leaveID: "",
     barcodesRented: false,
-    redirect:false
+    redirect: false
   };
 
   async componentDidMount() {
@@ -53,17 +53,29 @@ class RentOrder extends Component {
   returnDateValidity = () => {
     const { rentDate, returnDate } = this.state;
     if (moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)) {
+
       OCAlert.alertError('Return Date should be after rent date');
-      returnDate.value = ''
+       
+     
+      // returnDate.value = ''
     }
+    var startDate = moment(rentDate);
+    var endDate = moment(returnDate);
+
+    var resultHours = endDate.diff(startDate, 'hours', true);
+
+  console.log("resultHours",resultHours/24)
+
   }
 
   rentDateValidity = () => {
-    const { rentDate } = this.state;
+    const { rentDate, } = this.state;
     var currentdate = moment(new Date).format('MM/DD/YYYY');
     if (moment(moment(rentDate).format('MM/DD/YYYY')).isBefore(currentdate)) {
       OCAlert.alertError(`Rent Date should be after today's date`);
-      rentDate.value = ''
+
+
+
     }
 
   }
@@ -161,9 +173,9 @@ class RentOrder extends Component {
 
   };
 
-  redirect = () =>{
+  redirect = () => {
     this.setState({
-      redirect:true
+      redirect: true
     })
   }
   // return sorted products for barcodes
@@ -245,20 +257,22 @@ class RentOrder extends Component {
       <div id="sizes_box" key={b_index}>
         <div className="row">
           <div className="left">
-            <input
-              type="text"
-              className="form-control mm-input s-input text-center"
-              placeholder="Barcode"
-              name="barcode"
-              id="widthBr"
-              style={{ width: "60%" }}
-              readOnly
-              value={
-                product &&
-                product[0].title &&
-                product[0].title + " | " + product[0].barcode
-              }
-            />
+            <div className="col-md-8">
+              <input
+                type="text"
+                className="form-control mm-input s-input text-center"
+                placeholder="Barcode"
+                name="barcode"
+                id="widthBr"
+                style={{ width: "90%" }}
+                readOnly
+                value={
+                  product &&
+                  product[0].title &&
+                  product[0].title + " | " + product[0].barcode
+                }
+              />
+            </div>
 
             <input
               type="text"
@@ -291,6 +305,14 @@ class RentOrder extends Component {
           </div>
         </div>
       </div>
+
+      // <tr className="row">
+      //   <td className="form-control mm-input s-input text-center" colSpan={3}>{`${product && product[0].barcode}`}</td>
+      //   <td className="form-control mm-input s-input text-center" colSpan={3}>>{`${product && product[0].title}`}</td>
+      //   <td >{`${product && product[0].price}`}</td>
+
+      // </tr>
+
     ));
   }
 
@@ -379,15 +401,15 @@ class RentOrder extends Component {
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
     }
-    
-    if (this.state.redirect==true) {
-      return <Redirect to="/rentproduct" />;
-        }
 
-        if(this.props.location.data == undefined){
-          return <Redirect to="/rentproduct" />;
-   
-       }
+    if (this.state.redirect == true) {
+      return <Redirect to="/rentproduct" />;
+    }
+
+    if (this.props.location.data == undefined) {
+      return <Redirect to="/rentproduct" />;
+
+    }
     const { customer } = this.props;
     return (
       <React.Fragment>
@@ -420,7 +442,17 @@ class RentOrder extends Component {
                               <form onSubmit={(e) => this.onSubmit(e)}>
                                 <div className="col-md-12">
                                   <div id="sizes_box">
+                                    {/* <table className="sizes_box" >
+                                      <thead>
+                                        <th>ProductBarcode</th>
+                                        <th>Product Description</th>
+                                        <th>Product Title</th>
+                                        <th>Product Price</th>
+                                      </thead>
+                                      <tbody> */}
                                     {this.getBarcodeRecord()}
+                                    {/* </tbody>
+                                    </table> */}
                                     <Link
                                       to="/product/addproduct"
                                       className="btn "
@@ -538,13 +570,10 @@ class RentOrder extends Component {
                                               placeholder="Insurance"
                                               id="setSizeFloat"
                                               required
-                                              readOnly
-
                                               value={
-                                                this.state.total_amt
-                                                  ? `${this.calculateInsuranceAmt()}`
-                                                  : ""
+                                                this.state.total_amt / 2
                                               }
+
                                             />
                                           </div>
                                         </div>
@@ -583,7 +612,7 @@ class RentOrder extends Component {
                                               />
                                               <label
                                               >NO</label>
-                                            </div>                  
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
@@ -623,7 +652,7 @@ class RentOrder extends Component {
                                           data-placement="top"
                                           data-title="Rent Date"
                                           required
-                                          onChange={(e) =>this.onHandleChange(e)}
+                                          onChange={(e) => this.onHandleChange(e)}
                                           value={this.state.rentDate}
                                           onInput={this.rentDateValidity()}
 
@@ -642,7 +671,7 @@ class RentOrder extends Component {
                                           required
 
                                           data-title="Return Date"
-                                          onChange={(e) =>this.onHandleChange(e)}
+                                          onChange={(e) => this.onHandleChange(e)}
                                           value={this.state.returnDate}
                                           onInput={this.returnDateValidity()}
                                         />
@@ -792,14 +821,14 @@ class RentOrder extends Component {
                                   style={{ 'color': 'black' }}
 
                                   id="setSizeFloat"
-                                  value={`${"PAID TOTAL: $"}${this.state.total}`}/>
+                                  value={`${"PAID TOTAL: $"}${this.state.total}`} />
                               </div>
                             </div>
                           </div>
                           <div className="row">
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 >Amount to be returned to customer</h6>
-                              </div>
+                            </div>
                             <div className="col-md-6 text-center" style={{ 'color': 'black' }}>
                               <h6 >{`${this.state.insAmt}`}</h6>
                             </div>
@@ -836,7 +865,7 @@ class RentOrder extends Component {
                               </h6>
                             </div>
                           </div>
-                         <div className="col-md-12">
+                          <div className="col-md-12">
                             <table>
                               <tbody>
                                 <tr>
@@ -846,7 +875,7 @@ class RentOrder extends Component {
                                     {(order && !!order.length) ? `${this.state.orderBarcode}` : ""}
                                   </td>
                                   <td className="col-md-6" style={{ 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>
-                                     Authorized by <br />
+                                    Authorized by <br />
                                      Sutygon-Bot</td>
                                 </tr>
                               </tbody>
