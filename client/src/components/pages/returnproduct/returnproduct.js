@@ -27,6 +27,7 @@ seletedOrder:"",
   async componentDidMount() {
     await this.props.getAllProducts();
     await this.props.getCustomer(this.state.customer_id);
+
   }
 
   tryAgain = (e) => {
@@ -121,8 +122,10 @@ seletedOrder:"",
     const { seletedOrder } = this.state;
     let productarray = [];
     let { barcodes } = seletedOrder[0];
+    
     const { products } = this.props;
     if (products) {
+      
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
         barcodes.forEach((element) => {
@@ -130,16 +133,29 @@ seletedOrder:"",
             sortedAray.filter ((f) => f.barcode == element)
           );
         });
+        
         this.state.product_Array = productarray;
-        {
-          Object.keys(productarray).map((key, i) => (
-            console.log(productarray[key][0])
-            // <p key={i}>
-            //   <span>Key Name: {key}</span>
-            //   <span>Value: {productarray[key]}</span>
-            // </p>
+        
+        return productarray.map((product, i) => (
+          <div key={i}>
+              {product[0].title}
+            </div>
+        ))
+
+        // return productarray.map((i, obj) => (
+        //   <div key={i}>
+        //       {obj.title}
+        //     </div>
+        // ))
+        
+        return;
+        return Object.keys(productarray).map((key, i) => (
+          <p key={i}>
+            <span>Key Name: {key}</span>
+            <span>Value: {productarray[key].title}</span>
+          </p>
+        )
           )
-            )  }
 {/* <div id="sizes_box" >
           <div className="row">
             <div className="left">
@@ -160,7 +176,7 @@ seletedOrder:"",
               </div>
   </div></div></div> */}
              // ));   
-    }}
+    }}  
   }
   CutomerBox = () => {
     const { orders } = this.props;
@@ -340,7 +356,7 @@ seletedOrder:"",
                                   {(this.state.selectedOrder === "true") ?
                                     <>
                                       <div id="colors_box">
-                                        {`${this.productBox()}`}
+                                        {this.productBox()}
                                         <div className="btn-cont text-center">
                                           <div className="form-group">
                                             <Link

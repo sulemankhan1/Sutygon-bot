@@ -10,7 +10,7 @@ import shortid from "shortid";
 import * as moment from 'moment'
 import { getProductById, getAllProducts, updateProductIndex, barcodeUpdateProduct, } from "../../actions/product";
 import { getCustomer } from "../../actions/customer";
-import { addNewRentProduct } from "../../actions/rentproduct";
+import { addNewRentProduct ,getLastRecord} from "../../actions/rentproduct";
 import { getOrderbyOrderNumber } from "../../actions/returnproduct";
 import { addNewInvoice } from "../../actions/invoices";
 import { OCAlertsProvider } from '@opuscapita/react-alerts';
@@ -40,7 +40,10 @@ class RentOrder extends Component {
     redirect: false
   };
 
+
+  
   async componentDidMount() {
+    this.generateRandomNumber('22-99');
     await this.props.getAllProducts();
 
     const { data } = this.props.location;
@@ -51,17 +54,46 @@ class RentOrder extends Component {
       });
     }
     await this.props.getCustomer(this.state.customer_id);
+    
   }
-  returnDateValidity = () => {
-    const { rentDate } = this.state;
-    // if (moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)) {
+  generateRandomNumber(previousNumber) {
+    // break number by dash
+    // convert number into integer
+    let pn = previousNumber;
+    let n_array = previousNumber.split("-");
 
-    //   OCAlert.alertError('Return Date should be after rent date', { timeOut: 3000 });
-    // }
+    // check second half if 90
+    if(n_array[1] == 99) {
+      // if yes increment first half 
+      n_array[0]++;
+      n_array[1] = 1;
+    } else {
+      // if not add 1
+      n_array[1]++;
+    }
+
+    let firstHalf = "";
+    if(n_array[0] <= 9) {
+      firstHalf += "00"+n_array[0];
+    } else if(n_array[0] > 9 && n_array[0] <= 99) {
+      firstHalf += "0"+n_array[0];
+    } else if(n_array[0] > 99) {
+      firstHalf += n_array[0];
+    }
+
+    let secondHalf = "";
+    if(n_array[1] <= 9) {
+      secondHalf += "0"+n_array[1];
+    } else if(n_array[1] > 9) {
+      secondHalf += n_array[1];
+    } 
 
 
+    // return new number
+    let n = firstHalf + "-" + secondHalf;
+    return n;
   }
-
+  
   rentDateValidity = () => {
     const { rentDate, } = this.state;
     var currentdate = moment(new Date).format('MM/DD/YYYY');
@@ -362,15 +394,15 @@ class RentOrder extends Component {
     const { data } = this.props.location;
 
     if (!auth.loading && !auth.isAuthenticated) {
-      return <Redirect to="/" />;
+      // return <Redirect to="/" />;
     }
 
     if (this.state.redirect == true) {
-      return <Redirect to="/rentproduct" />;
+      // return <Redirect to="/rentproduct" />;
     }
 
     if (this.props.location.data == undefined) {
-      return <Redirect to="/rentproduct" />;
+      // return <Redirect to="/rentproduct" />;
 
     }
     const { customer } = this.props;
@@ -887,6 +919,7 @@ RentOrder.propTypes = {
   updateProductIndex: PropTypes.func.isRequired,
   getOrderbyOrderNumber: PropTypes.func.isRequired,
   addNewInvoice: PropTypes.func.isRequired,
+  getLastRecord:PropTypes.func.isRequired,
   auth: PropTypes.object,
   products: PropTypes.array,
   customer: PropTypes.array,
@@ -900,6 +933,7 @@ RentOrder.propTypes = {
 const mapStateToProps = (state) => ({
   product: state.product.product,
   auth: state.auth,
+  lastRecord: state.returnproduct.lastrecord,
   order: state.returnproduct.returnproduct,
   products: state.product.products,
   customer: state.customer.customer,
@@ -914,5 +948,6 @@ export default connect(mapStateToProps, {
   getProductById,
   updateProductIndex,
   addNewInvoice,
-  getOrderbyOrderNumber
+  getOrderbyOrderNumber,
+  getLastRecord
 })(RentOrder);
