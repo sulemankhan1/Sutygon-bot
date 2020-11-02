@@ -244,7 +244,7 @@ class Barcode extends Component {
   // generate and print random bar code
   genPrintRandBarcode = async (e, product_id, color_id, size_id) => {
     // generate random barcode
-    let barcode = Math.floor(Math.random() * 99999999) + 11111111;
+    let barcode = Math.floor(Math.random() * 89999999 + 10000000);
     this.saveBarCode(barcode, product_id, color_id, size_id);
     this.printBarcode(barcode);
     OCAlert.alertSuccess('Barcode Generated and Saved Successfully!');

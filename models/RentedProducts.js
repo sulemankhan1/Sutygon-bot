@@ -40,6 +40,9 @@ const RentedProductSchema = new mongoose.Schema({
     total: {
         type: String,
     },
+    leaveID:{
+        type:Boolean,
+    }
 
 },
     { timestamps: true }

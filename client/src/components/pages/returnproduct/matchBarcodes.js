@@ -19,6 +19,7 @@ var JsBarcode = require('jsbarcode');
 class MatchBarcodes extends Component {
   state = {
     customer: "",
+    barcodesArray: "",
     taxAmt: "",
     customer_id: "",
     order: "",
@@ -30,6 +31,9 @@ class MatchBarcodes extends Component {
     totalPaid: "",
     orderBarcode: "",
     product_Array: "",
+    m_product: "",
+    m_productarray: "",
+    m_total: ""
   };
 
   handleChange = (e, id = "") => {
@@ -88,8 +92,9 @@ class MatchBarcodes extends Component {
                   color_id: color_id,
                   size_id: size_id,
                   barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
-                  title: product_name + " | " + color_name + " | " + size_name,
+                  title: product_name,
                   barcode: size.barcodes[i].barcode,
+                  color: color_name + " | " + size_name,
                   price: price,
                 };
                 rows.push(row);
@@ -101,27 +106,35 @@ class MatchBarcodes extends Component {
     }); // products foreach ends here
     return rows;
   };
-
+  getMissingItemTotal = () => {
+    let m_total = "";
+    const { m_productarray } = this.state;
+    m_productarray.forEach((element, element_i) => {
+      m_total = Number(m_total) + Number(element[0].price)
+    })
+    this.state.m_total = m_total;
+    return m_total
+  }
   customerOwe = () => {
-    const { insuranceAmt, missingItmCharges } = this.state;
+    const { insuranceAmt, m_total } = this.state;
     let customerOwe;
-    if(missingItmCharges > insuranceAmt){
-      customerOwe = missingItmCharges - insuranceAmt
+    if (m_total > insuranceAmt) {
+      customerOwe = Number(m_total) - Number(insuranceAmt)
     }
-    else if(missingItmCharges <= insuranceAmt){
-      customerOwe = insuranceAmt - missingItmCharges
+    else if (insuranceAmt >=m_total ) {
+      customerOwe = Number(insuranceAmt) - Number(m_total)
     }
     return customerOwe;
   }
 
   returnAmt = () => {
-    const { insuranceAmt, missingItmCharges } = this.state;
+    const { insuranceAmt, m_total } = this.state;
     let returnAmt;
-    if(missingItmCharges > insuranceAmt){
-      returnAmt = missingItmCharges - insuranceAmt
+    if (m_total > insuranceAmt) {
+      returnAmt = Number(m_total) - Number(insuranceAmt)
     }
-    else if(missingItmCharges <= insuranceAmt){
-      returnAmt = insuranceAmt - missingItmCharges
+    else if (insuranceAmt >= m_total) {
+      returnAmt = Number(insuranceAmt) - Number(m_total)
     }
     return returnAmt;
   }
@@ -135,7 +148,6 @@ class MatchBarcodes extends Component {
     let productarray = [];
     let { order } = this.props.location.data;
     let { barcodesArray } = this.state;
-    console.log("barcodesArray", barcodesArray)
     const { products } = this.props;
     if (products && barcodesArray) {
       let sortedAray = this.getSortedData(products);
@@ -154,29 +166,29 @@ class MatchBarcodes extends Component {
         <div id="sizes_box" key={b_index}>
           <div className="row" >
 
-            <div style={{ float: "left", width: "100%" }} >
-              <input
-                type="text"
-                value={`${b[0].title} ${"|"} ${b[0].barcode}`}
-                className="form-control mm-input s-input text-center"
-                placeholder="Barcode"
-                id="widthBr"
-                style={{ width: "60%" }}
-                readOnly
-              />
+            <div style={{ float: "left", width: "90%" }} >
+              <table className="table table-bordered table-light" style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid' }}>
+                <thead></thead>
+                <tbody>
+                  <tr key={b_index} style={{ "margin": "3px" }}>
+                    <td className="text-center">{b[0].barcode}</td>
+                    <td className="text-center">{b[0].title}</td>
+                    <td className="text-center">{b[0].color}</td>
+                    <td className="text-center">{b[0].price}</td>
 
-              <input
-                type="text"
-                value={`${b[0].price}`}
-                className="form-control mm-input s-input text-center"
-                placeholder="Barcode"
-                id="setSize"
-                name="total"
-                readOnly
+                  </tr>
+                </tbody>
+              </table>
 
-              />
             </div>
-            <br />
+            <div className="right ml-2">
+              <button
+                type="button"
+                className="btn btn-raised btn-sm btn-icon mt-1"
+              >
+                <i className="fa fa-check fa-2x text-success"></i>
+              </button>
+            </div>
 
           </div>
 
@@ -189,100 +201,88 @@ class MatchBarcodes extends Component {
 
   missingProducts = () => {
     let m_productarray = [];
+    let { products } = this.props;
     let { order } = this.props.location.data;
     let { orderedBarcode } = this.props.location.data;
     let { barcodesArray } = this.state;
-    for (var i = 0; i < orderedBarcode.length; i++) {
-      const m_product = orderedBarcode.filter((f) => f != barcodesArray)
-      console.log("m_product", m_product)
-
+    let m_product = [];
+    if (!!barcodesArray.length) {
+      barcodesArray.forEach((element, e_index) => {
+        m_product = orderedBarcode.filter((f) => f !== element.barcode)
+      })
+      this.state.m_product = m_product
     }
-    let m_barcodeArray = [];
-
-    console.log("m_barcodeArray", m_barcodeArray)
-    return;
-    const { products } = this.props;
-    if (products && barcodesArray) {
+    if (products && m_product) {
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
-        barcodesArray.forEach((element) => {
+        m_product.forEach((element) => {
           m_productarray.push(
-            sortedAray.filter((f) => f.barcode == element.barcode)
+            sortedAray.filter((f) => f.barcode == element)
           );
           return m_productarray;
         });
       }
     }
-    this.state.m_productarray = m_productarray
-    return m_productarray.map((b, b_index) => (
+    this.state.m_productarray = m_productarray;
+    return this.state.m_productarray.map((m_product, m_product_index) => (
       <>
-        <div id="sizes_box" key={b_index}>
+          <div id="sizes_box" key={m_product_index}>
           <div className="row" >
 
-            <div style={{ float: "left", width: "100%" }} >
-              <input
-                type="text"
-                value={`${b[0].title} ${"|"} ${b[0].barcode}`}
-                className="form-control mm-input s-input text-center"
-                placeholder="Barcode"
-                id="widthBr"
-                style={{ width: "60%" }}
-                readOnly
-              />
+            <div style={{ float: "left", width: "90%" }} >
+            <table className="table table-bordered table-light" style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid' }}>
+              <thead></thead>
+              <tbody>
+                <tr key={m_product_index} style={{ "margin": "3px" }}>
+                  <td className="text-center">{m_product[0].barcode}</td>
+                  <td className="text-center">{m_product[0].title}</td>
+                  <td className="text-center">{m_product[0].color}</td>
+                  <td className="text-center">{m_product[0].price}</td>
 
-              <input
-                type="text"
-                value={`${b[0].price}`}
-                className="form-control mm-input s-input text-center"
-                placeholder="Barcode"
-                id="setSize"
-                name="total"
-                readOnly
-
-              />
-            </div>
+                </tr>
+              </tbody>
+            </table>
             <br />
 
           </div>
+          
+          <div className="right ml-3">
+              <button
+                type="button"
+                className="btn btn-raised btn-sm btn-icon btn-danger mt-2"
+              >
+                <i className="fa fa-minus text-white"></i>
+              </button>
+            </div>
+            <br />
+          
+          </div>
+          
 
         </div>
 
       </>
     ))
   }
-
-
-
 
   invoiceproductBox = () => {
     const { product_Array } = this.state
     return product_Array.map((b, b_index) => (
       <>
-        <div id="sizes_box" key={b_index} >
-          <div className="row" style={{ 'alignContent': 'center' }} >
+        <div key={b_index} >
+          <div className="" style={{ 'alignContent': 'center' }} >
 
-            <input
-              type="text"
-              value={`${b[0].title} ${"|"} ${b[0].barcode}`}
-              className="form-control mm-input s-input text-center"
-              placeholder="Barcode"
-              name="barcode"
-              id="widthBr"
-              readOnly
-              style={{ width: "240px", color: 'black' }}
-            />
+            <table className="table table-bordered table-light" style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid' }}>
+              <thead></thead>
+              <tbody><tr key={b_index} >
+                <td className="text-center">{b[0].barcode} </td>
+                <td className="text-center">{b[0].title}</td>
+                <td className="text-center">{b[0].color} </td>
+                <td className="text-center">{b[0].price} </td>
 
-            <input
-              type="text"
-              className="form-control mm-input s-input text-center"
-              placeholder="Price"
-              id="setSize"
-              readOnly
-              name="total"
-              style={{ color: 'black', width: '120px' }}
-              value={`${b[0].price}`}
+              </tr></tbody>
+            </table>
 
-            />
           </div>
         </div>
 
@@ -291,6 +291,30 @@ class MatchBarcodes extends Component {
   }
 
 
+  m_invoiceproductBox = () => {
+    const { m_productarray } = this.state
+    return m_productarray.map((b, b_index) => (
+      <>
+        <div  key={b_index} >
+          <div style={{ 'alignContent': 'center' }} >
+
+            <table className="table table-bordered table-light" style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid' }}>
+              <thead></thead>
+              <tbody><tr key={b_index} >
+                <td className="text-center">{b[0].barcode} </td>
+                <td className="text-center">{b[0].title}</td>
+                <td className="text-center">{b[0].color} </td>
+                <td className="text-center">{b[0].price} </td>
+
+              </tr></tbody>
+            </table>
+
+          </div>
+        </div>
+
+      </>
+    ))
+  }
 
   onSubmit = async (e) => {
     e.preventDefault();
@@ -373,7 +397,6 @@ class MatchBarcodes extends Component {
   }
 
   render() {
-
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
@@ -388,7 +411,7 @@ class MatchBarcodes extends Component {
     const { order } = data;
 
     const { barcodesArray } = data
-    const { customerOwe, insuranceAmt, missingItmCharges } = this.state;
+    const { customerOwe, insuranceAmt, m_total } = this.state;
 
     return (
       <React.Fragment>
@@ -441,9 +464,12 @@ class MatchBarcodes extends Component {
                                 <div id="sizes_box">
                                   {this.productBox()}
                                   <br />
-
-                                  <h3>Missing Products</h3>
-                                  {this.missingProducts()}
+                                  {barcodesArray.length != order[0].barcodes.length ?
+                                    <h3>Missing Products</h3>
+                                    : ""}
+                                  {barcodesArray.length != order[0].barcodes.length ?
+                                    this.missingProducts()
+                                    : ""}
                                   <div className="row">
                                     <div className="col-md-12">
                                       <div className="form-group">
@@ -459,7 +485,7 @@ class MatchBarcodes extends Component {
                                             placeholder="Total"
                                             id="setSizeFloat"
                                             required
-                                            value={missingItmCharges}
+                                            value={!!this.state.m_productarray.length ? this.getMissingItemTotal() : "0"}
                                             onChange={(e) => this.handleChange(e)}
                                           />
                                         </div>  </div>
@@ -483,7 +509,7 @@ to customer</h4>
                                             className="form-control mm-input s-input text-center"
                                             placeholder="Total"
                                             id="setSizeFloat"
-                                            value={this.state.order ? `${this.state.order[0].insuranceAmt}` : "$0"}
+                                            value={this.state.order[0] ? this.state.order[0].insuranceAmt:""}
                                             onChange={(e) => this.handleChange(e)}
 
 
@@ -512,7 +538,7 @@ to customer</h4>
                                             id="setSizeFloat"
                                             value={customerOwe}
                                             required
-                                            value={(insuranceAmt && missingItmCharges) ? `${this.customerOwe()}` : "0"}
+                                            value={(insuranceAmt) ? `${this.customerOwe()}` : "0"}
                                             onChange={(e) => this.handleChange(e)}
                                           />
                                         </div>
@@ -537,7 +563,7 @@ to customer</h4>
                                             className="form-control mm-input s-input text-center"
                                             placeholder=""
                                             id="setSizeFloat"
-                                            value={(customerOwe && insuranceAmt && missingItmCharges) ? `${this.returnAmt()}` : "0"}
+                                            value={(insuranceAmt) ? `${this.returnAmt()}` : "0"}
                                             onChange={(e) => this.handleChange(e)}
 
                                           />
@@ -550,61 +576,40 @@ to customer</h4>
                                   <div className="row">
                                     <div className="col-md-12">
                                       <div className="form-group">
-                                        <div style={{ 'float': 'left' }}>
+                                        <div className="text-center">
 
-                                          <h4 id="padLeft">Leave ID</h4>
-                                        </div>
-                                        <div style={{ 'float': 'right', 'paddingRight': '170px' }}>
+                                          <div style={{ 'float': 'left' }}>
 
-                                          <div className="">
-                                            <input
-                                              // className="custom-control-input"
-                                              type="radio"
-                                              name="leaveID"
-                                              value={true}
-                                              onChange={(e) => this.handleChange(e)}
-                                              checked={this.state.leaveID === "true"}
-                                            />
-                                            <label
-                                            // className="custom-control-label"
-                                            >YES</label>
                                           </div>
-                                          <div className="">
-                                            <input
-                                              type="radio"
-                                              name="leaveID"
-                                              value={false}
-                                              onChange={(e) => this.handleChange(e)}
-                                              checked={this.state.leaveID === "false"}
-                                            />
-                                            <label
-                                            >NO</label>
-                                          </div>                    </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <br />
-                                <div className="col-md-12">
-                                  <div id="sizes_box">
-                                    <div className="row text-center">
-                                      <div className="col-md-12 btn-cont">
-                                        <div className="form-group">
-                                          <button
-                                            type="submit"
-                                            className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                                            id="btnSize2"
-                                            data-toggle="modal"
-                                            data-backdrop="false"
-                                            data-target="#primary"
-                                          ><i className="ft-check"></i> Submit &amp; Generate Invoice	</button>
+                                          <div style={{ 'float': 'right', 'paddingRight': '170px' }}>
+
+
+                                            <h4>{order[0].leaveID == true ? `${"Customer left ID. Please return ID to customer."}` : `${"No ID"}`}</h4> </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
+                                  <br />
+                                  <div className="col-md-12">
+                                    <div id="sizes_box">
+                                      <div className="row text-center">
+                                        <div className="col-md-12 btn-cont">
+                                          <div className="form-group">
+                                            <button
+                                              type="submit"
+                                              className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
+                                              id="btnSize2"
+                                              data-toggle="modal"
+                                              data-backdrop="false"
+                                              data-target="#primary"
+                                            ><i className="ft-check"></i> Submit &amp; Generate Invoice	</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
                                 </div>
-
-
 
                               </div>
                             </form>
@@ -650,41 +655,29 @@ to customer</h4>
                   <div id="colors_box">
                     <div className="row color-row">
                       <div className="col-md-12">
-                        <div className="form-group">
-                          <div style={{ 'float': 'left' }}>
+                          <div className="text-center">
 
                             <h4>{(customer) ? `${customer[0].name}${"#"}${customer[0].contactnumber}` : ""}</h4>
                           </div>
-                          <div style={{ 'float': 'right' }}>
+                          <div className="text-center">
                             <h4>{(data) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4>
 
                           </div>
-                        </div>
                       </div>
                       <div className="col-md-12">
-                        <div id="sizes_box">
+                        <div >
                           {this.invoiceproductBox()}
-
-                          <div className="row">
-                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-                              <h6 id="padLeft">Tax amount</h6>
-                            </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
-
-                              <h6 >
-                                {this.state.taxAmt}
-                              </h6>
-                            </div>
-
-                          </div>
-
+                          {!!this.state.m_productarray.length ?
+                            <h5>Missing Products</h5> : ""}
+                          {!!this.state.m_productarray.length ?
+                            this.m_invoiceproductBox() : ""}
 
                           <div className="row">
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
 
                               <h6 id="padLeft">Insurance amount</h6>
                             </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                            <div className="col-md-6" style={{ 'float': 'right', 'color': 'black' }}>
                               <h6 >
                                 {this.state.insuranceAmt}
                               </h6>
@@ -720,12 +713,12 @@ to customer</h4>
                               <h6 >Lost Items Charge
 </h6></div>
 
-                            <div className="col-md-6 text-center" style={{ 'color': 'black' }}>
+                            <div className="col-md-6" style={{'float': 'right', 'color': 'black' }}>
 
 
 
                               <h6 >
-                                {this.state.missingItmCharges}
+                                {this.state.m_total}
                               </h6>
 
                             </div>
@@ -740,10 +733,10 @@ to customer</h4>
 
                               <h6 id="padLeft">Amount Return to customer</h6>
                             </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                            <div className="col-md-6" style={{ 'float': 'right', 'color': 'black' }}>
                               <h6 >
 
-                                {(customerOwe && insuranceAmt && missingItmCharges) ? `${this.returnAmt()}` : "0"}
+                                {(customerOwe && insuranceAmt && m_total) ? `${this.returnAmt()}` : "0"}
                               </h6>
                             </div>
 
@@ -760,7 +753,7 @@ to customer</h4>
 
                               <h6 id="padLeft">Leave ID</h6>
                             </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                            <div className="col-md-6" style={{ 'float': 'right', 'color': 'black' }}>
                               <h6 >
                                 {this.state.leaveID === "true" ? `${"Yes"}` : `${"No"}`}
                               </h6>
@@ -774,7 +767,7 @@ to customer</h4>
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 id="padLeft">Rent From</h6>
                             </div>
-                            <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
+                            <div style={{ 'float': 'right', 'color': 'black', 'marginLeft': '25px' }}>
                               <h6>
                                 {moment(this.state.rentDate).format('DD/MMM/YYYY')}
 
@@ -791,7 +784,7 @@ to customer</h4>
                               <h6 >Return Date</h6>
                             </div>
 
-                            <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
+                            <div style={{ 'float': 'right', 'color': 'black', 'marginLeft': '25px' }}>
                               <h6 >
 
                                 {moment(this.state.returnDate).format('DD/MMM/YYYY')}
@@ -800,14 +793,14 @@ to customer</h4>
 
 
                           </div>
-
+<br />
 
                           <div className="container">
                             <div class="row justify-content-md-center">
 
-                              <div class="col-lg-auto">
+                              <div class="col-md-12">
                                 <input
-                                  style={{ 'color': 'black', 'width': '-webkit-fill-available' }}
+                                  style={{ 'color': 'black', 'width': '90%' }}
                                   type="text"
                                   className="form-control mm-input s-input text-center"
                                   placeholder="Total"
@@ -820,16 +813,17 @@ to customer</h4>
 
                                 />
                               </div>
-
                             </div>
                           </div>
+                          <br />
+
                           <div className="col-md-12">
 
                             <table>
                               <tr>
                                 <td style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>
-                                <svg id="barcode"></svg>
-                                  
+                                  <svg id="barcode"></svg>
+
                                 </td>
                                 <td style={{ 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}> Authorized by <br />
                                                         Sutygon-Bot</td>
@@ -838,6 +832,7 @@ to customer</h4>
 
 
                           </div>
+                          <br />
                           <div className="container">
                             <div class="row justify-content-md-center">
 
@@ -859,6 +854,7 @@ to customer</h4>
 
                             </div>
                           </div>
+                          <br />
                           <div className="row">
                             <p>For questions and contact information please check out
                                               <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">www.sutygon-bot.com</a></p>

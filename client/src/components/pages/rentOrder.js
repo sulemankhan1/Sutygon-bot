@@ -209,7 +209,8 @@ class RentOrder extends Component {
                   color_id: color_id,
                   size_id: size_id,
                   barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
-                  title: product_name + " | " + color_name + " | " + size_name,
+                  title: product_name,
+                  color: color_name + " | " + size_name,
                   barcode: size.barcodes[i].barcode,
                   price: price,
                 };
@@ -259,8 +260,13 @@ class RentOrder extends Component {
                   <tr key={b_index} style={{"margin":"3px"}}>
                     <td className="text-center">{product[0].barcode}</td>
                     <td className="text-center">{product[0].title}</td>
+                    <td className="text-center">{product[0].color}</td>
                     <td className="text-center">{product[0].price}</td>
-                    <td className="text-center"><button
+                   
+                  </tr></tbody></table>
+            </div>
+            <div className="right ml-3">
+            <button
                       type="button"
                       onClick={() =>
                         this.removeBarcodeRow(b_index, barcode_Array[b_index].barcode)
@@ -268,12 +274,13 @@ class RentOrder extends Component {
                       className="btn btn-raised btn-sm btn-icon btn-danger mt-1"
                     >
                       <i className="fa fa-minus"></i>
-                    </button></td>
-                  </tr></tbody></table>
+                    </button>
             </div>
+            <br />
+          
+          </div>
      
         </div>
-      </div>
 
     ));
   }
@@ -281,34 +288,21 @@ class RentOrder extends Component {
   getInvoiceBarcodeRecord() {
     let { product_Array } = this.state;
     return product_Array.map((product, b_index) => (
-      <div id="sizes_box" key={b_index}>
-        <div className="row">
-          <input
-            type="text"
-            className="form-control mm-input s-input text-center"
-            placeholder="Barcode"
-            name="barcode"
-            id="widthBr"
-            readOnly
-            style={{ width: "240px", color: 'black' }}
-            readOnly
-            value={
-              product &&
-              product[0].title &&
-              product[0].title + " | " + product[0].barcode
-            }
-          />
+      <div  key={b_index}>
+        <div >
+        <table className="table table-bordered table-light"style={{"borderWidth":"1px", 'borderColor':"#aaaaaa", 'borderStyle':'solid'}}>
+            <thead></thead>
+            <tr>
+    <td className="text-center">{product[0].barcode}</td>
+    <td className="text-center">{product[0].title}</td>
+    <td className="text-center">{product[0].color}</td>
+              <td className="text-center">{product[0].price}</td>
 
-          <input
-            type="text"
-            className="form-control mm-input s-input text-center"
-            placeholder="Price"
-            id="setSize"
-            readOnly
-            name="total"
-            style={{ color: 'black', width: '120px' }}
-            value={`${product && product[0].price}`}
-          />
+
+            </tr>
+          </table>
+         
+        
 
         </div>
       </div>
@@ -396,7 +390,7 @@ class RentOrder extends Component {
                         <h4 className="card-title">Rent a Product</h4>
                       </div>
                       <div className="card-content">
-                        <div className="card-body table-responsive background-container">
+                        <div className="card-body table-responsive">
                           <div id="colors_box">
                             <div className="row color-row">
                               <div className="col-md-12">
@@ -524,6 +518,7 @@ class RentOrder extends Component {
                                           </div>
                                           <div style={{ paddingLeft: "650px" }}>
                                             <input
+                                            name="insAmt"
                                               style={{ width: "65%" }}
                                               type="text"
                                               className="form-control mm-input s-input text-center"
@@ -531,8 +526,10 @@ class RentOrder extends Component {
                                               id="setSizeFloat"
                                               required
                                               value={
-                                                this.state.total_amt / 2
+                                                this.state.insAmt
                                               }
+                                              onChange={(e) => this.onHandleChange(e)}
+                                              
 
                                             />
                                           </div>
@@ -715,25 +712,25 @@ class RentOrder extends Component {
                     <div className="row color-row">
                       <div className="col-md-12">
                         <div className="form-group">
-                          <div style={{ 'float': 'left' }}>
+                          <div className="text-center">
 
                             <h4>{(customer) ? `${customer.name}${"#"}${customer.contactnumber}` : ""}</h4>
                           </div>
-                          <div style={{ 'float': 'right' }}>
+                          <div className="text-center">
                             <h4>{(order) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4>
 
                           </div>
                         </div>
                       </div>
                       <div className="col-md-12">
-                        <div id="sizes_box">
+                        <div >
                           {this.getInvoiceBarcodeRecord()}
                           <hr />
                           <div className="row">
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 id="padLeft">Total Without Tax</h6>
                             </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                            <div className="col-md-6" style={{ 'float': 'right', 'color': 'black' }}>
                               <h6 >
                                 {`${this.state.total_amt}`}
                               </h6>
@@ -743,7 +740,7 @@ class RentOrder extends Component {
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 id="padLeft">Tax Percentage</h6>
                             </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                            <div className="col-md-6" style={{ 'float': 'right', 'color': 'black' }}>
                               <h6 >
                                 {`${this.state.taxper}${"%"}`}
                               </h6>
@@ -753,7 +750,7 @@ class RentOrder extends Component {
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 id="padLeft">Tax Amount</h6>
                             </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                            <div className="col-md-6" style={{ 'float': 'right', 'color': 'black' }}>
                               <h6 >
                                 {`${this.state.tax}`}
                               </h6>
@@ -763,7 +760,7 @@ class RentOrder extends Component {
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 id="padLeft">Insurance Amount</h6>
                             </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                            <div className="col-md-6" style={{ 'float': 'right', 'color': 'black' }}>
                               <h6 >
                                 {`${this.state.insAmt}`}
                               </h6>
@@ -771,7 +768,7 @@ class RentOrder extends Component {
                           </div>
                           <div className="row justify-content-center">
                             <div className="form-group">
-                              <div className="text-center" style={{ 'width': '300%' }}>
+                              <div className="" style={{ 'width': '300%' }}>
                                 <input
                                   type="text"
                                   readOnly
@@ -788,7 +785,7 @@ class RentOrder extends Component {
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 >Amount to be returned to customer</h6>
                             </div>
-                            <div className="col-md-6 text-center" style={{ 'color': 'black' }}>
+                            <div className="col-md-6" style={{'float': 'right', 'color': 'black' }}>
                               <h6 >{`${this.state.insAmt}`}</h6>
                             </div>
                           </div>
@@ -797,7 +794,7 @@ class RentOrder extends Component {
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 id="padLeft">Leave ID</h6>
                             </div>
-                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                            <div className="col-md-6" style={{ 'float': 'right', 'color': 'black' }}>
                               <h6 >
                                 {this.state.leaveID === "true" ? `${"Yes"}` : `${"No"}`}
                               </h6>
@@ -807,7 +804,7 @@ class RentOrder extends Component {
                             <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
                               <h6 id="padLeft">Rent From</h6>
                             </div>
-                            <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
+                            <div style={{'float': 'right', 'color': 'black' }}>
                               <h6>
                                 {moment(this.state.rentDate).format('DD/MMM/YYYY')}
                               </h6>
@@ -818,7 +815,7 @@ class RentOrder extends Component {
                               <h6 >Return Date</h6>
                             </div>
 
-                            <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
+                            <div style={{ 'float': 'right', 'color': 'black',  }}>
                               <h6 >
                                 {moment(this.state.returnDate).format('DD/MMM/YYYY')}
                               </h6>
@@ -850,7 +847,7 @@ class RentOrder extends Component {
                         </div>
                       </div>
                       <div className="col-md-12">
-                        <div className="row justify-content-center">
+                        <div classN ame="row justify-content-center">
                           <button type="button"
                             className="close text-center"
                             onClick={() =>

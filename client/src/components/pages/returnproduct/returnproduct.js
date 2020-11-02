@@ -18,8 +18,9 @@ class ReturnProduct extends Component {
     customer_id: "",
     selectedOrder: false,
     orderId: "",
-
+seletedOrder:"",
     product_Array: "",
+    tryAgain:false
 
   };
 
@@ -30,6 +31,9 @@ class ReturnProduct extends Component {
 
   tryAgain = (e) => {
     e.preventDefault();
+    this.setState({
+      tryAgain:true
+    })
     var orderNumber = document.getElementById("orderNumber");
     var contactNumber = document.getElementById("contactnumber");
     var statusBox = document.getElementById("statusBox");
@@ -37,6 +41,7 @@ class ReturnProduct extends Component {
     contactNumber.focus();
     statusBox.value = "";
     orderNumber.value = ""
+    
   }
 
 //handle change for input fields
@@ -49,8 +54,8 @@ class ReturnProduct extends Component {
     this.setState({ saving: true });
 
     const state = { ...this.state };
-    await this.props.getOrderbyCustomerNumber(state.customer);
-    this.setState({ saving: false });
+    await this.props.getOrderbyCustomerNumber(state.customer.trim());
+    this.setState({ saving: false ,tryAgain : false});
   };
 //search by order number
   onSubmitOrderNumber = async (e) => {
@@ -58,8 +63,8 @@ class ReturnProduct extends Component {
     this.setState({ saving: true });
 
     const state = { ...this.state };
-    await this.props.getOrderbyOrderNumber(state.orderNumber);
-    this.setState({ saving: false });
+    await this.props.getOrderbyOrderNumber(state.orderNumber.trim());
+    this.setState({ saving: false,tryAgain : false });
   };
 
   // return sorted products for barcodes
@@ -207,7 +212,7 @@ class ReturnProduct extends Component {
       return <Redirect to="/" />;
     }
    
-    const { orders } = this.props;
+    const { orders } = this.state;
     const { customer } = this.props;
 
     return (
@@ -282,7 +287,7 @@ class ReturnProduct extends Component {
                             </div>
                           </form>
 
-                          {this.props.orders ? <>
+                          {(this.props.orders && this.state.tryAgain == false)? <>
                             <div id="colors_box" >
                               <div className="row color-row">
                                 <div className="row">
@@ -290,7 +295,7 @@ class ReturnProduct extends Component {
                                     <h3>Is this the One</h3>
                                   </div>
                                 </div>
-                                {(this.props.orders && !!this.props.orders.length) ? this.CutomerBox() :
+                                {(this.props.orders && this.state.tryAgain == false && !!this.props.orders.length) ? this.CutomerBox() :
 
                                   <div className="col-md-12" >
                                     <div className="form-group">
@@ -343,7 +348,7 @@ class ReturnProduct extends Component {
                                                 pathname: "/scanBarcode",
                                                 data: {
                                                   customer: this.props.customer[0]._id,
-                                                  order: this.props.orders,
+                                                  order: this.state.seletedOrder
                                                 }
                                               }}
                                               type="submit"
