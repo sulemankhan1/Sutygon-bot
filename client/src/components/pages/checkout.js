@@ -255,22 +255,7 @@ class Checkout extends Component {
                                 <div className="col-md-12">
                                   {this.getBarcodeRow()}
 
-                                  <div className="row">
-                                    <div className="col-md-12 btn-cont">
-                                      <div className="form-group mb-0">
-                                        <button
-                                          type="button"
-                                          onClick={() => this.addBarcodeRow()}
-                                          className="btn"
-                                        >
-                                          <i className="fa fa-plus"></i> Add
-                                          Barcode
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div className="row text-center ">
+                                 <div className="row text-center ">
                                     <div className="col-md-12 btn-cont">
                                       <div className="form-group">
                                         <Link

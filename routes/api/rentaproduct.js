@@ -28,9 +28,8 @@ router.post(
                 rentDate: req.body.rentDate,
                 returnDate: req.body.returnDate,
                 total: req.body.total,
-                insuranceAmt: req.body.insuranceAmt
+                insuranceAmt: req.body.insuranceAmt._id,
             });
-
             await rentedProduct.save();
 
             res.json({ msg: "Order Added Successfully" });
@@ -157,31 +156,30 @@ router.get('/search',
 // @desc   Get Last Enter Record
 // @access Private
 router.get("/getLastRecord", auth,
-async (req, res) => {
-    try {
-        const rentInvoice = await RentedProduct.find({}).sort({_id:-1}).limit(1);
-console.log("rentInvoice",rentInvoice)
-return;
-        if (!rentInvoice) {
-            return res
-                .status(404)
-                .json({ msg: "No Invoice found" });
-        }
+    async (req, res) => {
+        try {
+            const rentInvoice = await RentedProduct.find({}).sort({ _id: -1 }).limit(1);
+            console.log(rentInvoice)
+            if (!rentInvoice) {
+                return res
+                    .status(404)
+                    .json({ msg: "No Invoice found" });
+            }
 
-        res.json(rentInvoice);
-    } catch (err) {
-        console.error(err.message);
-        // Check if id is not valid
-        if (err.kind === "ObjectId") {
-            return res
-                .status(404)
-                .json({ msg: "No Invoice found" });
+            res.json(rentInvoice);
+        } catch (err) {
+            console.error(err.message);
+            // Check if id is not valid
+            if (err.kind === "ObjectId") {
+                return res
+                    .status(404)
+                    .json({ msg: "No Invoice found" });
+            }
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
         }
-        res
-            .status(500)
-            .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
-    }
-});
+    });
 
 
 

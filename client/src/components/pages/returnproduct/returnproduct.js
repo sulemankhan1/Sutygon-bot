@@ -18,9 +18,9 @@ class ReturnProduct extends Component {
     customer_id: "",
     selectedOrder: false,
     orderId: "",
-seletedOrder:"",
+    seletedOrder: "",
     product_Array: "",
-    tryAgain:false
+    tryAgain: false
 
   };
 
@@ -33,7 +33,7 @@ seletedOrder:"",
   tryAgain = (e) => {
     e.preventDefault();
     this.setState({
-      tryAgain:true
+      tryAgain: true
     })
     var orderNumber = document.getElementById("orderNumber");
     var contactNumber = document.getElementById("contactnumber");
@@ -42,30 +42,30 @@ seletedOrder:"",
     contactNumber.focus();
     statusBox.value = "";
     orderNumber.value = ""
-    
+
   }
 
-//handle change for input fields
+  //handle change for input fields
   handleChange = (e, id = "") => {
     this.setState({ [e.target.name]: e.target.value });
   };
-//search by Customer Number
+  //search by Customer Number
   onSubmitCustomer = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
 
     const state = { ...this.state };
     await this.props.getOrderbyCustomerNumber(state.customer.trim());
-    this.setState({ saving: false ,tryAgain : false});
+    this.setState({ saving: false, tryAgain: false });
   };
-//search by order number
+  //search by order number
   onSubmitOrderNumber = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
 
     const state = { ...this.state };
     await this.props.getOrderbyOrderNumber(state.orderNumber.trim());
-    this.setState({ saving: false,tryAgain : false });
+    this.setState({ saving: false, tryAgain: false });
   };
 
   // return sorted products for barcodes
@@ -116,67 +116,46 @@ seletedOrder:"",
     }); // products foreach ends here
     return rows;
   };
-  
+
 
   productBox = () => {
     const { seletedOrder } = this.state;
     let productarray = [];
+
     let { barcodes } = seletedOrder[0];
-    
+
     const { products } = this.props;
     if (products) {
-      
+
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
         barcodes.forEach((element) => {
           productarray.push(
-            sortedAray.filter ((f) => f.barcode == element)
+            sortedAray.filter((f) => f.barcode == element)
           );
         });
-        
-        this.state.product_Array = productarray;
-        
-        return productarray.map((product, i) => (
-          <div key={i}>
-              {product[0].title}
-            </div>
-        ))
 
-        // return productarray.map((i, obj) => (
-        //   <div key={i}>
-        //       {obj.title}
-        //     </div>
-        // ))
-        
-        return;
-        return Object.keys(productarray).map((key, i) => (
-          <p key={i}>
-            <span>Key Name: {key}</span>
-            <span>Value: {productarray[key].title}</span>
-          </p>
-        )
-          )
-{/* <div id="sizes_box" >
-          <div className="row">
-            <div className="left">
-              <div className="col-md-8">
-                <input
-                  type="text"
-                  className="form-control mm-input s-input text-center"
-                  placeholder="Barcode"
-                  name="barcode"
-                  id="widthBr"
-                  style={{ width: "90%" }}
-                  readOnly
-                  value={
-                    
-                    productarray[b][0].title + " | " + productarray[b][0].barcode
-                  }
-                />
-              </div>
-  </div></div></div> */}
-             // ));   
-    }}  
+        this.state.product_Array = productarray;
+
+        return productarray.map((p, p_index) => {
+         return <>  <div className="form-group">
+            <div className="row" key={p_index}>
+              <input
+                type="text"
+                value={`${p[0].title} ${"|"} ${p[0].barcode}`}
+                className="form-control mm-input s-input text-center text-dark"
+                placeholder="Barcode"
+                id="setSize1"
+                style={{ 'width': '110%' }}
+                readOnly
+              />
+              
+            </div>
+          </div>
+        </>
+        })
+      }
+    }
   }
   CutomerBox = () => {
     const { orders } = this.props;
@@ -184,27 +163,20 @@ seletedOrder:"",
     let returningOrders = orders.filter((f => f.status !== "Completed"))
     return returningOrders.map((o, o_index) => (
       <>
-        <div className="col-md-12" key={o_index}>
+        <div className="col-md-12" onClick={(e) => this.selectedOrder(e, o._id)} key={o_index}>
           <div className="row form-group">
-            <div className="col-md-11">
-              <input
-                type="text"
-                id="statusBox"
-                className="form-control mm-input text-center"
-                style={{ 'color': '#495057', 'width': '-webkit-fill-available' }}
-                value={(o && customer[0]) ? `${"Order#"}${o.orderNumber}${"             "}${customer[0].name}${"             "}${"OrderStatus-"}${o.status}` : "No Order Found"}
-                readOnly />
-            </div>
-            <div className="col-md-1" style={{ margin: 'auto' }}>
-              <input
-                type="radio"
-                name="selectedOrder"
-                value={true}
-                onChange={(e) => this.handleChange(e)}
-                onClick={(e) => this.selectedOrder(e, o._id)}
-
-              />
-            </div>
+            <table className="table tables-secondary table-bordered table-hover">
+              <thead></thead>
+              <tbody><tr >
+                <td id="statusBox"
+                  className="text-center">{(o && customer[0]) ?
+                    `${"Order#"}${o.orderNumber}${"             "}${customer[0].name}${"             "}${"OrderStatus-"}${o.status}`
+                    :
+                    "No Order Found"}
+                </td>
+              
+              </tr></tbody>
+            </table>
           </div>
         </div>
       </>
@@ -213,8 +185,11 @@ seletedOrder:"",
   }
 
   selectedOrder = (e, order_id) => {
+    this.setState({
+      seletecdOrder: true
+    })
+    e.preventDefault()
     const orderID = order_id
-
     const { orders } = this.props;
     const seletedOrder = orders.filter((f) => f._id == orderID);
     this.setState({
@@ -227,7 +202,7 @@ seletedOrder:"",
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
     }
-   
+
     const { orders } = this.state;
     const { customer } = this.props;
 
@@ -303,7 +278,7 @@ seletedOrder:"",
                             </div>
                           </form>
 
-                          {(this.props.orders && this.state.tryAgain == false)? <>
+                          {(this.props.orders && this.state.tryAgain == false) ? <>
                             <div id="colors_box" >
                               <div className="row color-row">
                                 <div className="row">
@@ -340,7 +315,7 @@ seletedOrder:"",
                             </div>
                           </> : ""}
                           <div id="colors_box">
-                            {(this.props.orders && this.state.selectedOrder === "true") ?
+                            {this.state.selectedOrder == true ?
                               <div className="row color-row" id="statusBox1">
                                 <div className="col-md-12">
                                   <div className="form-group">
@@ -353,9 +328,8 @@ seletedOrder:"",
                                   </div>
                                 </div>
                                 <div className="col-md-12">
-                                  {(this.state.selectedOrder === "true") ?
-                                    <>
                                       <div id="colors_box">
+                                        <h3>TEST</h3>
                                         {this.productBox()}
                                         <div className="btn-cont text-center">
                                           <div className="form-group">
@@ -363,8 +337,8 @@ seletedOrder:"",
                                               to={{
                                                 pathname: "/scanBarcode",
                                                 data: {
-                                                  customer: this.props.customer[0]._id,
-                                                  order: this.state.seletedOrder
+                                                  // customer: this.props.customer[0]._id,
+                                                  // order: this.state.seletedOrder
                                                 }
                                               }}
                                               type="submit"
@@ -372,9 +346,11 @@ seletedOrder:"",
                                               id="btnSize2" ><i className="ft-check"></i> Next</Link>
                                           </div>
                                         </div>
-                                      </div> </> : ""}
+                                      </div> 
+                                   
                                 </div>
-                              </div> : ""}
+                              </div> 
+                               : ""} 
                           </div>
                         </div>
                       </div>
@@ -383,7 +359,7 @@ seletedOrder:"",
                 </section>
               </div>
             </div>
-          <footer className="footer footer-static footer-light">
+            <footer className="footer footer-static footer-light">
               <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
                 <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
@@ -401,7 +377,6 @@ ReturnProduct.propTypes = {
   getCustomer: PropTypes.func.isRequired,
   getAllProducts: PropTypes.func.isRequired,
   getOrderbyID: PropTypes.func.isRequired,
-  // saved: PropTypes.bool,
   orders: PropTypes.array,
   customer: PropTypes.array,
   auth: PropTypes.object,

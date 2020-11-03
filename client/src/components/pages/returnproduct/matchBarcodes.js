@@ -509,6 +509,7 @@ to customer</h4>
                                             className="form-control mm-input s-input text-center"
                                             placeholder="Total"
                                             id="setSizeFloat"
+                                            readOnly
                                             value={this.state.order[0] ? this.state.order[0].insuranceAmt:""}
                                             onChange={(e) => this.handleChange(e)}
 
