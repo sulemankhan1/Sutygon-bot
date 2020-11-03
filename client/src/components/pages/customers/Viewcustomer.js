@@ -40,7 +40,6 @@ class ViewCustomer extends Component {
           <td className="text-center">{customer.contactnumber}</td>
           <td className="text-center">{customer.email}</td>
           <td className="text-center">{customer.address}</td>
-          <td className="text-center">{customer.noOfOrders}</td>
           <td className="text-center">
             <Link to="/customer"
               onClick={() => this.onDelete(customer._id)}
@@ -118,7 +117,6 @@ class ViewCustomer extends Component {
                                   <th>SĐT</th>
                                   <th>Địa Chỉ</th>
                                   <th>Email</th>
-                                  <th>No of Orders</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>

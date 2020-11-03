@@ -39,7 +39,7 @@ class RentOrder extends Component {
     leaveID: "",
     barcodesRented: false,
     redirect: false,
-    m_returnDate:""
+    m_returnDate: ""
   };
 
 
@@ -50,12 +50,13 @@ class RentOrder extends Component {
     const { lastRecord } = this.props
     if (lastRecord) {
       const orderNumber = lastRecord[0].orderNumber;
-      if(orderNumber){      const newOrderNumber = this.generateRandomNumber(orderNumber)
-      console.log("newOrderNumber",newOrderNumber)
-      this.setState({
-        orderNumber: newOrderNumber
-      })
-    }
+      if (orderNumber) {
+        const newOrderNumber = this.generateRandomNumber(orderNumber)
+        console.log("newOrderNumber", newOrderNumber)
+        this.setState({
+          orderNumber: newOrderNumber
+        })
+      }
 
     }
 
@@ -140,7 +141,7 @@ class RentOrder extends Component {
       orderBarcode: orderBarcode
     })
     const rentedOrder = {
-      orderNumber:state.orderNumber,
+      orderNumber: state.orderNumber,
       customer: state.customer_id,
       customerContactNumber: customer.contactnumber,
       user: user._id,
@@ -148,16 +149,16 @@ class RentOrder extends Component {
       total: state.total,
       returnDate: state.m_returnDate,
       rentDate: state.rentDate,
-      leaveId: true,
+      leaveID: this.state.leaveID,
       insuranceAmt: state.insAmt,
-      orderBarcode:state.orderBarcode
+      orderBarcode: state.orderBarcode
     };
     await this.props.addNewRentProduct(rentedOrder);
 
     await this.props.getOrderbyOrderNumber(state.orderNumber)
     const { order, auth } = this.props;
     if (this.props.generateInvoice == true) {
-      if (order) {
+      if (order && state.orderBarcode){
         const invoiceRent = {
           order_id: order[0]._id,
           customer_id: order[0].customer,
@@ -206,6 +207,7 @@ class RentOrder extends Component {
       });
 
     }
+    this.printInvoice()
     this.setState({ saving: false });
   };
 
@@ -270,9 +272,12 @@ class RentOrder extends Component {
   };
 
   printInvoice = () => {
-    var printDiv = document.getElementById('modal-body').innerHTML
+    // var css = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" />'
+    var css = '<link rel="stylesheet"  href="%PUBLIC_URL%/assets/css/app.css"/>'
+    var printDiv = document.getElementById('invoiceDiv').innerHTML
+
     let newWindow = window.open("", '_blank', 'location=yes,height=570,width=720,scrollbars=yes,status=yes');
-    newWindow.document.body.innerHTML = printDiv
+    newWindow.document.body.innerHTML = css + printDiv
     newWindow.window.print();
     newWindow.document.close();
   }
@@ -341,24 +346,13 @@ class RentOrder extends Component {
   getInvoiceBarcodeRecord() {
     let { product_Array } = this.state;
     return product_Array.map((product, b_index) => (
-      <div key={b_index}>
-        <div >
-          <table className="table table-bordered table-light" style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid' }}>
-            <thead></thead>
-            <tr>
-              <td className="text-center">{product[0].barcode}</td>
-              <td className="text-center">{product[0].title}</td>
-              <td className="text-center">{product[0].color}</td>
-              <td className="text-center">{product[0].price}</td>
+      <tr>
+        <td className="text-center">{product[0].barcode}</td>
+        <td className="text-center">{product[0].title}</td>
+        <td className="text-center">{product[0].color}</td>
+        <td className="text-center">{product[0].price}</td>
 
-
-            </tr>
-          </table>
-
-
-
-        </div>
-      </div>
+      </tr>
     ));
   }
 
@@ -381,7 +375,7 @@ class RentOrder extends Component {
 
     let amount;
     if (taxper !== null && taxper !== "0") {
-      amount = totalAmount / taxper;
+      amount = Math.round(totalAmount / taxper)
     }
     else {
       amount = 0;
@@ -456,7 +450,7 @@ class RentOrder extends Component {
                                 </div>
                               </div>
                               {/* <form > */}
-                                <form onSubmit={(e) => this.onSubmit(e)}>
+                              <form onSubmit={(e) => this.onSubmit(e)}>
 
                                 <div className="col-md-12">
                                   <div id="sizes_box">
@@ -600,9 +594,9 @@ class RentOrder extends Component {
 
                                             <h4 id="padLeft">Leave ID</h4>
                                           </div>
-                                          <div style={{ 'textAlign': 'center', 'paddingRight': '170px' }}>
+                                          <div style={{ 'textAlign': 'right', 'paddingRight': '170px' }}>
 
-                                            <div className="">
+                                            <div className="" style={{ 'textAlign': 'right', }}>
                                               <input
                                                 type="radio"
                                                 name="leaveID"
@@ -613,7 +607,7 @@ class RentOrder extends Component {
                                               <label
                                               >YES</label>
                                             </div>
-                                            <div className="">
+                                            <div className="" style={{ 'textAlign': 'right', }}>
                                               <input
                                                 type="radio"
                                                 name="leaveID"
@@ -724,9 +718,10 @@ class RentOrder extends Component {
                                           type="submit"
                                           className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
                                           id="btnSize2"
-                                          data-toggle="modal"
-                                          data-backdrop="false"
-                                          data-target="#primary">
+                                        // data-toggle="modal"
+                                        // data-backdrop="false"
+                                        // data-target="#primary"
+                                        >
                                           <i className="ft-check"></i>
                                           Submit &amp; Get Invoice
                                         </button>
@@ -752,6 +747,99 @@ class RentOrder extends Component {
                 <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
           </div>
+
+          {/* pdf invoice  */}
+
+          <div id="invoiceDiv" style={{ 'width': '100%' ,'display':'none'}}>
+            <h1 style={{ 'text-align': 'center' }}>
+              {(customer) ? `${customer.name}${"#"}${customer.contactnumber}` : ""}
+            </h1>
+            <h1 style={{ 'text-align': 'center' }}>
+              {(order) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}
+            </h1>
+
+            <table style={{ 'width': '100%' }} cellpadding="10"><thead></thead>
+              <tbody>
+                {this.getInvoiceBarcodeRecord()}
+              </tbody>
+            </table>
+            <hr />
+            <table style={{ 'width': '100%' }} cellpadding="10"><thead></thead>
+              <tbody>
+                <tr>
+                  <td style={{ 'width': '90%' }} >Total Without Tax</td>
+                  <td>{`${this.state.total_amt}`}</td>
+                </tr>
+                <tr>
+                  <td>Tax Percentage</td>
+                  <td>{`${this.state.taxper}${"%"}`}</td>
+                </tr>
+                <tr>
+                  <td>Tax Amount</td>
+                  <td>{`${this.state.tax}`}</td>
+                </tr>
+                <tr>
+                  <td>Insurance Amount</td>
+                  <td>{`${this.state.insAmt}`}</td>
+                </tr>
+              </tbody>
+            </table>
+            <br />
+            <h4 style={{ 'text-align': 'center' }}>{`${"PAID TOTAL: $"}${this.state.total}`}</h4>
+            <br />
+
+            <table style={{ 'width': '100%' }} cellpadding="10"><thead></thead>
+              <tbody>
+                <tr>
+                  <td style={{ 'width': '90%' }} >Leave ID</td>
+                  <td>                               
+                     {this.state.leaveID === "true" ? `${"Yes"}` : `${"No"}`}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Rent From</td>
+                  <td>                           
+                    {moment(this.state.rentDate).format('DD-MM-YYYY')}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Return Date</td>
+                  <td>                       
+                     {moment(this.state.m_returnDate).format('DD-MM-YYYY')}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table style={{ 'width': '100%' }}><thead></thead>
+              <tbody>
+                <tr>
+                  <td className="col-md-6" style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>
+                    <svg id="barcode"></svg>
+                  </td>
+                  <td className="col-md-6" style={{ 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>
+                    Authorized by <br />
+                                     Sutygon-Bot</td>
+                </tr>
+              </tbody>
+            </table>
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <table style={{ "width": "100%" }}><thead></thead>
+              <tbody>
+                <tr>
+                  <td style={{ 'text-align': 'center' }}>For questions and information please contact out www.sutygon-bot.com</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+
+
           {/* Invoice Modal */}
           <div className="modal fade text-left" id="primary" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel8"
             aria-hidden="true">
@@ -762,7 +850,7 @@ class RentOrder extends Component {
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
-                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button type="button" className="" data-dismiss="modal" aria-label="Close">
                     <span className="fa fa-print" aria-hidden="true" onClick={(e) => this.printInvoice(e)}></span>
                   </button>
                 </div>
@@ -905,7 +993,7 @@ class RentOrder extends Component {
 
                         </div>
                       </div>
-                      
+
                     </div>
 
 

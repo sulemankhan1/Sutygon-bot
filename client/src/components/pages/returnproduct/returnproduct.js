@@ -28,6 +28,7 @@ class ReturnProduct extends Component {
     await this.props.getAllProducts();
     await this.props.getCustomer(this.state.customer_id);
 
+
   }
 
   tryAgain = (e) => {
@@ -119,6 +120,7 @@ class ReturnProduct extends Component {
 
 
   productBox = () => {
+
     const { seletedOrder } = this.state;
     let productarray = [];
 
@@ -129,6 +131,7 @@ class ReturnProduct extends Component {
 
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
+
         barcodes.forEach((element) => {
           productarray.push(
             sortedAray.filter((f) => f.barcode == element)
@@ -136,10 +139,10 @@ class ReturnProduct extends Component {
         });
 
         this.state.product_Array = productarray;
-
         return productarray.map((p, p_index) => {
          return <>  <div className="form-group">
             <div className="row" key={p_index}>
+
               <input
                 type="text"
                 value={`${p[0].title} ${"|"} ${p[0].barcode}`}
@@ -163,20 +166,30 @@ class ReturnProduct extends Component {
     let returningOrders = orders.filter((f => f.status !== "Completed"))
     return returningOrders.map((o, o_index) => (
       <>
-        <div className="col-md-12" onClick={(e) => this.selectedOrder(e, o._id)} key={o_index}>
-          <div className="row form-group">
-            <table className="table tables-secondary table-bordered table-hover">
-              <thead></thead>
-              <tbody><tr >
-                <td id="statusBox"
-                  className="text-center">{(o && customer[0]) ?
-                    `${"Order#"}${o.orderNumber}${"             "}${customer[0].name}${"             "}${"OrderStatus-"}${o.status}`
-                    :
-                    "No Order Found"}
-                </td>
-              
-              </tr></tbody>
-            </table>
+        <div className="col-md-12">
+          <div className="row form-group"  onClick={(e) => this.selectedOrder(e, o._id)}
+>
+          <div className="col-md-11">
+              <input
+                type="text"
+                id="statusBox"
+                className="form-control mm-input text-center"
+                style={{ 'color': '#495057', 'width': '-webkit-fill-available' }}
+                value={(o && customer[0]) ? `${"Order#"}${o.orderNumber}${"             "}${customer[0].name}${"             "}${"OrderStatus-"}${o.status}` : "No Order Found"}
+                readOnly />
+            </div>
+            {/* <div className="col-md-1" style={{margin:'auto'}}>
+              <input
+                // type="button"
+                type="radio"
+                name="selectedOrder"
+                value={true}
+                onChange={(e) => this.handleChange(e)}
+                // checked={this.state.selectedOrder === "true"}
+                onClick={(e) => this.selectedOrder(e, o._id)}
+
+              />
+            </div> */}
           </div>
         </div>
       </>
@@ -186,7 +199,7 @@ class ReturnProduct extends Component {
 
   selectedOrder = (e, order_id) => {
     this.setState({
-      seletecdOrder: true
+      selectedOrder: "true"
     })
     e.preventDefault()
     const orderID = order_id
@@ -315,7 +328,7 @@ class ReturnProduct extends Component {
                             </div>
                           </> : ""}
                           <div id="colors_box">
-                            {this.state.selectedOrder == true ?
+                            {this.state.selectedOrder == "true" ?
                               <div className="row color-row" id="statusBox1">
                                 <div className="col-md-12">
                                   <div className="form-group">
@@ -323,22 +336,23 @@ class ReturnProduct extends Component {
                                       <h3>{(customer) ? `${customer[0].name}${"#"}${customer[0].contactnumber}` : ""}</h3>
                                     </div>
                                     <div style={{ 'float': 'right' }}>
-                                      <h3>{(orders && this.state.seletedOrder) ? `${"Order"}${"#"} ${this.state.seletedOrder[0].orderNumber}` : ""}</h3>
+                                      <h3>{(orders && this.state.selectedOrder == "true") ? `${"Order"}${"#"} ${this.state.seletedOrder[0].orderNumber}` : ""}</h3>
                                     </div>
                                   </div>
                                 </div>
                                 <div className="col-md-12">
+                                {this.state.seletedOrder.length > 0 ?
+
                                       <div id="colors_box">
-                                        <h3>TEST</h3>
-                                        {this.productBox()}
+                                         {this.productBox()} 
                                         <div className="btn-cont text-center">
                                           <div className="form-group">
                                             <Link
                                               to={{
                                                 pathname: "/scanBarcode",
                                                 data: {
-                                                  // customer: this.props.customer[0]._id,
-                                                  // order: this.state.seletedOrder
+                                                  customer: this.props.customer[0]._id,
+                                                  order: this.state.seletedOrder
                                                 }
                                               }}
                                               type="submit"
@@ -347,10 +361,10 @@ class ReturnProduct extends Component {
                                           </div>
                                         </div>
                                       </div> 
-                                   
+                                   :""}
                                 </div>
                               </div> 
-                               : ""} 
+                                : ""}  
                           </div>
                         </div>
                       </div>
