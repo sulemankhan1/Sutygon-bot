@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import Loader from "../layout/Loader";
 import shortid from "shortid";
 import * as moment from 'moment'
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { getProductById, getAllProducts, updateProductIndex, barcodeUpdateProduct, } from "../../actions/product";
 import { getCustomer } from "../../actions/customer";
 import { addNewRentProduct, getLastRecord } from "../../actions/rentproduct";
@@ -16,8 +18,6 @@ import { addNewInvoice } from "../../actions/invoices";
 import { OCAlertsProvider } from '@opuscapita/react-alerts';
 import { OCAlert } from '@opuscapita/react-alerts'
 var JsBarcode = require('jsbarcode');
-
-var { createCanvas } = require("canvas");
 
 
 class RentOrder extends Component {
@@ -73,7 +73,6 @@ class RentOrder extends Component {
     // break number by dash
     // convert number into integer
     let pn = previousNumber;
-    console.log(pn)
     let n_array = previousNumber.split("-");
 
     // check second half if 90
@@ -86,25 +85,25 @@ class RentOrder extends Component {
       n_array[1]++;
     }
 
-    let firstHalf = "";
-    if (n_array[0] <= 9) {
-      firstHalf += "00" + n_array[0];
-    } else if (n_array[0] > 9 && n_array[0] <= 99) {
-      firstHalf += "0" + n_array[0];
-    } else if (n_array[0] > 99) {
-      firstHalf += n_array[0];
-    }
+    // let firstHalf = "";
+    // if (n_array[0] <= 9) {
+    //   firstHalf += "00" + n_array[0];
+    // } else if (n_array[0] > 9 && n_array[0] <= 99) {
+    //   firstHalf += "0" + n_array[0];
+    // } else if (n_array[0] > 99) {
+    //   firstHalf += n_array[0];
+    // }
 
-    let secondHalf = "";
-    if (n_array[1] <= 9) {
-      secondHalf += "0" + n_array[1];
-    } else if (n_array[1] > 9) {
-      secondHalf += n_array[1];
-    }
+    // // let secondHalf = "";
+    // if (n_array[1] <= 9) {
+    //   secondHalf += "0" + n_array[1];
+    // } else if (n_array[1] > 9) {
+    //   secondHalf += n_array[1];
+    // }
 
 
     // return new number
-    let n = firstHalf + "-" + secondHalf;
+    let n = n_array[0] + "-" + n_array[1];
     return n;
   }
 
@@ -270,12 +269,10 @@ class RentOrder extends Component {
     return rows;
   };
 
-  printInvoice = (barcode) => {
-    var printDiv = document.getElementById('primary')
-        // var canvas = createCanvas(printDiv);
-    // let html = '<img src="' + canvas.toDataURL() + '" style="width: 100%" />';
+  printInvoice = () => {
+    var printDiv = document.getElementById('modal-body').innerHTML
     let newWindow = window.open("", '_blank', 'location=yes,height=570,width=720,scrollbars=yes,status=yes');
-    newWindow.document.write(printDiv);
+    newWindow.document.body.innerHTML = printDiv
     newWindow.window.print();
     newWindow.document.close();
   }
@@ -765,12 +762,12 @@ class RentOrder extends Component {
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
-                  <button type="button" className="close btn btn-primary" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" onClick={(e) => this.printInvoice(e)}>Print</span>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span className="fa fa-print" aria-hidden="true" onClick={(e) => this.printInvoice(e)}></span>
                   </button>
                 </div>
                 <div className="modal-body">
-                  <div id="colors_box">
+                  <div id="colors_box" id="modal-body">
                     <div className="row color-row">
                       <div className="col-md-12">
                         <div className="form-group">

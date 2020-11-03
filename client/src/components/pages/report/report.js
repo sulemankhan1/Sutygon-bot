@@ -61,16 +61,16 @@ class Report extends Component {
     // handlePdf = () => {
     //     const input = document.getElementById('page');
 
-    //     html2canvas(input)
-    //         .then((canvas) => {
-    //             const imgData = canvas.toDataURL('image/png');
-    //             const pdf = new jsPDF('p', 'px', 'a4');
-    //             var width = pdf.internal.pageSize.getWidth();
-    //             var height = pdf.internal.pageSize.getHeight();
+        // html2canvas(input)
+        //     .then((canvas) => {
+        //         const imgData = canvas.toDataURL('image/png');
+        //         const pdf = new jsPDF('p', 'px', 'a4');
+        //         var width = pdf.internal.pageSize.getWidth();
+        //         var height = pdf.internal.pageSize.getHeight();
 
-    //             pdf.addImage(imgData, 'JPEG', 0, 0, width, height);
-    //             pdf.save("download.pdf");
-    //         });
+        //         pdf.addImage(imgData, 'JPEG', 0, 0, width, height);
+        //         pdf.save("download.pdf");
+        //     });
     // };
 
     // getTAble = () => {
