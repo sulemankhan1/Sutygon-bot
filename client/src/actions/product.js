@@ -250,8 +250,7 @@ export const deleteItem = (product, id) => async (dispatch) => {
 
 
 // Update User
-export const updateProductQty = (product, id) => async (dispatch) => {
-
+export const updateProductIndex = (product, id) => async (dispatch) => {
   dispatch({ type: PRODUCTS_LOADING });
   const config = {
     headers: {
@@ -260,7 +259,7 @@ export const updateProductQty = (product, id) => async (dispatch) => {
   };
   const body = JSON.stringify(product);
   try {
-    const res = await axios.post(`/api/products/updateQty/${id}`,body, config);
+    const res = await axios.post(`/api/products/index_update/${id}`,body, config);
 
     dispatch({
       type: PRODUCT_UPDATED,

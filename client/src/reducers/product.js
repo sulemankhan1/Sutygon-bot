@@ -30,7 +30,7 @@ import {
           ...state,
           products: payload,
           loading: false,
-          saved: false,
+          // saved: tr,
         };
   
       case GET_PRODUCT:

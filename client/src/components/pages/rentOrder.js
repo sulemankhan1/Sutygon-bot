@@ -6,28 +6,25 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../layout/Loader";
-import {
-
-  getProductById,
-  getAllProducts,
-  updateProduct,
-  barcodeUpdateProduct,
-} from "../../actions/product";
-import { getCustomer } from "../../actions/customer";
-import { addNewRentProduct } from "../../actions/rentproduct";
-import { getOrderbyOrderNumber } from "../../actions/returnproduct";
-
+import shortid from "shortid";
 import * as moment from 'moment'
-
+import { getProductById, getAllProducts, updateProductIndex, barcodeUpdateProduct, } from "../../actions/product";
+import { getCustomer } from "../../actions/customer";
+import { addNewRentProduct, getLastRecord } from "../../actions/rentproduct";
+import { getOrderbyOrderNumber } from "../../actions/returnproduct";
 import { addNewInvoice } from "../../actions/invoices";
 import { OCAlertsProvider } from '@opuscapita/react-alerts';
 import { OCAlert } from '@opuscapita/react-alerts'
-import shortid from "shortid";
+var JsBarcode = require('jsbarcode');
+
+var { createCanvas } = require("canvas");
+
 
 class RentOrder extends Component {
   state = {
     id: "",
     orderNumber: "",
+    orderBarcode: "",
     barcode_Array: [],
     customer_id: "",
     product_Array: "",
@@ -40,11 +37,27 @@ class RentOrder extends Component {
     total: "",
     saving: false,
     leaveID: "",
-    barcodesRented: false
+    barcodesRented: false,
+    redirect: false,
+    m_returnDate:""
   };
+
+
 
   async componentDidMount() {
     await this.props.getAllProducts();
+    await this.props.getLastRecord();
+    const { lastRecord } = this.props
+    if (lastRecord) {
+      const orderNumber = lastRecord[0].orderNumber;
+      if(orderNumber){      const newOrderNumber = this.generateRandomNumber(orderNumber)
+      console.log("newOrderNumber",newOrderNumber)
+      this.setState({
+        orderNumber: newOrderNumber
+      })
+    }
+
+    }
 
     const { data } = this.props.location;
     if (data) {
@@ -54,24 +67,60 @@ class RentOrder extends Component {
       });
     }
     await this.props.getCustomer(this.state.customer_id);
+
   }
-  returnDateValidity = () => {
-    const { rentDate, returnDate } = this.state;
-    if (moment(moment(returnDate).format('MM/DD/YYYY')).isBefore(rentDate)) {
-      OCAlert.alertError('Return Date should be after rent date');
+  generateRandomNumber(previousNumber) {
+    // break number by dash
+    // convert number into integer
+    let pn = previousNumber;
+    console.log(pn)
+    let n_array = previousNumber.split("-");
+
+    // check second half if 90
+    if (n_array[1] == 99) {
+      // if yes increment first half 
+      n_array[0]++;
+      n_array[1] = 1;
+    } else {
+      // if not add 1
+      n_array[1]++;
     }
+
+    let firstHalf = "";
+    if (n_array[0] <= 9) {
+      firstHalf += "00" + n_array[0];
+    } else if (n_array[0] > 9 && n_array[0] <= 99) {
+      firstHalf += "0" + n_array[0];
+    } else if (n_array[0] > 99) {
+      firstHalf += n_array[0];
+    }
+
+    let secondHalf = "";
+    if (n_array[1] <= 9) {
+      secondHalf += "0" + n_array[1];
+    } else if (n_array[1] > 9) {
+      secondHalf += n_array[1];
+    }
+
+
+    // return new number
+    let n = firstHalf + "-" + secondHalf;
+    return n;
   }
 
   rentDateValidity = () => {
-    const { rentDate } = this.state;
-    var currentdate = moment(new Date).format('MM/DD/YYYY');
-
-
-    if (moment(moment(rentDate).format('MM/DD/YYYY')).isBefore(currentdate)) {
-      OCAlert.alertError(`Rent Date should be after today's date`);
-
+    const { rentDate, } = this.state;
+    var currentdate = moment(new Date).format('DD-MM-YYYY');
+    if (moment(moment(rentDate).format('DD-MM-YYYY')).isBefore(currentdate)) {
+      OCAlert.alertError(`Rent Date should be after today's date`, { timeOut: 3000 });
+      return;
     }
 
+    var threeDaysAfter = (new Date(rentDate).getTime() + (2 * 24 * 60 * 60 * 1000));
+    var momentthreeDaysAfter = moment(threeDaysAfter).format("DD-MM-YYYY");
+    this.state.returnDate = momentthreeDaysAfter;
+
+    this.state.m_returnDate = moment(threeDaysAfter).format("YYYY-MM-DD");
   }
 
   onSubmit = async (e) => {
@@ -87,36 +136,39 @@ class RentOrder extends Component {
     barcode_Array.forEach((element) => {
       barcodeArr.push(element.barcode);
     });
-    var orderNumber = Math.floor(Math.random() * 8999 + 1000);
+    const orderBarcode = shortid.generate();
     this.setState({
-      orderNumber: orderNumber
-
+      orderBarcode: orderBarcode
     })
     const rentedOrder = {
-      orderNumber: orderNumber,
+      orderNumber:state.orderNumber,
       customer: state.customer_id,
       customerContactNumber: customer.contactnumber,
       user: user._id,
       barcodes: barcodeArr,
       total: state.total,
-      returnDate: state.returnDate,
+      returnDate: state.m_returnDate,
       rentDate: state.rentDate,
       leaveId: true,
-      insuranceAmt: state.insAmt
+      insuranceAmt: state.insAmt,
+      orderBarcode:state.orderBarcode
     };
-
     await this.props.addNewRentProduct(rentedOrder);
 
-    await this.props.getOrderbyOrderNumber(orderNumber)
-
+    await this.props.getOrderbyOrderNumber(state.orderNumber)
     const { order, auth } = this.props;
-    if (order) {
-      const invoice = {
-        order_id: order[0]._id,
-        customer_id: order[0].customer,
-        user_id: auth.user._id,
+    if (this.props.generateInvoice == true) {
+      if (order) {
+        const invoiceRent = {
+          order_id: order[0]._id,
+          customer_id: order[0].customer,
+          user_id: auth.user._id,
+          type: "Rent-Invoice",
+          orderBarcode: state.orderBarcode
+        }
+        await this.props.addNewInvoice(invoiceRent);
       }
-      await this.props.addNewInvoice(invoice);
+      this.printBarcode(orderBarcode)
     }
     let { product_Array } = this.state;
 
@@ -129,7 +181,6 @@ class RentOrder extends Component {
 
         let { product } = this.props;
         counter++;
-        // console.log('got from db', product);
         if (product) {
           product.color.forEach((color, c_index) => {
             // get right color obj
@@ -142,7 +193,7 @@ class RentOrder extends Component {
                     if (size.barcodes) {
                       // Add isRented
                       size.barcodes[pd[0].barcodeIndex].isRented = true;
-                      // this.props.updateProduct(product, pd[0].product_id);
+                      this.props.updateProductIndex(product, pd[0].product_id);
                     }
                   }
                 });
@@ -157,12 +208,6 @@ class RentOrder extends Component {
 
     }
     this.setState({ saving: false });
-    // if(this.props.saved == true){
-    //   console.log(this.props,"this.props")
-    // }
-    // this.setState({
-    //   barcodesRented: true
-    // })
   };
 
   onHandleChange = (e) => {
@@ -170,6 +215,11 @@ class RentOrder extends Component {
 
   };
 
+  redirect = () => {
+    this.setState({
+      redirect: true
+    })
+  }
   // return sorted products for barcodes
   getSortedData = (products) => {
     // looping through prducts
@@ -205,7 +255,8 @@ class RentOrder extends Component {
                   color_id: color_id,
                   size_id: size_id,
                   barcodeIndex: i, // will be used to identify index of barcode when changeBarcode is called
-                  title: product_name + " | " + color_name + " | " + size_name,
+                  title: product_name,
+                  color: color_name + " | " + size_name,
                   barcode: size.barcodes[i].barcode,
                   price: price,
                 };
@@ -218,6 +269,16 @@ class RentOrder extends Component {
     }); // products foreach ends here
     return rows;
   };
+
+  printInvoice = (barcode) => {
+    var printDiv = document.getElementById('primary')
+        // var canvas = createCanvas(printDiv);
+    // let html = '<img src="' + canvas.toDataURL() + '" style="width: 100%" />';
+    let newWindow = window.open("", '_blank', 'location=yes,height=570,width=720,scrollbars=yes,status=yes');
+    newWindow.document.write(printDiv);
+    newWindow.window.print();
+    newWindow.document.close();
+  }
 
   removeBarcodeRow = (b_index, bbarcode) => {
     let barcode_Array = this.state.product_Array;
@@ -246,36 +307,21 @@ class RentOrder extends Component {
     }
     this.state.product_Array = productarray;
     return this.state.product_Array.map((product, b_index) => (
-      // <div id="sizes_box" key={barcode.id || barcode._id}>
-      <div id="sizes_box" key={b_index}>
+      <div id="sizes_box">
         <div className="row">
           <div className="left">
-            <input
-              type="text"
-              className="form-control mm-input s-input text-center"
-              placeholder="Barcode"
-              name="barcode"
-              id="widthBr"
-              style={{ width: "60%" }}
-              readOnly
-              value={
-                product &&
-                product[0].title &&
-                product[0].title + " | " + product[0].barcode
-              }
-            />
+            <table className="table table-bordered table-light" style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid' }}>
+              <thead></thead>
+              <tbody>
+                <tr key={b_index} style={{ "margin": "3px" }}>
+                  <td className="text-center">{product[0].barcode}</td>
+                  <td className="text-center">{product[0].title}</td>
+                  <td className="text-center">{product[0].color}</td>
+                  <td className="text-center">{product[0].price}</td>
 
-            <input
-              type="text"
-              className="form-control mm-input s-input text-center"
-              placeholder="Price"
-              id="setSize"
-              name="total"
-              readOnly
-              value={`${"$"}${product && product[0].price}`}
-            />
+                </tr></tbody></table>
           </div>
-          <div className="right">
+          <div className="right ml-3">
             <button
               type="button"
               onClick={() =>
@@ -286,51 +332,33 @@ class RentOrder extends Component {
               <i className="fa fa-minus"></i>
             </button>
           </div>
-          <div className="right">
-            <button
-              type="button"
-              className="btn btn-raised btn-sm btn-success mt-1"
-            >
-              <i className="=ft ft-edit"></i>
-            </button>
-          </div>
+          <br />
+
         </div>
+
       </div>
+
     ));
   }
 
   getInvoiceBarcodeRecord() {
     let { product_Array } = this.state;
     return product_Array.map((product, b_index) => (
-      // <div id="sizes_box" key={barcode.id || barcode._id}>
-      <div id="sizes_box" key={b_index}>
-        <div className="row">
-          <input
-            type="text"
-            className="form-control mm-input s-input text-center"
-            placeholder="Barcode"
-            name="barcode"
-            id="widthBr"
-            readOnly
-            style={{ width: "280px", color: 'black' }}
-            readOnly
-            value={
-              product &&
-              product[0].title &&
-              product[0].title + " | " + product[0].barcode
-            }
-          />
+      <div key={b_index}>
+        <div >
+          <table className="table table-bordered table-light" style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid' }}>
+            <thead></thead>
+            <tr>
+              <td className="text-center">{product[0].barcode}</td>
+              <td className="text-center">{product[0].title}</td>
+              <td className="text-center">{product[0].color}</td>
+              <td className="text-center">{product[0].price}</td>
 
-          <input
-            type="text"
-            className="form-control mm-input s-input text-center"
-            placeholder="Price"
-            id="setSize"
-            readOnly
-            name="total"
-            style={{ color: 'black', width: '80px' }}
-            value={`${"$"}${product && product[0].price}`}
-          />
+
+            </tr>
+          </table>
+
+
 
         </div>
       </div>
@@ -348,6 +376,7 @@ class RentOrder extends Component {
     this.state.total_amt = sum;
     return sum;
   };
+
 
   calculateTax = () => {
     var totalAmount = this.calculateTotalWithoutTax();
@@ -376,15 +405,14 @@ class RentOrder extends Component {
     this.state.total = sum;
     return sum;
   };
-  //   generateOrderBarcode =(orderNumber)=>{
-  //  const orderBarcode = shortid.generate();
-  //     // this.setState({
-  //     //   orderBarcode:orderBarcode
-  //     // })
-  //     return orderBarcode;
 
-  //   }
+  printBarcode = (barcode) => {
+    return JsBarcode("#barcode", barcode, {
+      width: 1.5,
+      height: 40,
+    });
 
+  }
   render() {
     const { auth, order } = this.props;
     const { data } = this.props.location;
@@ -393,9 +421,14 @@ class RentOrder extends Component {
       return <Redirect to="/" />;
     }
 
-    // if (this.state.barcodesRented) {
-    //   return <Redirect to="/RentInvoice" />;
-    // }
+    if (this.state.redirect == true) {
+      return <Redirect to="/rentproduct" />;
+    }
+
+    if (this.props.location.data == undefined) {
+      return <Redirect to="/rentproduct" />;
+
+    }
     const { customer } = this.props;
     return (
       <React.Fragment>
@@ -413,7 +446,7 @@ class RentOrder extends Component {
                         <h4 className="card-title">Rent a Product</h4>
                       </div>
                       <div className="card-content">
-                        <div className="card-body table-responsive background-container">
+                        <div className="card-body table-responsive">
                           <div id="colors_box">
                             <div className="row color-row">
                               <div className="col-md-12">
@@ -425,9 +458,12 @@ class RentOrder extends Component {
                                   </h3>
                                 </div>
                               </div>
-                              <form onSubmit={(e) => this.onSubmit(e)}>
+                              {/* <form > */}
+                                <form onSubmit={(e) => this.onSubmit(e)}>
+
                                 <div className="col-md-12">
                                   <div id="sizes_box">
+
                                     {this.getBarcodeRecord()}
                                     <Link
                                       to="/product/addproduct"
@@ -462,7 +498,7 @@ class RentOrder extends Component {
                                               }
                                               value={
                                                 this.state.product_Array
-                                                  ? `${"$"}${this.calculateTotalWithoutTax()}`
+                                                  ? `${this.calculateTotalWithoutTax()}`
                                                   : ""
                                               }
                                             />
@@ -519,7 +555,7 @@ class RentOrder extends Component {
                                               value={
                                                 this.state.product_Array &&
                                                   this.state.taxper
-                                                  ? `${"$"}${this.calculateTax()}`
+                                                  ? `${this.calculateTax()}`
                                                   : ""
                                               }
                                               readOnly
@@ -540,19 +576,19 @@ class RentOrder extends Component {
                                           </div>
                                           <div style={{ paddingLeft: "650px" }}>
                                             <input
+                                              name="insAmt"
                                               style={{ width: "65%" }}
                                               type="text"
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Insurance"
                                               id="setSizeFloat"
                                               required
-                                              readOnly
-
                                               value={
-                                                this.state.total_amt
-                                                  ? `${"$"}${this.calculateInsuranceAmt()}`
-                                                  : ""
+                                                this.state.insAmt
                                               }
+                                              onChange={(e) => this.onHandleChange(e)}
+
+
                                             />
                                           </div>
                                         </div>
@@ -567,11 +603,10 @@ class RentOrder extends Component {
 
                                             <h4 id="padLeft">Leave ID</h4>
                                           </div>
-                                          <div style={{ 'float': 'right', 'paddingRight': '170px' }}>
+                                          <div style={{ 'textAlign': 'center', 'paddingRight': '170px' }}>
 
                                             <div className="">
                                               <input
-                                                // className="custom-control-input"
                                                 type="radio"
                                                 name="leaveID"
                                                 value={true}
@@ -579,12 +614,10 @@ class RentOrder extends Component {
                                                 checked={this.state.leaveID === "true"}
                                               />
                                               <label
-                                              // className="custom-control-label"
                                               >YES</label>
                                             </div>
                                             <div className="">
                                               <input
-                                                // className="custom-control-input"
                                                 type="radio"
                                                 name="leaveID"
                                                 value={false}
@@ -593,9 +626,9 @@ class RentOrder extends Component {
                                                 checked={this.state.leaveID === "false"}
                                               />
                                               <label
-                                              // className="custom-control-label"
                                               >NO</label>
-                                            </div>                    </div>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -620,7 +653,6 @@ class RentOrder extends Component {
                                         </label>
                                       </div>
                                     </div>
-
                                     <br />
 
                                     <div className="row justify-content-center">
@@ -635,10 +667,7 @@ class RentOrder extends Component {
                                           data-placement="top"
                                           data-title="Rent Date"
                                           required
-
-                                          onChange={(e) =>
-                                            this.onHandleChange(e)
-                                          }
+                                          onChange={(e) => this.onHandleChange(e)}
                                           value={this.state.rentDate}
                                           onInput={this.rentDateValidity()}
 
@@ -647,7 +676,7 @@ class RentOrder extends Component {
 
                                       <div className="col-md-6">
                                         <input
-                                          type="date"
+                                          type=""
                                           id="issueinput4"
                                           className="form-control round text-center"
                                           name="returnDate"
@@ -655,13 +684,9 @@ class RentOrder extends Component {
                                           data-trigger="hover"
                                           data-placement="top"
                                           required
-
+                                          readOnly
                                           data-title="Return Date"
-                                          onChange={(e) =>
-                                            this.onHandleChange(e)
-                                          }
-                                          value={this.state.returnDate}
-                                          onInput={this.returnDateValidity()}
+                                          value={this.state.returnDate == "Invalid date" ? "" : this.state.returnDate}
                                         />
                                       </div>
                                     </div>
@@ -684,11 +709,10 @@ class RentOrder extends Component {
                                               id="setSizeFloat"
                                               value={
                                                 this.state.total_amt
-                                                  ? `${"$"}${this.calculateTotal()}`
+                                                  ? `${this.calculateTotal()}`
                                                   : ""
                                               }
 
-                                            // value={`${"Total: $"}${this.state.tax ? (this.calculateTotal()) : ""}`}
                                             />
                                           </div>{" "}
                                         </div>
@@ -705,8 +729,7 @@ class RentOrder extends Component {
                                           id="btnSize2"
                                           data-toggle="modal"
                                           data-backdrop="false"
-                                          data-target="#primary"
-                                        >
+                                          data-target="#primary">
                                           <i className="ft-check"></i>
                                           Submit &amp; Get Invoice
                                         </button>
@@ -719,254 +742,185 @@ class RentOrder extends Component {
                           </div>
                         </div>
                       </div>
-
                     </div>
                   </div>
-
-                
                 </section>
               </div>
             </div>
 
-           
+
 
             <footer className="footer footer-static footer-light">
-              <p className="clearfix text-muted text-sm-center px-2">
-                <span>
-                  Powered by &nbsp;{" "}
-                  <a
-                    href="https://www.alphinex.com"
-                    id="pixinventLink"
-                    target="_blank"
-                    className="text-bold-800 primary darken-2"
-                  >
-                    Alphinex Solutions{" "}
-                  </a>
-                  , All rights reserved.{" "}
-                </span>
-              </p>
+              <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
           </div>
-             {/* Invoice Modal */}
-             <div className="modal fade text-left" id="primary" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel8"
-                    aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                      <div className="modal-content">
-                        <div className="modal-header bg-primary white">
-                          <h4 className="modal-title text-center" id="myModalLabel8">Invoice</h4>
-                          
-                        </div>
-                        <div className="modal-body">
-                          <div id="colors_box">
-                            <div className="row color-row">
-                              <div className="col-md-12">
-                                <div className="form-group">
-                                  <div style={{ 'float': 'left' }}>
+          {/* Invoice Modal */}
+          <div className="modal fade text-left" id="primary" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel8"
+            aria-hidden="true">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header bg-primary white">
+                  <h4 className="modal-title text-center" id="myModalLabel8">Invoice</h4>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <button type="button" className="close btn btn-primary" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" onClick={(e) => this.printInvoice(e)}>Print</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <div id="colors_box">
+                    <div className="row color-row">
+                      <div className="col-md-12">
+                        <div className="form-group">
+                          <div className="text-center">
 
-                                    <h4>{(customer) ? `${customer.name}${"#"}${customer.contactnumber}` : ""}</h4>
-                                  </div>
-                                  <div style={{ 'float': 'right' }}>
-                                    <h4>{(order) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4>
-
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-md-12">
-                                <div id="sizes_box">
-                                  {this.getInvoiceBarcodeRecord()}
-                                  <hr />
-                                  <div className="row">
-                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-                                      <h6 id="padLeft">Total Without Tax</h6>
-                                    </div>
-                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
-
-                                      <h6 >
-                                        {`${"$"}${this.state.total_amt}`}
-                                      </h6>
-                                    </div>
-
-                                  </div>
-
-
-                                  <div className="row">
-                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-
-                                      <h6 id="padLeft">Tax Percentage</h6>
-                                    </div>
-                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
-                                      <h6 >
-                                        {`${this.state.taxper}${"%"}`}
-                                      </h6>
-                                    </div>
-                                  </div>
-                                  <div className="row">
-                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-
-                                      <h6 id="padLeft">Tax Amount</h6>
-                                    </div>
-                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
-                                      <h6 >
-                                        {`${"$"}${this.state.tax}`}
-                                      </h6>
-                                    </div>
-                                  </div>
-                                  <div className="row">
-                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-
-                                      <h6 id="padLeft">Insurance Amount</h6>
-                                    </div>
-                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
-                                      <h6 >
-                                        {`${"$"}${this.state.insAmt}`}
-                                      </h6>
-                                    </div>
-                                  </div>
-
-
-
-                                  <div className="row justify-content-center">
-                                    <div className="form-group">
-
-                                      <div className="text-center" style={{ 'width': '300%' }}>
-                                        <input
-                                          type="text"
-                                          readOnly
-                                          className="form-control mm-input s-input text-center"
-                                          placeholder="Total"
-                                          style={{ 'color': 'black' }}
-
-                                          id="setSizeFloat"
-                                          value={`${"PAID TOTAL: $"}${this.state.total}`}
-
-                                        />
-
-
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="row">
-                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-
-
-                                      <h6 >Amount to be returned to customer
-</h6></div>
-
-                                    <div className="col-md-6 text-center" style={{ 'color': 'black' }}>
-
-
-
-                                      <h6 >
-                                        {`${"$"}${this.state.insAmt}`}
-                                      </h6>
-
-                                    </div>
-
-                                  </div>
-
-
-
-
-
-
-                                  <br />
-
-
-                                  <div className="row">
-                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-
-
-                                      <h6 id="padLeft">Leave ID</h6>
-                                    </div>
-                                    <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
-                                      <h6 >
-                                        {this.state.leaveID === "true" ? `${"Yes"}` : `${"No"}`}
-                                      </h6>
-                                    </div>
-
-                                  </div>
-
-
-
-                                  <div className="row">
-                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-                                      <h6 id="padLeft">Rent From</h6>
-                                    </div>
-                                    <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
-                                      <h6>
-                                        {moment(this.state.rentDate).format('DD/MMM/YYYY')}
-
-                                      </h6>
-                                    </div>
-
-
-                                  </div>
-
-
-
-                                  <div className="row">
-                                    <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
-                                      <h6 >Due Date</h6>
-                                    </div>
-
-                                    <div style={{ 'textAlign': 'center', 'color': 'black', 'marginLeft': '25px' }}>
-                                      <h6 >
-
-                                        {moment(this.state.returnDate).format('DD/MMM/YYYY')}
-                                      </h6>
-                                    </div>
-
-
-                                  </div>
-
-
-                                  <div className="col-md-12">
-
-                                    <table>
-                                      <tbody>
-                                        <tr>
-                                          <td className="col-md-6" style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>OrderID <br />
-                                            {(order && !!order.length) ? `${order[0]._id}` : ""}<br />
-                                            {(order && !!order.length) ? shortid.generate() : ""}
-                                          </td>
-                                          <td className="col-md-6" style={{ 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}> Authorized by <br />
-                                                        Sutygon-Bot</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-
-
-                                  </div>
-                                  <div className="row">
-                                    <p>For questions and contact information please check out
-                                              <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">www.sutygon-bot.com</a></p>
-                                  </div>
-
-
-
-                                </div>
-                              </div>
-                              <div className="col-md-12">
-                                <div className="row justify-content-center">
-                              <button type="button" 
-                         className="close text-center" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                         id="btnSize2">Finish</span>
-                          </button>
+                            <h4>{(customer) ? `${customer.name}${"#"}${customer.contactnumber}` : ""}</h4>
                           </div>
-                            </div>
-                            </div>
+                          <div className="text-center">
+                            <h4>{(order) ? `${"Order"}${"#"} ${order[0].orderNumber}` : ""}</h4>
 
-
-                           
                           </div>
-                        
                         </div>
-                     
                       </div>
+                      <div className="col-md-12">
+                        <div >
+                          {this.getInvoiceBarcodeRecord()}
+                          <hr />
+                          <div className="row">
+                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                              <h6 id="padLeft">Total Without Tax</h6>
+                            </div>
+                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                              <h6 >
+                                {`${this.state.total_amt}`}
+                              </h6>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                              <h6 id="padLeft">Tax Percentage</h6>
+                            </div>
+                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                              <h6 >
+                                {`${this.state.taxper}${"%"}`}
+                              </h6>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                              <h6 id="padLeft">Tax Amount</h6>
+                            </div>
+                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                              <h6 >
+                                {`${this.state.tax}`}
+                              </h6>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                              <h6 id="padLeft">Insurance Amount</h6>
+                            </div>
+                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                              <h6 >
+                                {`${this.state.insAmt}`}
+                              </h6>
+                            </div>
+                          </div>
+                          <div className="row justify-content-center">
+                            <div className="form-group">
+                              <div className="" style={{ 'width': '300%' }}>
+                                <input
+                                  type="text"
+                                  readOnly
+                                  className="form-control mm-input s-input text-center"
+                                  placeholder="Total"
+                                  style={{ 'color': 'black' }}
 
+                                  id="setSizeFloat"
+                                  value={`${"PAID TOTAL: $"}${this.state.total}`} />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                              <h6 >Amount to be returned to customer</h6>
+                            </div>
+                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                              <h6 >{`${this.state.insAmt}`}</h6>
+                            </div>
+                          </div>
+                          <br />
+                          <div className="row">
+                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                              <h6 id="padLeft">Leave ID</h6>
+                            </div>
+                            <div className="col-md-6" style={{ 'textAlign': 'center', 'color': 'black' }}>
+                              <h6 >
+                                {this.state.leaveID === "true" ? `${"Yes"}` : `${"No"}`}
+                              </h6>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                              <h6 id="padLeft">Rent From</h6>
+                            </div>
+                            <div style={{ 'textAlign': 'end', 'color': 'black' }}>
+                              <h6 style={{ 'textAlign': 'end', 'color': 'black' }}>
+                                {moment(this.state.rentDate).format('DD-MM-YYYY')}
+                              </h6>
+                            </div>
+                          </div>
+                          <div className="row">
+                            <div className="col-md-6" style={{ 'float': 'left', 'color': 'black' }}>
+                              <h6 >Return Date</h6>
+                            </div>
+
+                            <div style={{ 'textAlign': 'end', 'color': 'black', }}>
+                              <h6 style={{ 'textAlign': 'end', 'color': 'black' }}>
+                                {moment(this.state.m_returnDate).format('DD-MM-YYYY')}
+                              </h6>
+                            </div>
+                          </div>
+                          <div className="col-md-12">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td className="col-md-6" style={{ 'backgroundColor': 'white', 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>
+                                    <svg id="barcode"></svg>
+                                  </td>
+                                  <td className="col-md-6" style={{ 'textAlign': 'center', 'padding': '8px', 'width': '50%' }}>
+                                    Authorized by <br />
+                                     Sutygon-Bot</td>
+                                </tr>
+                              </tbody>
+                            </table>
+
+
+                          </div>
+                          <div className="row">
+                            <p>For questions and contact information please check out
+                                              <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">www.sutygon-bot.com</a></p>
+                          </div>
+
+
+
+                        </div>
+                      </div>
+                      
                     </div>
+
+
+
                   </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
         </div>
         <OCAlertsProvider />
 
@@ -980,15 +934,16 @@ RentOrder.propTypes = {
   getCustomer: PropTypes.func.isRequired,
   addNewRentProduct: PropTypes.func.isRequired,
   getProductById: PropTypes.func.isRequired,
-  updateProduct: PropTypes.func.isRequired,
-  // getOrder: PropTypes.func.isRequired,
+  updateProductIndex: PropTypes.func.isRequired,
   getOrderbyOrderNumber: PropTypes.func.isRequired,
   addNewInvoice: PropTypes.func.isRequired,
+  getLastRecord: PropTypes.func.isRequired,
   auth: PropTypes.object,
   products: PropTypes.array,
   customer: PropTypes.array,
   order: PropTypes.array,
   saved: PropTypes.bool,
+  generateInvoice: PropTypes.bool,
 
 
 };
@@ -996,10 +951,12 @@ RentOrder.propTypes = {
 const mapStateToProps = (state) => ({
   product: state.product.product,
   auth: state.auth,
+  lastRecord: state.rentproduct.lastrecord,
   order: state.returnproduct.returnproduct,
   products: state.product.products,
   customer: state.customer.customer,
-  saved: state.rentproduct.saved,
+  // saved: state.product.saved,
+  generateInvoice: state.rentproduct.generateInvoice,
 
 });
 export default connect(mapStateToProps, {
@@ -1007,7 +964,8 @@ export default connect(mapStateToProps, {
   getCustomer,
   addNewRentProduct,
   getProductById,
-  updateProduct,
+  updateProductIndex,
   addNewInvoice,
-  getOrderbyOrderNumber
+  getOrderbyOrderNumber,
+  getLastRecord
 })(RentOrder);

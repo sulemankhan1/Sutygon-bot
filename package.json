@@ -1,17 +1,19 @@
 {
-  "name": "inventory",
+  "name": "",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
     "client": "npm start --prefix client",
     "server": "nodemon server",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "start": "nodemon server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm install --prefix client && npm run build --prefix client"
+    "start": "node server.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+
   },
-  "author": "Alphinex solutions www.alphinex.com",
+  "author": "Calum Nguyen",
   "license": "ISC",
   "dependencies": {
     "@opuscapita/react-alerts": "^3.1.0",
@@ -21,6 +23,7 @@
     "concurrently": "^5.3.0",
     "config": "^3.3.1",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^6.6.1",
     "gravatar": "^1.8.1",

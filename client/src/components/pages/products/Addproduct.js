@@ -72,15 +72,11 @@ class AddProduct extends Component {
       price: "",
       qty: "",
     })
-
     color[index] = color_obj[0];
-
     this.setState({ color: color });
-
   }
 
   addColorBox = (id) => {
-
     let { color } = this.state; // get all colors
     color.push({
       _id: shortid.generate(),
@@ -163,17 +159,11 @@ class AddProduct extends Component {
             className="btn btn-raised btn-sm btn-icon btn-danger mt-1">
             <i className="fa fa-minus"></i>
           </button>
-
-
-
         </div>
-        <div className="col-md-12">
-          {this.getSizeboxes(color._id)}
-        </div>
+        <div className="col-md-12"> {this.getSizeboxes(color._id)}</div>
         <div className="row">
           <div className="col-md-12 btn-cont">
             <div className="form-group mb-0">
-
               <button
                 type="button"
                 onClick={() => this.addSizeRow(color._id)}
@@ -287,7 +277,7 @@ class AddProduct extends Component {
     })
     e.preventDefault()
     if(this.state.sizeQty > e.target.value){
-      OCAlert.alertError(`value can't be less than ${this.state.sizeQty}`)
+      OCAlert.alertError(`value can't be less than ${this.state.sizeQty}`, { timeOut: 3000 })
     }
    
   }
@@ -341,7 +331,7 @@ class AddProduct extends Component {
 
     const totalFromState = this.calculateTotals(state);
     if (state.totalFromProps > state.total) {
-      OCAlert.alertError(`${"Quantity cannot be less than"} ${state.totalFromProps}`)
+      OCAlert.alertError(`${"Quantity cannot be less than"} ${state.totalFromProps}`, { timeOut: 3000 })
       this.setState({ saving: false });
       return;
     }
@@ -362,7 +352,7 @@ class AddProduct extends Component {
       formData.append('image', state.image)
     }
     else {
-      OCAlert.alertError("Please Upload Product Image")
+      OCAlert.alertError("Please Upload Product Image", { timeOut: 3000 })
       this.setState({ saving: false });
       return;
     }
@@ -383,10 +373,8 @@ class AddProduct extends Component {
       return <Redirect to="/" />;
     }
     if (this.props.saved) {
-      console.log("this.props.saved",this.props.saved)
       return <Redirect to="/product" />;
     }
-
 
     return (
       <React.Fragment>
@@ -505,21 +493,15 @@ class AddProduct extends Component {
                                 {this.state.saving ? (
                                   <button
                                     type="button"
-                                    className="mb-2 mr-2 btn btn-raised btn-primary"
-                                  >
+                                    className="mb-2 mr-2 btn btn-raised btn-primary" >
                                     <div
                                       className="spinner-grow spinner-grow-sm "
-                                      role="status"
-                                    ></div>
-                                &nbsp; Adding
-                                  </button>
+                                      role="status"></div>  &nbsp; Adding </button>
                                 ) : (
                                     <button
                                       type="submit"
-                                      className="mb-2 mr-2 btn btn-raised btn-primary"
-                                    >
-                                      <i className="ft-check" /> Add Product
-                                    </button>
+                                      className="mb-2 mr-2 btn btn-raised btn-primary">
+                                      <i className="ft-check" /> Add Product </button>
                                   )}
                               </>
                               : <>
@@ -527,21 +509,15 @@ class AddProduct extends Component {
                                 {this.state.saving ? (
                                   <button
                                     type="button"
-                                    className="mb-2 mr-2 btn btn-raised btn-primary"
-                                  >
+                                    className="mb-2 mr-2 btn btn-raised btn-primary">
                                     <div
                                       className="spinner-grow spinner-grow-sm "
-                                      role="status"
-                                    ></div>
-                                &nbsp; Updating
-                                  </button>
+                                      role="status"></div> &nbsp; Updating</button>
                                 ) : (
                                     <button
                                       type="submit"
-                                      className="mb-2 mr-2 btn btn-raised btn-primary"
-                                    >
-                                      <i className="ft-check" /> Update Product
-                                    </button>
+                                      className="mb-2 mr-2 btn btn-raised btn-primary"  >
+                                      <i className="ft-check" /> Update Product</button>
                                   )}
                               </>}
                           </div>
@@ -555,9 +531,10 @@ class AddProduct extends Component {
               </div>
             </div>
 
+         
             <footer className="footer footer-static footer-light">
-              <p className="clearfix text-muted text-sm-center px-2"><span>Powered by &nbsp;{" "}
-                <a href="https://www.alphinex.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">Alphinex Solutions </a>, All rights reserved. </span></p>
+              <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
 
           </div>

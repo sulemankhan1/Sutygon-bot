@@ -160,8 +160,7 @@ if(product_Array){
     let { barcode_Array } = this.state;
 
     const { products } = this.props;
-    console.log('abc: ', barcode_Array)
-    
+   
     if (products) {
       let sortedAray = this.getSortedData(products);
       if (sortedAray) {
@@ -170,7 +169,6 @@ if(product_Array){
           productarray.push(sortedAray.filter(f => f.barcodes.some(o => o.barcode === element.barcode)));
           return productarray
         }));
-        console.log('abc: ',productarray);
 
       }
     }
@@ -198,7 +196,7 @@ if(product_Array){
               id="setSize"
               name="total"
 
-              value={`${"$"}${barcode && barcode[0].price}`}
+              value={`${barcode && barcode[0].price}`}
 
             />
           </div>
@@ -328,7 +326,7 @@ if(product_Array){
                                               name="total_amt"
                                               id="setSizeFloat"
                                               onChange={(e) => this.onHandleChange(e)}
-                                              value={this.state.product_Array ? `${"$"}${this.calculateTotalWithoutTax()}` : ""}
+                                              value={this.state.product_Array ? `${this.calculateTotalWithoutTax()}` : ""}
 
 
                                             />
@@ -372,7 +370,7 @@ if(product_Array){
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Tax Ammount"
                                               id="setSizeFloat"
-                                              value={(this.state.product_Array && this.state.taxper) ? `${"$"}${this.calculateTax()}` : ""}
+                                              value={(this.state.product_Array && this.state.taxper) ? `${this.calculateTax()}` : ""}
                                             />
                                           </div>                             </div>
                                       </div>
@@ -393,7 +391,7 @@ if(product_Array){
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Insurance"
                                               id="setSizeFloat"
-                                              value={this.state.total_amt ? `${"$"}${this.calculateInsuranceAmt()}` : ""} />
+                                              value={this.state.total_amt ? `${this.calculateInsuranceAmt()}` : ""} />
                                           </div>
                                         </div>
                                       </div>
@@ -500,7 +498,7 @@ if(product_Array){
                                               className="form-control mm-input s-input text-center"
                                               placeholder="Total"
                                               id="setSizeFloat"
-                                              value={this.state.tax ? `${"$"}${this.calculateTotal()}` : ""}
+                                              value={this.state.tax ? `${this.calculateTotal()}` : ""}
 
                                             // value={`${"Total: $"}${this.state.tax ? (this.calculateTotal()) : ""}`} 
                                             />

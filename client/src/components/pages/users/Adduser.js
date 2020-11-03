@@ -16,10 +16,15 @@ class AddUser extends Component {
         email: "",
         contactnumber: "",
         password: "",
-        type:"SuperAdmin",
+        type: "SuperAdmin",
         gender: "",
         avatar: "",
         saving: false,
+        isEdit: false,
+        imgUpd: false,
+        src: "",
+
+
     };
 
     async componentDidMount() {
@@ -31,14 +36,16 @@ class AddUser extends Component {
             if (user) {
                 this.setState({
                     id: id,
-                    fullname: user.fullname,
+                    fullname: user.username,
                     username: user.username,
                     avatar: user.avatar,
                     email: user.email,
                     contactnumber: user.contactnumber,
                     password: user.password,
-                    type:user.type,
-                    gender: user.gender
+                    type: user.type,
+                    gender: user.gender,
+                    isEdit: true,
+
 
                 });
             }
@@ -46,27 +53,31 @@ class AddUser extends Component {
     }
 
     _onChange = (e, id = "") => {
-        this.setState({ [e.target.name]: e.target.files[0] });
+        this.setState({
+            [e.target.name]: e.target.files[0],
+            imgUpd: true,
+            src: URL.createObjectURL(e.target.files[0])
+        })
+
     }
-    
+
     handleChange = (e, id = "") => {
         this.setState({ [e.target.name]: e.target.value });
     };
 
     onSubmit = async (e) => {
         e.preventDefault();
-        // this.setState({ saving: true });
         const formData = new FormData();
-        formData.append('avatar',this.state.avatar)
-        formData.append('username',this.state.username)
-        formData.append('fullname',this.state.fullname)
-        formData.append('contactnumber',this.state.contactnumber)
-        formData.append('email',this.state.email)
-        formData.append('password',this.state.password)
-        formData.append('type',this.state.type)
-        formData.append('gender',this.state.gender)
-        
-            if (this.state.id === "") {
+        formData.append('avatar', this.state.avatar)
+        formData.append('username', this.state.username)
+        formData.append('fullname', this.state.username)
+        formData.append('contactnumber', this.state.contactnumber)
+        formData.append('email', this.state.email)
+        formData.append('password', this.state.password)
+        formData.append('type', this.state.type)
+        formData.append('gender', this.state.gender)
+
+        if (this.state.id === "") {
             await this.props.addNewUser(formData);
         } else {
             await this.props.updateUser(formData, this.state.id);
@@ -102,10 +113,10 @@ class AddUser extends Component {
                                                     : "Update User"}
                                             </h4>
                                         </div>
-                                     
+
 
                                         <div className="card-body">
-                                        <Alert />
+                                            <Alert />
                                             <form
                                                 encType="multipart/form-data"
                                                 action="/upload"
@@ -120,24 +131,32 @@ class AddUser extends Component {
                                                             type="file"
                                                             className="form-control-file"
                                                             id="projectinput8"
-                                                            accept='image/*,.pdf,.jpg'
-                                                            // accept='file_extension|image/*|media_type'
-                                                            // value={this.state.avatar}
+                                                            accept='image/jpeg,image/gif,image/jpg,image/png,image/x-eps'
+
                                                             onChange={(e) => this._onChange(e)} />
+                                                            <br />
+                                                        {this.state.isEdit === true && this.state.imgUpd === false ?
+                                                            <img
+                                                                className="media-object round-media"
+                                                                src={`${this.state.avatar}`}
+                                                                alt="Product image"
+                                                                height={100}
+                                                            />
+                                                            : ""}
+                                                        {this.state.imgUpd === true ?
+                                                            <img
+                                                                className="media-object round-media"
+                                                                src={`${this.state.src}`}
+                                                                alt="Product image"
+                                                                height={100}
+                                                            />
+                                                            : ""}
                                                     </div>
 
                                                     <div className="form-group col-12 mb-2">
-                                                        {/* <button
-                                                            name=""
-                                                            value="submit"
-                                                            type="submit"
 
-                                                            // accept='file_extension|image/*|media_type'
-                                                            // value={this.state.avatar}
-                                                        > Submit
-                                                            </button> */}
-                                                </div> 
-                                                 </div>
+                                                    </div>
+                                                </div>
                                                 <div className="row">
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput1">User Name</label>
@@ -198,27 +217,25 @@ class AddUser extends Component {
                                                                     className="form-control"
                                                                     placeholder="Password"
                                                                     name="password"
-                                                                    required 
+                                                                    required
                                                                     data-validation-required-message="This field is required"
                                                                     minLength="6" maxLength="10"
                                                                     onChange={(e) => this.handleChange(e)}
                                                                     value={this.state.password}
                                                                 />
-                                                            </div>
-                                                        </>
-                                                        : ""}
+                                                            </div>    </> : ""}
 
                                                     <div className="form-group col-md-6 mb-2">
-                                                    <label htmlFor="projectinput6">Select Type</label>
-                                                    <select
-                                                        id="type"
-                                                        name="type"
-                                                        className="form-control"
-                                                        onChange={(e) => this.handleChange(e)} >
-                                                        <option selected = {"SuperAdmin" === this.state.type} value="SuperAdmin"> Super Admin </option>
-                                                        <option selected = {"Employee" === this.state.type} value="Employee"> Employee </option>
+                                                        <label htmlFor="projectinput6">Select Type</label>
+                                                        <select
+                                                            id="type"
+                                                            name="type"
+                                                            className="form-control"
+                                                            onChange={(e) => this.handleChange(e)} >
+                                                            <option selected={"SuperAdmin" === this.state.type} value="SuperAdmin"> Super Admin </option>
+                                                            <option selected={"Employee" === this.state.type} value="Employee"> Employee </option>
 
-                                                    </select>
+                                                        </select>
                                                     </div>
                                                     <div className="form-group col-md-6 mb-2">
                                                         <label htmlFor="projectinput6">Gender</label><br></br>
@@ -258,69 +275,61 @@ class AddUser extends Component {
                                                 <div className="form-actions top">
                                                     {this.state.id === ""
                                                         ? <>
-                          
-                          {this.state.saving ? (
-                            <button
-                              type="button"
-                              className="mb-2 mr-2 btn btn-raised btn-primary"
-                            >
-                              <div
-                                className="spinner-grow spinner-grow-sm "
-                                role="status"
-                              ></div>
-                                &nbsp; Adding
-                            </button>
-                          ) : (
-                              <button
-                                type="submit"
-                                className="mb-2 mr-2 btn btn-raised btn-primary"
-                              >
-                                <i className="ft-check" /> Add User
-                              </button>
-                            )}
-                          </>
-                          : <>
-                          
-                          {this.state.saving ? (
-                            <button
-                              type="button"
-                              className="mb-2 mr-2 btn btn-raised btn-primary"
-                            >
-                              <div
-                                className="spinner-grow spinner-grow-sm "
-                                role="status"
-                              ></div>
-                                &nbsp; Updating
-                            </button>
-                          ) : (
-                              <button
-                                type="submit"
-                                className="mb-2 mr-2 btn btn-raised btn-primary"
-                              >
-                                <i className="ft-check" /> Update User
-                              </button>
-                            )}
-                          </>}            
-              </div>
-                                                </form>
+
+                                                            {this.state.saving ? (
+                                                                <button
+                                                                    type="button"
+                                                                    className="mb-2 mr-2 btn btn-raised btn-primary"
+                                                                >
+                                                                    <div
+                                                                        className="spinner-grow spinner-grow-sm "
+                                                                        role="status"
+                                                                    ></div>
+                                                                      &nbsp; Adding
+                                                                </button>
+                                                            ) : (
+                                                                    <button
+                                                                        type="submit"
+                                                                        className="mb-2 mr-2 btn btn-raised btn-primary"
+                                                                    >
+                                                                        <i className="ft-check" /> Add User
+                                                                    </button>
+                                                                )}</> : <>
+
+                                                            {this.state.saving ? (
+                                                                <button
+                                                                    type="button"
+                                                                    className="mb-2 mr-2 btn btn-raised btn-primary"
+                                                                >
+                                                                    <div
+                                                                        className="spinner-grow spinner-grow-sm "
+                                                                        role="status"
+                                                                    ></div>
+                                                                       &nbsp; Updating
+                                                                </button>
+                                                            ) : (
+                                                                    <button
+                                                                        type="submit"
+                                                                        className="mb-2 mr-2 btn btn-raised btn-primary"
+                                                                    >
+                                                                        <i className="ft-check" /> Update User
+                                                                    </button>
+                                                                )}</>}
+                                                </div>
+                                            </form>
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <footer className="footer footer-static footer-light">
                             <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
                                 <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
                         </footer>
-
                     </div>
-
                 </div>
-
             </React.Fragment>
-
         );
     }
 }
@@ -329,7 +338,6 @@ AddUser.propTypes = {
     saved: PropTypes.bool,
     addNewUser: PropTypes.func.isRequired,
     getUser: PropTypes.func.isRequired,
-
     auth: PropTypes.object,
     updateUser: PropTypes.func.isRequired,
 
@@ -342,6 +350,8 @@ const mapStateToProps = (state) => ({
 
 });
 export default connect(mapStateToProps, {
-    addNewUser, updateUser, getUser
+    addNewUser,
+    updateUser,
+    getUser
 })(AddUser);
 

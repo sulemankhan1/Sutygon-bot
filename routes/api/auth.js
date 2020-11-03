@@ -51,14 +51,7 @@ router.post(
       }
       const salt = await bcrypt.genSalt(10);
     const passwordEntered = await bcrypt.hash(password, salt);
-
-   
-      // if(user.accountStatus === "block"){
-      //   return res
-      //   .status(400)
-      //   .json({ errors: [{ msg: "Your account is blocked" }] });
-      // }
-      
+     
   const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {

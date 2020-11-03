@@ -19,27 +19,19 @@ router.post(
     auth,
     async (req, res) => {
         try {
-            // RentedProduct.find().sort({ orderNumber: -1 }).limit(1).then(async (data) => {
-            //    if(data[0].orderNumber === undefined){
-            //        orderNumber = 0
-            //    }
-            //     newOrderNumber = data[0].orderNumber + 1;
-            //     console.log(newOrderNumber)
-                var rentedProduct = new RentedProduct({
-                    barcodes: req.body.barcodes,
-                    orderNumber: req.body.orderNumber,
-                    customer: req.body.customer,
-                    customerContactNumber: req.body.customerContactNumber,
-                    rentDate: req.body.rentDate,
-                    returnDate: req.body.returnDate,
-                    insuranceAmt:req.body.insuranceAmt
-                });
 
-                await rentedProduct.save();
-            // })
+            var rentedProduct = new RentedProduct({
+                barcodes: req.body.barcodes,
+                orderNumber: req.body.orderNumber,
+                customer: req.body.customer,
+                customerContactNumber: req.body.customerContactNumber,
+                rentDate: req.body.rentDate,
+                returnDate: req.body.returnDate,
+                total: req.body.total,
+                insuranceAmt: req.body.insuranceAmt._id,
+            });
+            await rentedProduct.save();
 
-
-            // await inventory.save();
             res.json({ msg: "Order Added Successfully" });
         } catch (err) {
             console.log(err);
@@ -65,7 +57,7 @@ router.post(
             }
             await RentedProduct.updateOne({ _id: req.params.id }, {
                 $set: {
-                   status:req.body.status
+                    status: req.body.status
                 }
             });
             res.json({ msg: "Order Completed Successfully" });
@@ -93,70 +85,6 @@ router.get("/", auth,
                 .send("Server Error!");
         }
     });
-
-// @route  GET api/rentedproducts/:id
-// @desc   Get Product by id
-// @access Private
-// router.get("/:id",
-// // auth,
-//     async (req, res) => {
-//         try {
-//             const rentedProduct = await RentedProduct.findById(req.params.id);
-
-//             if (!rentedProduct) {
-//                 return res
-//                     .status(404)
-//                     .json({ msg: "No Order found" });
-//             }
-
-//             res.json(rentedProduct);
-//         } catch (err) {
-//             console.error(err.message);
-//             // Check if id is not valid
-//             if (err.kind === "ObjectId") {
-//                 return res
-//                     .status(404)
-//                     .json({ msg: "No Order found" });
-//             }
-//             res
-//                 .status(500)
-//                 .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
-//         }
-//     });
-
-
-
-// // @route  GET api/rentedproducts/search/trackingNumber/:trackingNumber
-// // @desc   Get Product (Search for Product by trackingNumber)
-// // @access Private
-// router.get("/search/trackingNumber/:trackingNumber",auth,
-
-// async (req, res) => {
-//     try {
-//         const rentedProduct = await RentedProduct.findOne({
-//             trackingNumber: { $eq: req.params.trackingNumber },
-//                  });
-
-//         if (!rentedProduct) {
-//             return res
-//                 .status(404)
-//                 .json({ msg: "No Order found" });
-//         }
-
-//         res.json(rentedProduct);
-//     } catch (err) {
-//         console.error(err.message);
-//         // Check if id is not valid
-//         if (err.kind === "ObjectId") {
-//             return res
-//                 .status(404)
-//                 .json({ msg: "No Order found" });
-//         }
-//         res
-//             .status(500)
-//             .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
-//     }
-// });
 
 // @route  DELETE api/rentedproducts/:id
 // @desc   Delete a Product
@@ -216,6 +144,36 @@ router.get('/search',
                 return res
                     .status(404)
                     .json({ msg: "No Customer found" });
+            }
+            res
+                .status(500)
+                .json({ errors: [{ msg: "Server Error: Something went wrong" }] });
+        }
+    });
+
+
+// @route  GET api/nvoices/getLastRecord
+// @desc   Get Last Enter Record
+// @access Private
+router.get("/getLastRecord", auth,
+    async (req, res) => {
+        try {
+            const rentInvoice = await RentedProduct.find({}).sort({ _id: -1 }).limit(1);
+            console.log(rentInvoice)
+            if (!rentInvoice) {
+                return res
+                    .status(404)
+                    .json({ msg: "No Invoice found" });
+            }
+
+            res.json(rentInvoice);
+        } catch (err) {
+            console.error(err.message);
+            // Check if id is not valid
+            if (err.kind === "ObjectId") {
+                return res
+                    .status(404)
+                    .json({ msg: "No Invoice found" });
             }
             res
                 .status(500)

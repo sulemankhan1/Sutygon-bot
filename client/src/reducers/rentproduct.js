@@ -4,13 +4,16 @@ import {
    RENTPRODUCT_LOADING,
    RENTPRODUCT_SAVED,
     GET_RENTPRODUCT,
+    GET_LASTRECORD,
    RENTPRODUCT_DELETED,
   } from "../actions/types";
   const initialState = {
     rentproduct: null,
+    lastrecord:null,
     rentproducts: null,
     loading: false,
-    saved: false,
+    // saved: false,
+    generateInvoice:false,
     error: {},
   };
   
@@ -22,6 +25,8 @@ import {
         return {
           ...state,
           loading: true,
+          generateInvoice:false
+
         };
   
       case GET_RENTPRODUCTS:
@@ -29,7 +34,7 @@ import {
           ...state,
           rentproducts: payload,
           loading: false,
-          saved: false,
+          // saved: false,
         };
   
       case GET_RENTPRODUCT:
@@ -38,12 +43,20 @@ import {
           rentproduct: payload,
           loading: false,
         };
+        case GET_LASTRECORD:
+          return {
+            ...state,
+            lastrecord: payload,
+            loading: false,
+          };
+
   
       case RENTPRODUCT_SAVED:
         return {
           ...state,
           // saved: true,
           loading: false,
+          generateInvoice:true
         };
       case RENTPRODUCTS_ERROR:
         return {
@@ -56,6 +69,8 @@ import {
         return {
           ...state,
           loading: false,
+          generateInvoice:false
+
         };
       default:
         return state;

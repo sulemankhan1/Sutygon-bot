@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
- const autoIncrement = require("mongoose-auto-increment");
+const autoIncrement = require("mongoose-auto-increment");
 
 const RentedProductSchema = new mongoose.Schema({
     orderNumber: {
-        type: Number,
+        type: String,
     },
-       user: {
+    user: {
         type: Schema.Types.ObjectId,
         ref: "user",
     },
-    customerContactNumber:{
-        type:String
+    customerContactNumber: {
+        type: String
     },
     customer: {
         type: Schema.Types.ObjectId,
@@ -33,16 +33,22 @@ const RentedProductSchema = new mongoose.Schema({
         default: "New"
     },
 
-    insuranceAmt:{
-        type:String,
+    insuranceAmt: {
+        type: String,
     },
 
+    total: {
+        type: String,
+    },
+    leaveID:{
+        type:Boolean,
+    },
+  
 
 },
-{timestamps: true}
+    { timestamps: true }
 
 
 );
 
-//  RentedProductSchema.plugin(AutoIncrement, { inc_field: 'orderNumber' });
-module.exports = RentedProduct = mongoose.model("rentedproduct", RentedProductSchema);
+module.exports = RentedProduct = mongoose.model("orders", RentedProductSchema);

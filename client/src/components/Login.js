@@ -3,9 +3,8 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { login } from "../actions/auth";
-// import "../login.css";
 import Alert from "./layout/Alert";
-import {getShop} from "../actions/dashboard";
+import { getShop } from "../actions/dashboard";
 
 class Login extends Component {
   state = {
@@ -35,26 +34,26 @@ class Login extends Component {
   }
 
   render() {
-    // Redirect if logged in
     const { shop } = this.props;
     const { user } = this.props.auth;
 
-if(user && user.type == "Employee") {
-  if(shop){
-    let openShop = shop[0]
-    if(openShop){
-    if (this.props.AuthLoading === false && this.props.isAuthenticated){
-    if( openShop.status == "on") {
-      return <Redirect to="/dashboard" />;
-    }
+    if (user && user.type == "Employee") {
+      if (shop) {
+        let openShop = shop[0]
+        if (openShop) {
+          if (this.props.AuthLoading === false && this.props.isAuthenticated) {
+            if (openShop.status == "on") {
+              return <Redirect to="/dashboard" />;
+            }
 
-    else if(openShop.status == "off"){
-      // setAlert("Shop is closed", "danger", 5000);
-    }
-  }
+            else if (openShop.status == "off") {
+              // setAlert("Shop is closed", "danger", 5000);
+            }
+          }
 
-  }}
-  }
+        }
+      }
+    }
     // if(user && user.type == "User") {
     //   if(shop){
     //   let openShop = shop[0]
@@ -69,7 +68,7 @@ if(user && user.type == "Employee") {
     // };
     // }
 
-    if(user && user.type == "Admin") {
+    if (user && user.type == "Admin") {
       if (this.props.AuthLoading === false && this.props.isAuthenticated) {
         return <Redirect to="/dashboard" />;
       }
@@ -97,15 +96,15 @@ if(user && user.type == "Employee") {
                                 </img>
                               </div>
                               <div className="col-lg-6 col-md-12 bg-white px-4 pt-3">
-                              <div className="logo-img text-center align-middle">
+                                <div className="logo-img text-center align-middle">
                                   <img src="assets/img/logos/logo.png" height={100} width={100} />
                                 </div>
-                                <h4 className="mb-2 card-title text-center align-middle" style={{  }}>Đăng Nhập</h4>
+                                <h4 className="mb-2 card-title text-center align-middle" style={{}}>Đăng Nhập</h4>
                                 <p className="card-text mb-3 text-center align-middle">
-                                Đăng Nhập Với Một Nụ Cười Nào
+                                  Đăng Nhập Với Một Nụ Cười Nào
                   </p>
                                 <form onSubmit={(e) => this.onSubmit(e)}>
-                                <Alert/>
+                                  <Alert />
 
                                   <input type="text"
                                     className="form-control mb-3"
@@ -115,13 +114,11 @@ if(user && user.type == "Employee") {
                                     name="username" />
                                   <input type="password"
                                     className="form-control mb-1"
-placeholder="Password"
+                                    placeholder="Password"
                                     required
                                     onChange={(e) => this.onChange(e)}
                                     name="password" />
-
                                   <div className="fg-actions justify-content-between">
-
                                     <div className="recover-pass">
                                       <input
                                         className="btn btn-primary btn-lg btn-block"
@@ -131,7 +128,6 @@ placeholder="Password"
                                     </div>
                                   </div>
                                 </form>
-
                               </div>
                             </div>
                           </div>
@@ -141,7 +137,6 @@ placeholder="Password"
                   </div>
                 </div>
               </section>
-
             </div>
           </div>
         </div>
@@ -149,14 +144,14 @@ placeholder="Password"
 
     );
   }
-  }
+}
 
 
 Login.propTypes = {
   auth: PropTypes.object,
   login: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
-  getShop:PropTypes.func.isRequired,
+  getShop: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -168,5 +163,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  login,getShop
+  login,
+  getShop
 })(Login);

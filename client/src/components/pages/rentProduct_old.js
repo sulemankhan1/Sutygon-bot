@@ -10,29 +10,29 @@ import Loader from "../layout/Loader";
 import { OCAlertsProvider } from '@opuscapita/react-alerts';
 import { OCAlert } from '@opuscapita/react-alerts';
 
-
 class RentProduct extends Component {
   state = {
-    customerNumber: "",
     customer: "",
-    showCustomerBox: false,
-    showErrorBox: false
+    customerInfo:"",
+  };
 
-  }
 
-  CutomerBox = () => {
+  handleChange = (e, id = "") => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+  CutomerBox = () =>    {
     const { customer } = this.props;
     const { customerInfo } = this.state;
 
     return <>
-      {customer ?
+     {(customer && customerInfo[0] )?
 
-        <div id="colors_box">
-          <div className="row">
-            <div className="col-md-12">
-              <h3>Is this the One</h3>
-            </div>
+      <div id="colors_box">
+        <div className="row">
+          <div className="col-md-12">
+            <h3>Is this the One</h3>
           </div>
+        </div>
 
 
           <div className="row color-row">
@@ -51,9 +51,9 @@ class RentProduct extends Component {
                       className="form-control mm-input text-center"
                       style={{ 'color': '#495057' }}
                       value={customerInfo[0].name}
-                      readOnly
+                      readOnly 
 
-                    />
+                      />
                   </div>
                 </div>
                 <br />
@@ -65,8 +65,8 @@ class RentProduct extends Component {
                       className="form-control mm-input text-center"
                       style={{ 'color': '#495057' }}
                       value={customerInfo[0].contactnumber}
-                      readOnly
-                    />
+                      readOnly 
+                      />
                   </div>
                 </div>
                 <br />
@@ -79,137 +79,84 @@ class RentProduct extends Component {
                       style={{ 'color': '#495057' }}
                       value={customerInfo[0].address}
                       readOnly
-                    ></textarea>
+                      ></textarea>
                   </div>
                 </div>
               </div>
               <br />
               <div className="row justify-content-center">
-                <Link
+              {(this.props.customer>0) ? <Link
                   to={{
                     pathname: "/checkout",
-                    data:(!!this.props.customer.length) ? this.props.customer[0].id :"",
+                    data: this.props.customer[0].id,
                   }}
                   type="button"
                   className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
-                  id="btnSize2" ><i className="ft-check"></i> Next</Link>
+                  id="btnSize2" ><i className="ft-check"></i> Next</Link> :""}
                 <button
                   type="button"
                   className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
                   onClick={(e) => this.tryAgain(e)}
                   id="btnSize" ><i className="ft-rotate-cw"></i> Try Again</button>
-
-              </div>
-
-            </div>
-          </div>
-        </div>
-        : ""
-      }
-    </>
-  }
-
-
-
-  tryAgain = (e) => {
-    e.preventDefault();
-    e.target.value = ''
-    this.setState({
-      customerInfo: "",
-      customer: "",
-      showCustomerBox: false,
-      showErrorBox: ""
-
-    })
-    var contactnumber = document.getElementById("contactnumber");
-    var number = document.getElementById("number");
-    var name = document.getElementById("name");
-    var address = document.getElementById("address");
-    contactnumber.focus();
-    number.value = " ";
-    name.value = " ";
-    address.value = " ";
-
-  }
-
-
-
-  NoCustomerBox = () => {
-    const { customer } = this.props;
-    if (!(customer.length > 0) || customer === null) {
-      return <><div id="colors_box">
-        <div className="row">
-          <div className="col-md-12">
-            <div id="sizes_box">
-              <div className="row">
-                <input
-                  type="text"
-                  className="form-control mm-input text-center"
-                  style={{ 'color': '#495057' ,'width':'95%'}}
-                  value={"No Customer Found!! Try again"}
-                  readOnly
-                />
-              </div>
-              <br />
-              <div className="row justify-content-center">
-             <Link to="/customer/addcustomer"
+                {!(this.props.customer>0) ?<Link to="/customer/addcustomer"
                   type="button"
                   target={"_blank"}
                   className="btn btn-raised btn-primary round btn-min-width mr-1 mb-1"
                   id="btnSize1"><i className="ft-user"></i> New Customer</Link>
-                  
+                  :"" }
               </div>
-            </div>
-          </div>
-        </div>
 
+            </div>
+          </div> 
       </div>
-      </>
-    }
+:""
+          }
+    </>
   }
-  
+ 
+
+  tryAgain = (e) => {
+    e.preventDefault();
+    e.target.value = '' 
+
+    this.setState({
+      customerInfo:"",
+      customer:""
+    })
+    var contactnumber = document.getElementById("contactnumber");
+    var number = document.getElementById("number");
+    var name = document.getElementById("name"); 
+    var address = document.getElementById("address");
+    contactnumber.focus();
+    number.value = " ";
+    name.value = " ";
+    address.value = " ";    
+  }
 
   onSubmitCustomer = async (e) => {
     e.preventDefault();
     this.setState({ saving: true });
     const state = { ...this.state };
-    await this.props.getCustomer(state.customerNumber);
+    await this.props.getCustomer(state.customer);
     const { customer } = this.props;
-    this.setState({customerNumber:""});
-
-    if (customer.length > 0) {
-      this.setState({
-        customerInfo: customer,
-        showCustomerBox: true,
-        showErrorBox: false
-      })
-    }
-    else if (!(customer.length > 0)) {
-      this.setState({
-        showCustomerBox: false,
-        showErrorBox: true
-      })
-    }
-    this.setState({ customer: customer, saving: false });
-    // contactnumber.value = "";
+    var contactnumber = document.getElementById("contactnumber");
+    // if(!(customer.length > 0)){
+    //   OCAlert.alertError('No customer found! Please try again');  
+    //   this.setState({
+    //    customer:""
+    //  })
+    // }
+    this.setState({customerInfo:customer, saving: false });
+    contactnumber.value="";
 
   };
 
-
-  handleChange = (e, id = "") => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-  clearState=(e)=>{
-    e.preventDefault();
-    
-  }
 
   render() {
     const { auth } = this.props;
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to="/" />;
     }
-
 
 
     return (
@@ -231,7 +178,6 @@ class RentProduct extends Component {
                       </div>
                       <div className="card-content">
 
-
                         <div className="card-body table-responsive">
                           <form onSubmit={(e) => this.onSubmitCustomer(e)}>
 
@@ -239,13 +185,14 @@ class RentProduct extends Component {
                               <h3>Enter Customer 10-digit phone number</h3>
                               <div className="position-relative has-icon-right">
                                 <input
-                                  name="customerNumber"
-                                  type="text"
+                                  name="customer"
+                                   type="text"
                                   placeholder="Search"
                                   className="form-control round"
                                   id="contactnumber"
                                   min="0"
-                                  defaultValue={this.state.customerNumber}
+                                  ref="contactnumber"
+                                  defaultValue={this.state.customer}
                                   onChange={(e) => this.handleChange(e)}
 
                                 />
@@ -259,15 +206,12 @@ class RentProduct extends Component {
                               </div>
                             </div>
 
-                            {this.state.showCustomerBox == true ? this.CutomerBox() : ""}
-                            {this.state.showErrorBox == true ? this.NoCustomerBox() : ""}
-
-
-
                           </form>
+                          {this.state.customerInfo ? this.CutomerBox() :
+                       ""
+                          }
 
                         </div>
-
                       </div>
 
                     </div>
@@ -281,22 +225,19 @@ class RentProduct extends Component {
 
             </div>
             <footer className="footer footer-static footer-light">
-              <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
+                <p className="clearfix text-muted text-sm-center px-2"><span>Quyền sở hữu của &nbsp;{" "}
                 <a href="https://www.sutygon.com" id="pixinventLink" target="_blank" className="text-bold-800 primary darken-2">SUTYGON-BOT </a>, All rights reserved. </span></p>
             </footer>
 
           </div>
         </div>
         <OCAlertsProvider />
-
+      
       </React.Fragment>
 
     );
   }
 }
-
-
-
 
 RentProduct.propTypes = {
   saved: PropTypes.bool,
@@ -315,3 +256,4 @@ export default connect(mapStateToProps, {
   getCustomer,
 
 })(RentProduct);
+

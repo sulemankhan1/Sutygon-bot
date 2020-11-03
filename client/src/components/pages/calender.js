@@ -9,8 +9,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { getAllAppointments } from "../../actions/appointment";
-
-
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 
@@ -26,7 +24,6 @@ class AppointmentCalendar extends Component {
         await this.props.getAllAppointments();
     }
 
-
     render() {
         const { auth } = this.props;
         if (!auth.loading && !auth.isAuthenticated) {
@@ -35,12 +32,10 @@ class AppointmentCalendar extends Component {
         const { calendar } = this.props;
         let newEvents;
         if (calendar) {
-
             newEvents = calendar.map(event => ({
                 title: event.title,
                 start: new Date(event.start),
-                end: new Date(event.end)
-            })
+                end: new Date(event.end)})
             );
         }
 
@@ -59,8 +54,7 @@ class AppointmentCalendar extends Component {
                                     <div className="form-body">
                                         <div className="card">
                                             <div className="card-header">
-                                                <h4 className="form-section"><i className="icon-social-dropbox"></i>
-                         Calendar</h4>
+                                                <h4 className="form-section"><i className="icon-social-dropbox"></i>Calendar</h4>
                                             </div>
                                             <Alert />
 
@@ -109,15 +103,11 @@ AppointmentCalendar.propTypes = {
     auth: PropTypes.object,
     getAllAppointments: PropTypes.func.isRequired,
     calendar: PropTypes.array,
-    // getAllCustomers: PropTypes.func.isRequired,
-    // getAllProducts: PropTypes.func.isRequired,
-
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
     calendar: state.appointment.appointments
-
 });
 export default connect(mapStateToProps, {
     getAllAppointments
