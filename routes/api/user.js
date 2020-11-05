@@ -25,7 +25,6 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 
-
 // @route   POST /api/users/add
 // @desc    Add new user
 // @access  Private
@@ -126,6 +125,19 @@ router.get('/', auth, async (req, res) => {
     res.status(500).send('Server Error!')
   }
 })
+
+// // @route   GET api/users/:status
+// // @desc    Get all users
+// // @access  Private
+// router.get('/', auth, async (req, res) => {
+//   try {
+//     const users = await User.find()
+//     res.json(users)
+//   } catch (err) {
+//     console.log(err)
+//     res.status(500).send('Server Error!')
+//   }
+// })
 
 // @route   GET api/users/search/sarchval
 // @desc    Search user
@@ -269,35 +281,31 @@ router.post(
 // @route  POST api/users/changestatus/:id
 // @desc   Change Account status (blocked/active)
 // @access Private
-router.post(
-
-  auth,
-  async (req, res) => {
-    try {
-      const errors = validationResult(req)
-      if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() })
-      }
-
-      const user = await User.findById(req.params.id)
-
-      await User.updateOne(
-        { _id: user._id },
-        {
-          $set: {
-            accountStatus: 'block',
-          },
-        }
-      )
-      res.status(200).json({ msg: 'Status Updated Successfully' })
-    } catch (err) {
-      console.error(err.message)
-      res
-        .status(500)
-        .json({ errors: [{ msg: 'Server Error: Something went wrong' }] })
+router.post(auth, async (req, res) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() })
     }
+
+    const user = await User.findById(req.params.id)
+
+    await User.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          accountStatus: 'block',
+        },
+      }
+    )
+    res.status(200).json({ msg: 'Status Updated Successfully' })
+  } catch (err) {
+    console.error(err.message)
+    res
+      .status(500)
+      .json({ errors: [{ msg: 'Server Error: Something went wrong' }] })
   }
-)
+})
 
 // @route   POST /api/users/updatePassword/:id
 // @desc    Update Password
