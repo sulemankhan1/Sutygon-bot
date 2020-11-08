@@ -58,6 +58,13 @@ router.post(
         return res.status(400).json({ errors: [{ msg: 'Invalid Password' }] })
       }
 
+      // check if newly registered user updated his password or not...
+      // if (!user.isPasswordChanged) {
+      //   return res.status(400).json({
+      //     errors: [{ msg: 'Please update your password to get logged in.' }],
+      //   })
+      // }
+
       const payload = {
         user: {
           id: user.id,

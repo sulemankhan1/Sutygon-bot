@@ -10,6 +10,7 @@ const auth = require('../../middleware/auth')
 const User = require('../../models/User')
 var multer = require('multer')
 var upload = multer({ dest: 'client/public/uploads/user' })
+const { isAdmin } = require('../../middleware/isAdmin')
 
 const FILE_PATH = 'client/public/uploads/user'
 
@@ -32,11 +33,12 @@ var upload = multer({ storage: storage })
 router.post(
   '/add',
   upload.single('avatar'),
+  auth,
+  isAdmin,
   [
     check('username', 'User Name is Required').not().isEmpty(),
     check('fullname', 'Full Name is Required').not().isEmpty(),
     check('email', 'Please Enter a Valid Email').isEmail(),
-    check('password', 'Password is Required').not().isEmpty(),
     check('contactnumber', 'Please Enter Contact Number').not().isEmpty(),
     check('gender', 'Please select your Gender').not().isEmpty(),
     check(
@@ -44,7 +46,6 @@ router.post(
       'Please Enter a password with 6 or more characters'
     ).isLength({ min: 6 }),
   ],
-  auth,
   async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -82,13 +83,14 @@ router.post(
       if (req.file == undefined) {
         userBody = {
           username: body.username,
-          fullname: body.username,
+          fullname: body.fullname,
           email: body.email,
           password: password,
           gender: body.gender,
           contactnumber: body.contactnumber,
           type: body.type,
           avatar: avatar,
+          sections: body.sections,
         }
       } else {
         userBody = {
@@ -99,6 +101,7 @@ router.post(
           gender: body.gender,
           contactnumber: body.contactnumber,
           type: body.type,
+          sections: body.sections,
           avatar: `/uploads/user/${req.file.originalname}`,
         }
       }
