@@ -1,14 +1,14 @@
 import axios from "axios";
 import {
-  
+
   ORDER_LOADING,
-   GET_ORDERS,
+  GET_ORDERS,
   GET_ORDER,
   ORDERS_ERROR,
   ORDERS_LOADING,
   ORDER_DELETED,
- ORDER_SAVED,
- ORDER_ERROR
+  ORDER_SAVED,
+  ORDER_ERROR
 
 } from "./types";
 import { setAlert } from "./alert";
@@ -30,7 +30,7 @@ export const addNewOrder = (order) => async (dispatch) => {
     dispatch({
       type: ORDER_SAVED,
     });
-    
+
     dispatch(setAlert(res.data.msg, "success"));
 
   } catch (err) {
@@ -45,7 +45,7 @@ export const addNewOrder = (order) => async (dispatch) => {
 };
 
 
-  // get All Users
+// get All Users
 export const getAllOrders = () => async (dispatch) => {
   dispatch({ type: ORDER_LOADING });
   try {
@@ -63,8 +63,8 @@ export const getAllOrders = () => async (dispatch) => {
   }
 };
 
- // Find users
- export const findOrders = (searchVal) => async (dispatch) => {
+// Find users
+export const findOrders = (searchVal) => async (dispatch) => {
   dispatch({ type: ORDER_LOADING });
   try {
     const res = await axios.get(`/api/orders/search/${searchVal}`);
@@ -86,7 +86,7 @@ export const getAllOrders = () => async (dispatch) => {
 // Get User by ID
 export const getOrder = (id) => async (dispatch) => {
   dispatch({ type: ORDERS_LOADING });
- 
+
   try {
     const res = await axios.get(`/api/orders/${id}`);
     dispatch({
@@ -102,12 +102,12 @@ export const getOrder = (id) => async (dispatch) => {
 };
 
 
-  
-  // Delete User
+
+// Delete User
 export const deleteOrder = (id) => async (dispatch) => {
   dispatch({ type: ORDERS_LOADING });
-  
-   try {
+
+  try {
 
     const res = await axios.delete(`/api/orders/${id}`);
     dispatch({
@@ -116,7 +116,7 @@ export const deleteOrder = (id) => async (dispatch) => {
     });
     dispatch(setAlert(res.data.msg, "success"));
     dispatch(getAllOrders());
-  
+
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
