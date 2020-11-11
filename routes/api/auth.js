@@ -5,6 +5,7 @@ const { check, validationResult } = require('express-validator')
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const bcrypt = require('bcryptjs')
+const moment = require('moment')
 
 const User = require('../../models/User')
 
@@ -58,12 +59,18 @@ router.post(
         return res.status(400).json({ errors: [{ msg: 'Invalid Password' }] })
       }
 
-      // check if newly registered user updated his password or not...
-      // if (!user.isPasswordChanged) {
-      //   return res.status(400).json({
-      //     errors: [{ msg: 'Please update your password to get logged in.' }],
-      //   })
-      // }
+      // check if user is active or not...
+      if (user.accountStatus !== 'active') {
+        return res.status(403).json({
+          errors: [
+            {
+              msg: `Sorry! User is not activated. Inactivated on ${moment(
+                user.inactivated_date
+              ).format('dddd MMMM D Y')}`,
+            },
+          ],
+        })
+      }
 
       const payload = {
         user: {

@@ -29,7 +29,9 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   salary: {
-    type: String,
+    amount: { type: Number },
+    next_pay_day: { type: String },
+    pay_rise: { type: Number },
   },
   password: {
     type: String,
@@ -38,6 +40,10 @@ const UserSchema = new mongoose.Schema({
   accountStatus: {
     type: String,
     default: 'active',
+    enum: ['active', 'inactive'],
+  },
+  inactivated_date: {
+    type: Date,
   },
   avatar: {
     type: String,
@@ -60,9 +66,16 @@ const UserSchema = new mongoose.Schema({
       'Calender',
     ],
   },
+  //Until the password is not changed, this value will be false on default.
   isPasswordChanged: {
     type: Boolean,
     default: false,
+  },
+  birthday: {
+    type: Date,
+  },
+  address: {
+    type: String,
   },
   date: {
     type: Date,
