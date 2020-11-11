@@ -271,7 +271,7 @@ router.post(
         if (!(req.body.code === process.env.salarySecretCode)) {
           return res
             .status(400)
-            .json({ errors: [{ msg: 'User with this Email already exists' }] })
+            .json({ errors: [{ msg: 'Wrong Authorization code.' }] })
         }
       }
 
