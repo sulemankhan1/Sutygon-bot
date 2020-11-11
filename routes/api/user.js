@@ -267,6 +267,14 @@ router.post(
         inactivated_date = Date.now()
       }
 
+      if (req.body.salary) {
+        if (!(req.body.code === process.env.salarySecretCode)) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'User with this Email already exists' }] })
+        }
+      }
+
       await User.findByIdAndUpdate(
         req.params.id,
         { $set: { ...req.body, avatar, inactivated_date } },
