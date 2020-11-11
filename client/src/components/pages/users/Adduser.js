@@ -7,6 +7,7 @@ import Loader from '../../layout/Loader'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 class AddUser extends Component {
   state = {
@@ -15,10 +16,10 @@ class AddUser extends Component {
     username: '',
     email: '',
     contactnumber: '',
-    password: '',
     type: 'Admin',
     gender: '',
     avatar: '',
+    jobTitle:'',
     saving: false,
     isEdit: false,
     imgUpd: false,
@@ -29,7 +30,7 @@ class AddUser extends Component {
     // check form is to Add or Edit
     if (this.props.match.params.id) {
       const id = this.props.match.params.id
-      let res = await this.props.getUser(id)
+      await this.props.getUser(id)
       const { user } = this.props
       if (user) {
         this.setState({
@@ -39,7 +40,6 @@ class AddUser extends Component {
           avatar: user.avatar,
           email: user.email,
           contactnumber: user.contactnumber,
-          password: user.password,
           type: user.type,
           gender: user.gender,
           isEdit: true,
@@ -68,7 +68,6 @@ class AddUser extends Component {
     formData.append('fullname', this.state.username)
     formData.append('contactnumber', this.state.contactnumber)
     formData.append('email', this.state.email)
-    formData.append('password', this.state.password)
     formData.append('type', this.state.type)
     formData.append('gender', this.state.gender)
 
@@ -112,7 +111,7 @@ class AddUser extends Component {
                         encType='multipart/form-data'
                         action='/upload'
                         method='POST'
-                        onSubmit={(e) => this.onSubmit(e)}
+                        // onSubmit={(e) => this.onSubmit(e)}
                       >
                         <div className='row'>
                           <div className='form-group col-12 mb-2'>
@@ -159,7 +158,9 @@ class AddUser extends Component {
                               id='projectinput1'
                               className='form-control'
                               placeholder='User Name'
+                              required data-validation-required-message="This field is required"
                               name='username'
+
                               onChange={(e) => this.handleChange(e)}
                               value={this.state.username}
                             />
@@ -172,6 +173,7 @@ class AddUser extends Component {
                               className='form-control'
                               placeholder='Full Name'
                               name='fullname'
+                              required
                               onChange={(e) => this.handleChange(e)}
                               value={this.state.fullname}
                             />
@@ -187,6 +189,7 @@ class AddUser extends Component {
                               className='form-control'
                               placeholder='E-mail'
                               name='email'
+                              required
                               onChange={(e) => this.handleChange(e)}
                               value={this.state.email}
                             />
@@ -199,6 +202,7 @@ class AddUser extends Component {
                               type='text'
                               id='projectinput4'
                               className='form-control'
+                              required
                               placeholder='Phone'
                               name='contactnumber'
                               onChange={(e) => this.handleChange(e)}
@@ -207,34 +211,26 @@ class AddUser extends Component {
                           </div>
                         </div>
                         <div className='row'>
-                          {this.state.id === '' ? (
-                            <>
-                              <div className='form-group col-6 mb-2'>
-                                <label htmlFor='projectinput5'>Password </label>
-                                <input
-                                  type='password'
-                                  id='projectinput5'
-                                  className='form-control'
-                                  placeholder='Password'
-                                  name='password'
-                                  required
-                                  data-validation-required-message='This field is required'
-                                  minLength='6'
-                                  maxLength='10'
-                                  onChange={(e) => this.handleChange(e)}
-                                  value={this.state.password}
-                                />
-                              </div>{' '}
-                            </>
-                          ) : (
-                            ''
-                          )}
-
+                        <div className='form-group col-md-6 mb-2'>
+                            <label htmlFor='projectinput3'>Job Title</label>
+                            <input
+                              type='text'
+                              id='projectinput3'
+                              className='form-control'
+                              placeholder='Job Title'
+                              name='jobTitle'
+                              required
+                              onChange={(e) => this.handleChange(e)}
+                              value={this.state.jobTitle}
+                            />
+                          </div>
                           <div className='form-group col-md-6 mb-2'>
                             <label htmlFor='projectinput6'>Select Type</label>
                             <select
                               id='type'
                               name='type'
+                              required
+
                               className='form-control'
                               onChange={(e) => this.handleChange(e)}
                             >
@@ -291,7 +287,17 @@ class AddUser extends Component {
                         </div>
 
                         <div className='form-actions top'>
-                          {this.state.id === '' ? (
+                        <Link
+                        to={{
+                          pathname: "/user/configuresystem",
+                          data:this.state
+                        }}
+                                  type='submit'
+                                  className='mb-2 mr-2 btn btn-raised btn-primary'
+                                >
+                                  <i className='ft-chevron-right' /> Next
+                                </Link>
+                          {/* {this.state.id === '' ? (
                             <>
                               {this.state.saving ? (
                                 <button
@@ -335,7 +341,7 @@ class AddUser extends Component {
                                 </button>
                               )}
                             </>
-                          )}
+                          )} */}
                         </div>
                       </form>
                     </div>

@@ -51,7 +51,6 @@ class RentOrder extends Component {
     if (lastRecord) {
       const orderNumber = lastRecord[0].orderNumber;
       if(orderNumber){      const newOrderNumber = this.generateRandomNumber(orderNumber)
-      console.log("newOrderNumber",newOrderNumber)
       this.setState({
         orderNumber: newOrderNumber
       })

@@ -20,20 +20,25 @@ class ViewUser extends Component {
   state = {
     // search: '',
     activeUsers: false,
-    InActiveusers: false,
+    inactiveUsers: false,
+    users: "",
+    activeuser: "",
+    allusers:true
   }
 
   async componentDidMount() {
     await this.props.getAllUsers()
+ 
   }
 
   getTAble = () => {
     const { auth } = this.props
     const auth_user = auth.user
-    const { users } = this.props
+    this.getUser();
+    const userArr = this.getUser();
     let tbl_sno = 1
-    if (users) {
-      if (users.length === 0) {
+    if (userArr) {
+      if (userArr.length === 0) {
         return (
           <tr>
             <td colSpan={6} className='text-center'>
@@ -42,7 +47,7 @@ class ViewUser extends Component {
           </tr>
         )
       }
-      return users.map((user) => (
+      return userArr.map((user) => (
         <tr key={user._id}>
           <td className='text-center text-muted'>{tbl_sno++}</td>
           <td className='text-center'>
@@ -60,10 +65,10 @@ class ViewUser extends Component {
           <td className='text-center'>{user.gender}</td>
           <td className='text-center'>
             {user.accountStatus === 'active' && (
-              <span className='badge badge-success'>Active</span>
+              <span className='badge badge-success'>ACTIVE</span>
             )}
-            {user.accountStatus === 'block' && (
-              <span className='badge badge-warning'>Block</span>
+            {user.accountStatus === 'inactive' && (
+              <span className='badge badge-warning'>INACTIVE</span>
             )}
           </td>
           <td className='text-center'>
@@ -104,27 +109,56 @@ class ViewUser extends Component {
                 ></i>
               </Link>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </td>
         </tr>
       ))
     }
   }
 
-  handleChange = (e) => {
-    // this.setState({ search: e.target.value })
-    // this.setState({
-    //   activeUsers: !this.state.activeUsers,
-    //   InActiveusers: !this.state.InActiveusers,
-    // })
-    // this.setState({
-    //   activeUsers: !this.state.activeUsers,
-    //   InActiveusers: !this.state.InActiveusers,
-    // })
-    // this.setState({
-    // })
+  getUser = () => {
+    const { users } = this.props;
+    if (users) {
+      const activeUsers = users.filter(a => a.accountStatus === "active");
+      const inactiveUsers = users.filter(a => a.accountStatus === "inactive");
+
+      if(this.state.allusers === true ){
+        return users;
+      }
+
+      else if (this.state.activeUsers === true) {
+        return activeUsers;
+      }
+      else if (this.state.inactiveUsers === true) {
+        return inactiveUsers;
+      }
+    
+    }
   }
+  handleChange = () => {
+    this.setState({
+      allusers:false,
+      inactiveUsers: false,
+      activeUsers: true,
+    })
+   }
+
+   handleChange_Inactive = () => {
+    this.setState({
+      activeUsers:false,
+      allusers:false,
+      inactiveUsers: true,
+    })
+   }
+
+   handleChange_alluser = () => {
+    this.setState({
+      activeUsers:false,
+      inactiveUsers: false,
+      allusers:true
+    })
+   }
 
   onDelete = (id) => {
     confirmAlert({
@@ -139,7 +173,7 @@ class ViewUser extends Component {
         },
         {
           label: 'No',
-          onClick: () => {},
+          onClick: () => { },
         },
       ],
     })
@@ -158,7 +192,7 @@ class ViewUser extends Component {
         },
         {
           label: 'No',
-          onClick: () => {},
+          onClick: () => { },
         },
       ],
     })
@@ -178,6 +212,8 @@ class ViewUser extends Component {
     if (!auth.loading && !auth.isAuthenticated) {
       return <Redirect to='/' />
     }
+
+    const { users } = this.props
 
     return (
       <React.Fragment>
@@ -215,13 +251,24 @@ class ViewUser extends Component {
                                 </a>
                               </div> */}
                               <div className='col-md-8'>
-                                <label className='radio-inline'>
+                              <label className='radio-inline' style={{ marginLeft: '10px' }} >
+                                  <input
+                                    type='radio'
+                                    name='activeUser'
+                                    checked={this.state.allusers}
+                                    onChange={(e) => this.handleChange_alluser(true)}
+                                    checked={this.state.allusers === true}
+
+                                  />{' '}
+                                  All Users
+                                </label>
+                                <label className='radio-inline' style={{ marginLeft: '10px' }} >
                                   <input
                                     type='radio'
                                     name='activeUser'
                                     checked={this.state.activeUsers}
-                                    onChange={(e) => this.handleChange(e)}
-                                    // checked={this.state.gender === 'male'}
+                                    onChange={(e) => this.handleChange(true)}
+                                    checked={this.state.activeUsers === true}
                                   />{' '}
                                   Active Users
                                 </label>
@@ -232,9 +279,9 @@ class ViewUser extends Component {
                                   <input
                                     type='radio'
                                     name='InactiveUser'
-                                    checked={this.state.InActiveusers}
-                                    onChange={(e) => this.handleChange(e)}
-                                    // checked={this.state.gender === 'female'}
+                                    checked={this.state.inactiveUsers}
+                                  onChange={(e) => this.handleChange_Inactive(true)}
+                                  checked={this.state.inactiveUsers === true}
                                   />{' '}
                                   Inactive Users
                                 </label>
@@ -267,7 +314,7 @@ class ViewUser extends Component {
                                   <th className='text-center'>Actions</th>
                                 </tr>
                               </thead>
-                              <tbody> {this.getTAble()}</tbody>
+                              <tbody>{this.getTAble()}</tbody>
                             </table>
                           </div>
                         </div>

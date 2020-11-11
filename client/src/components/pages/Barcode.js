@@ -6,13 +6,9 @@ import Loader from "../layout/Loader";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import shortid from "shortid";
 import { OCAlertsProvider } from '@opuscapita/react-alerts';
 import { OCAlert } from '@opuscapita/react-alerts';
 import { confirmAlert } from "react-confirm-alert";
-
-
-
 import "../../custom.css";
 
 var JsBarcode = require('jsbarcode');
