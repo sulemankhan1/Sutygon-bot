@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-<<<<<<< HEAD
 
 const connectDB = async () => {
   try {
@@ -15,20 +14,6 @@ const connectDB = async () => {
         useUnifiedTopology: true,
       }
     )
-=======
-// const config = require('config')
-// const dbUrl = config.get('ourMongoURI')
-
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.ourMongoURI, {
-      // added to avoid bugs
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-      useUnifiedTopology: true,
-    })
->>>>>>> master
 
     console.log('MongoDB is connected!')
   } catch (err) {
