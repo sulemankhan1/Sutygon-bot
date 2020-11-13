@@ -14,6 +14,7 @@ router.post(
     check('contactnumber', 'Contact Number Required').isLength({ min: 10 }),
     check('email', 'Email Required').not().isEmpty(),
     check('address', 'Address Required').not().isEmpty(),
+    check('birthday', 'Enter birth date.').not().isEmpty(),
   ],
   auth,
 
@@ -24,6 +25,18 @@ router.post(
     }
 
     try {
+      // Check if email already exist.
+      let emailExist = await Customer.findOne({ email: req.body.email })
+        .lean()
+        .select('_id')
+
+      if (emailExist) {
+        console.log(emailExist)
+        return res
+          .status(409)
+          .json({ errors: [{ msg: 'Email already exists' }] })
+      }
+
       let customer = new Customer(req.body)
       await customer.save()
       res.status(200).json({ msg: 'Customer Added Successfully' })
@@ -53,6 +66,44 @@ router.post('/:id', auth, async (req, res) => {
   } catch (err) {
     console.error(err.message)
     res
+      .status(500)
+      .json({ errors: [{ msg: 'Server Error: Something went wrong' }] })
+  }
+})
+
+// @route    PUT api/customers/update/:id
+//@desc      update customers.
+router.put('/update/:id', auth, async (req, res) => {
+  try {
+    let { name, birthday, online_account } = req.body
+
+    let { username } = { ...online_account }
+
+    console.log(online_account)
+
+    // now remove those key:items from the req.body with are not editable.
+    if (name || birthday || username) {
+      delete req.body['name']
+      delete req.body['birthday']
+      delete online_account['username']
+    }
+
+    let customer = await Customer.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body },
+      { new: true, runValidators: true }
+    ).lean()
+
+    if (!customer) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'No customer found with this id.' }] })
+    }
+
+    return res.status(200).json({ msg: 'Customer updated successfully!' })
+  } catch (err) {
+    console.log(err)
+    return res
       .status(500)
       .json({ errors: [{ msg: 'Server Error: Something went wrong' }] })
   }
