@@ -2,7 +2,11 @@ const express = require('express')
 const router = express.Router()
 const auth = require('../../middleware/auth')
 const Customer = require('../../models/Customer')
+const RentedProduct = require('../../models/RentedProducts')
 const { check, validationResult } = require('express-validator')
+const RentedProducts = require('../../models/RentedProducts')
+const mongoose = require('mongoose')
+var moment = require('moment')
 
 // @route   POST api/customers/add
 // @desc    Add New Customer
@@ -78,8 +82,6 @@ router.put('/update/:id', auth, async (req, res) => {
     let { name, birthday, online_account } = req.body
 
     let { username } = { ...online_account }
-
-    console.log(online_account)
 
     // now remove those key:items from the req.body with are not editable.
     if (name || birthday || username) {
@@ -216,6 +218,76 @@ router.delete('/:id', auth, async (req, res) => {
       .status(500)
       .json({ errors: [{ msg: 'Server Error: Something went wrong' }] })
   }
+})
+
+// @route  GET api/customers/insights
+// @desc   Get customer insights
+// @access Private
+
+router.get('/:id/insights', auth, async (req, res) => {
+  let { year } = { ...req.body }
+
+  //get year
+  var startDate = moment(year).format('YYYY-MM-DD')
+
+  //make last date of the current year
+  const lastDate = startDate.split('-')
+
+  lastDate[1] = '12'
+  lastDate[2] = '30'
+
+  let endDate = lastDate.join('-')
+
+  //converted to ObjectId because aggregator is type-sensitive.
+  var customerId = mongoose.Types.ObjectId(req.params.id)
+
+  let orders = await RentedProducts.aggregate([
+    {
+      $match: {
+        $and: [
+          { customer: customerId },
+          {
+            rentDate: {
+              // get in range between $gte and $lte for the requested timeframe...
+              $gte: new Date(new Date(startDate).setHours(00, 00, 00)),
+              $lte: new Date(new Date(endDate).setHours(23, 59, 59)),
+            },
+          },
+        ],
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: {
+            // double is used to convert string to number for performing addition.
+            $toDouble: '$total',
+          },
+        },
+        insuranceAmt: {
+          $sum: {
+            $toDouble: '$insuranceAmt',
+          },
+        },
+        // Used to count the documents. It should be the direct child of
+        // the $group because it is an object accumulator...
+        count: { $sum: 1 },
+      },
+    },
+  ])
+
+  console.log(orders)
+
+  // total orders.
+
+  // total discounts. (no)
+
+  // total insurance
+
+  // damage = missing
+
+  // late fees. (no)
 })
 
 module.exports = router
