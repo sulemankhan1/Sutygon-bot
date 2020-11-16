@@ -6,6 +6,7 @@ const RentedProduct = require('../../models/RentedProducts')
 const { check, validationResult } = require('express-validator')
 const RentedProducts = require('../../models/RentedProducts')
 const mongoose = require('mongoose')
+const Invoice = require('../../models/Invoices')
 var moment = require('moment')
 
 // @route   POST api/customers/add
@@ -227,57 +228,79 @@ router.delete('/:id', auth, async (req, res) => {
 router.get('/:id/insights', auth, async (req, res) => {
   let { year } = { ...req.body }
 
-  //get year
-  var startDate = moment(year).format('YYYY-MM-DD')
+  try {
+    //get year
+    var startDate = moment(year).format('YYYY-MM-DD')
 
-  //make last date of the current year
-  const lastDate = startDate.split('-')
+    //make last date of the current year
+    const lastDate = startDate.split('-')
 
-  lastDate[1] = '12'
-  lastDate[2] = '30'
+    lastDate[1] = '12'
+    lastDate[2] = '30'
 
-  let endDate = lastDate.join('-')
+    let endDate = lastDate.join('-')
 
-  //converted to ObjectId because aggregator is type-sensitive.
-  var customerId = mongoose.Types.ObjectId(req.params.id)
+    //converted to ObjectId because aggregator is type-sensitive.
+    var customerId = mongoose.Types.ObjectId(req.params.id)
 
-  let orders = await RentedProducts.aggregate([
-    {
-      $match: {
-        $and: [
-          { customer: customerId },
-          {
-            rentDate: {
-              // get in range between $gte and $lte for the requested timeframe...
-              $gte: new Date(new Date(startDate).setHours(00, 00, 00)),
-              $lte: new Date(new Date(endDate).setHours(23, 59, 59)),
+    let orders = await RentedProducts.aggregate([
+      {
+        $match: {
+          $and: [
+            { customer: customerId },
+            {
+              rentDate: {
+                // get in range between $gte and $lte for the requested timeframe...
+                $gte: new Date(new Date(startDate).setHours(00, 00, 00)),
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59)),
+              },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: {
+              // double is used to convert string to number for performing addition.
+              $toDouble: '$total',
             },
           },
-        ],
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        total: {
-          $sum: {
-            // double is used to convert string to number for performing addition.
-            $toDouble: '$total',
+          insuranceAmt: {
+            $sum: {
+              $toDouble: '$insuranceAmt',
+            },
           },
+          // Used to count the documents. It should be the direct child of
+          // the $group because it is an object accumulator...
+          // count: { $sum: 1 },
         },
-        insuranceAmt: {
-          $sum: {
-            $toDouble: '$insuranceAmt',
-          },
-        },
-        // Used to count the documents. It should be the direct child of
-        // the $group because it is an object accumulator...
-        count: { $sum: 1 },
       },
-    },
-  ])
+      // {
+      //   // want total documents with the customer_id in invoice collection.
+      //   $lookup: {
+      //     from:""
+      //   }
+      // }
+    ])
 
-  console.log(orders)
+    // total orders gathered from Invoices collection.
+    const totalOrders = await Invoice.find({
+      customer_id: req.params.id,
+      createdAt: {
+        // get in range between $gte and $lte for the requested timeframe...
+        $gte: new Date(new Date(startDate).setHours(00, 00, 00)),
+        $lte: new Date(new Date(endDate).setHours(23, 59, 59)),
+      },
+    }).countDocuments()
+
+    return res.status(200).json({ msg: 'Insights found.', orders, totalOrders })
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ errors: [{ msg: 'Server Error: Something went wrong.' }] })
+  }
 
   // total orders.
 

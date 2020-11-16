@@ -3,6 +3,7 @@ const router = express.Router()
 const { check, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const gravatar = require('gravatar')
+const moment = require('moment')
 
 const jwt = require('jsonwebtoken')
 const config = require('config')
@@ -267,17 +268,25 @@ router.post(
         inactivated_date = Date.now()
       }
 
+      var salary
       if (req.body.salary) {
         if (!(req.body.code === process.env.salarySecretCode)) {
           return res
             .status(400)
             .json({ errors: [{ msg: 'Wrong Authorization code.' }] })
         }
+
+        salary = {
+          ...req.body.salary,
+          effective_date: moment('2020').format('YYYY-MM-DD'),
+        }
+
+        console.log(salary)
       }
 
       await User.findByIdAndUpdate(
         req.params.id,
-        { $set: { ...req.body, avatar, inactivated_date } },
+        { $set: { ...req.body, avatar, inactivated_date, salary } },
         { new: true }
       )
 
