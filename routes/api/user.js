@@ -278,7 +278,44 @@ router.post(
 
         salary = {
           ...req.body.salary,
-          effective_date: moment('2020').format('YYYY-MM-DD'),
+          // effective_date: moment('2020').format('YYYY-MM-DD'),
+        }
+
+        // At starting date is null..
+
+        // Period : Weekly
+        if (salary.period === 'weekly') {
+          var nextMonday = new Date()
+          nextMonday.setDate(
+            nextMonday.getDate() + ((1 + 7 - nextMonday.getDay()) % 7)
+          )
+          salary = {
+            ...req.body.salary,
+            effective_date: nextMonday,
+          }
+          console.log('weekly', nextMonday)
+        }
+
+        // Period : bi-weekly
+        if (salary.period === 'bi-weekly') {
+          var nextMonday = new Date()
+          nextMonday.setDate(
+            nextMonday.getDate() + ((1 + 7 - nextMonday.getDay()) % 7)
+          )
+          salary = {
+            ...req.body.salary,
+            effective_date: nextMonday,
+          }
+          console.log('bi-weekly', nextMonday)
+        }
+
+        // Period : monthly
+        if (salary.period === 'monthly') {
+          // grabbed the last monday of the month using momentjs..
+          salary = {
+            ...req.body.salary,
+            effective_date: moment().endOf('month').startOf('isoweek'),
+          }
         }
 
         console.log(salary)
@@ -290,37 +327,6 @@ router.post(
         { new: true }
       )
 
-      // if (req.file == undefined) {
-      //   await User.updateOne(
-      //     { _id: req.params.id },
-      //     {
-      //       $set: {
-      //         username: body.username,
-      //         fullname: body.fullname,
-      //         email: body.email,
-      //         gender: body.gender,
-      //         contactnumber: body.contactnumber,
-      //         type: body.type,
-      //         avatar: avatar,
-      //       },
-      //     }
-      //   )
-      // } else {
-      //   await User.updateOne(
-      //     { _id: req.params.id },
-      //     {
-      //       $set: {
-      //         username: body.username,
-      //         fullname: body.fullname,
-      //         email: body.email,
-      //         gender: body.gender,
-      //         contactnumber: body.contactnumber,
-      //         type: body.type,
-      //         avatar: `/uploads/user/${req.file.originalname}`,
-      //       },
-      //     }
-      //   )
-      // }
       res.status(200).json({ msg: 'User Updated Successfully' })
     } catch (err) {
       console.log('err message')
