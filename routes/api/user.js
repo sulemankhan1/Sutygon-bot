@@ -13,6 +13,8 @@ var multer = require('multer')
 var upload = multer({ dest: 'client/public/uploads/user' })
 const { isAdmin } = require('../../middleware/isAdmin')
 
+// const { weekly, biWeekly, monthly } = require('../../helpers/timePeriod')
+
 const FILE_PATH = 'client/public/uploads/user'
 
 var storage = multer.diskStorage({
@@ -245,6 +247,90 @@ router.post(
           .json({ errors: [{ msg: 'User with this Username already exists' }] })
       }
 
+      // find user through req.params.id
+      let user = await User.findById(req.params.id).select('salary')
+      console.log(user)
+
+      if (!user.salary.period) {
+        console.log('no period set.')
+
+        var salary
+        if (req.body.salary) {
+          if (!(req.body.code === process.env.salarySecretCode)) {
+            return res
+              .status(400)
+              .json({ errors: [{ msg: 'Wrong Authorization code.' }] })
+          }
+
+          salary = {
+            ...req.body.salary,
+          }
+          // At starting date is null..
+
+          // Period : Weekly
+          if (salary.period === 'weekly') {
+            const nextMonday = moment().startOf('isoWeek').add(1, 'week')
+            salary = {
+              ...req.body.salary,
+              effective_date: nextMonday,
+            }
+          }
+
+          // Period : bi-weekly
+          if (salary.period === 'bi-weekly') {
+            const nextMonday = moment().startOf('isoWeek').add(1, 'week')
+
+            // create new instance
+            let secondMonday = nextMonday.clone()
+            secondMonday.startOf('isoWeek').add(1, 'week')
+
+            // create new instance
+            let thirdMonday = secondMonday.clone()
+            thirdMonday.startOf('isoWeek').add(1, 'week')
+
+            salary = {
+              ...req.body.salary,
+              effective_date: [nextMonday, thirdMonday],
+            }
+            console.log('bi-weekly', [nextMonday, thirdMonday])
+          }
+
+          // Period : monthly
+          if (salary.period === 'monthly') {
+            // grabbed the last monday of the month using momentjs..
+            salary = {
+              ...req.body.salary,
+              effective_date: moment().endOf('month').startOf('isoweek'),
+            }
+          }
+        }
+
+        // now paste the salary initial update code here...
+      } else {
+        // now check if period is weekly
+        let salary_period = user.salary.period
+
+        // apply cron job here.. in every if else depending on the given period in the req.body
+        if (salary_period === 'weekly') {
+          // check how many days are left in the effective date.
+          console.log(
+            `your changes will be working after the completion of the next effective date.${user.salary.effective_date}`
+          )
+        }
+        if (salary_period === 'bi-weekly') {
+          // check how many days are left in the effective date.
+          console.log(
+            `your changes will be working after the completion of the next effective date.${user.salary.effective_date[1]}`
+          )
+        }
+        if (salary_period === 'monthly') {
+          // check how many days are left in the effective date.
+          console.log(
+            `your changes will be working after the completion of the next effective date.${user.salary.effective_date}`
+          )
+        }
+      }
+
       const avatar = gravatar.url(body.email, {
         s: '200',
         r: 'pg',
@@ -266,59 +352,6 @@ router.post(
       let inactivated_date
       if (req.body.accountStatus && req.body.accountStatus === 'inactive') {
         inactivated_date = Date.now()
-      }
-
-      var salary
-      if (req.body.salary) {
-        if (!(req.body.code === process.env.salarySecretCode)) {
-          return res
-            .status(400)
-            .json({ errors: [{ msg: 'Wrong Authorization code.' }] })
-        }
-
-        salary = {
-          ...req.body.salary,
-          // effective_date: moment('2020').format('YYYY-MM-DD'),
-        }
-
-        // At starting date is null..
-
-        // Period : Weekly
-        if (salary.period === 'weekly') {
-          var nextMonday = new Date()
-          nextMonday.setDate(
-            nextMonday.getDate() + ((1 + 7 - nextMonday.getDay()) % 7)
-          )
-          salary = {
-            ...req.body.salary,
-            effective_date: nextMonday,
-          }
-          console.log('weekly', nextMonday)
-        }
-
-        // Period : bi-weekly
-        if (salary.period === 'bi-weekly') {
-          var nextMonday = new Date()
-          nextMonday.setDate(
-            nextMonday.getDate() + ((1 + 7 - nextMonday.getDay()) % 7)
-          )
-          salary = {
-            ...req.body.salary,
-            effective_date: nextMonday,
-          }
-          console.log('bi-weekly', nextMonday)
-        }
-
-        // Period : monthly
-        if (salary.period === 'monthly') {
-          // grabbed the last monday of the month using momentjs..
-          salary = {
-            ...req.body.salary,
-            effective_date: moment().endOf('month').startOf('isoweek'),
-          }
-        }
-
-        console.log(salary)
       }
 
       await User.findByIdAndUpdate(
