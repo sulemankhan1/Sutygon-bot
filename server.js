@@ -2,16 +2,17 @@ const express = require('express')
 const path = require('path')
 const app = express()
 const dotenv = require('dotenv')
+const moment = require('moment')
 
 const connectDB = require('./config/db')
 
-const { biWeekly, monthly } = require('./helpers/timePeriod')
+const { weekly, biWeekly, monthly } = require('./helpers/timePeriod')
 
-console.log('-------------')
+// console.log('-------------')
 // weekly()
-biWeekly()
-monthly()
-console.log('-------------')
+// biWeekly()
+// monthly()
+// console.log('-------------')
 
 // Load env vars
 dotenv.config({ path: './config/config.env' })

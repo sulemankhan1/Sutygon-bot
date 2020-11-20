@@ -1,13 +1,12 @@
 const moment = require('moment')
 
-const weekly = () => {
+const weekly = (date = moment()) => {
   console.log(moment().startOf('isoWeek').add(1, 'week'))
-
   return moment().startOf('isoWeek').add(1, 'week')
 }
 
-exports.biWeekly = () => {
-  let nextMonday = weekly()
+const biWeekly = (date = moment()) => {
+  let nextMonday = weekly(date)
 
   // create new instance
   let secondMonday = nextMonday.clone()
@@ -22,7 +21,9 @@ exports.biWeekly = () => {
   //   return [nextMonday, thirdMonday]
 }
 
-exports.monthly = () => {
+const monthly = (date = moment()) => {
   //   return moment().endOf('month').startOf('isoweek')
-  console.log(moment().endOf('month').startOf('isoweek'))
+  console.log(date.endOf('month').startOf('isoweek'))
 }
+
+module.exports = { weekly, biWeekly, monthly }

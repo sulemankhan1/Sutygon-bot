@@ -248,19 +248,106 @@ router.post(
       }
 
       // find user through req.params.id
-      let user = await User.findById(req.params.id).select('salary')
+      var user = await User.findById(req.params.id).select('salary')
       console.log(user)
 
-      if (!user.salary.period) {
-        console.log('no period set.')
+      // if (!user.salary.period) {
+      //   console.log('no period set.')
 
-        var salary
-        if (req.body.salary) {
-          if (!(req.body.code === process.env.salarySecretCode)) {
-            return res
-              .status(400)
-              .json({ errors: [{ msg: 'Wrong Authorization code.' }] })
-          }
+      //   var salary
+      //   if (req.body.salary) {
+      //     if (!(req.body.code === process.env.salarySecretCode)) {
+      //       return res
+      //         .status(400)
+      //         .json({ errors: [{ msg: 'Wrong Authorization code.' }] })
+      //     }
+
+      //     salary = {
+      //       ...req.body.salary,
+      //     }
+      //     // At starting date is null..
+
+      //     // Period : Weekly
+      //     if (salary.period === 'weekly') {
+      //       const nextMonday = moment().startOf('isoWeek').add(1, 'week')
+      //       salary = {
+      //         ...req.body.salary,
+      //         effective_date: nextMonday,
+      //       }
+      //     }
+
+      //     // Period : bi-weekly
+      //     if (salary.period === 'bi-weekly') {
+      //       const nextMonday = moment().startOf('isoWeek').add(1, 'week')
+
+      //       // create new instance
+      //       let secondMonday = nextMonday.clone()
+      //       secondMonday.startOf('isoWeek').add(1, 'week')
+
+      //       // create new instance
+      //       let thirdMonday = secondMonday.clone()
+      //       thirdMonday.startOf('isoWeek').add(1, 'week')
+
+      //       salary = {
+      //         ...req.body.salary,
+      //         effective_date: [nextMonday, thirdMonday],
+      //       }
+      //       console.log('bi-weekly', [nextMonday, thirdMonday])
+      //     }
+
+      //     // Period : monthly
+      //     if (salary.period === 'monthly') {
+      //       // grabbed the last monday of the month using momentjs..
+      //       salary = {
+      //         ...req.body.salary,
+      //         effective_date: moment().endOf('month').startOf('isoweek'),
+      //       }
+      //     }
+      //   }
+      // } else {
+      //   // now check if period is weekly
+      //   let salary_period = user.salary.period
+
+      //   // apply cron job here.. in every if else depending on the given period in the req.body
+      //   if (salary_period === 'weekly') {
+      //     // check how many days are left in the effective date.
+      //     console.log(
+      //       `your changes will be working after the completion of the next effective date.${user.salary.effective_date}`
+      //     )
+
+      //     // apply cron-job
+      //   }
+      //   if (salary_period === 'bi-weekly') {
+      //     // check how many days are left in the effective date.
+      //     console.log(
+      //       `your changes will be working after the completion of the next effective date.${user.salary.effective_date[1]}`
+      //     )
+
+      //     // apply cron-job
+      //   }
+      //   if (salary_period === 'monthly') {
+      //     // check how many days are left in the effective date.
+      //     console.log(
+      //       `your changes will be working after the completion of the next effective date.${user.salary.effective_date}`
+      //     )
+
+      //     // apply cron-job
+      //   }
+      // }
+
+      //====================================//
+      // check if salary is there in req.body.
+      var salary
+      if (req.body.salary) {
+        if (!(req.body.code === process.env.salarySecretCode)) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: 'Wrong Authorization code.' }] })
+        }
+
+        if (!user.salary.period) {
+          // then check if salary is already set there in db.
+          // if no salary is set then set salary.
 
           salary = {
             ...req.body.salary,
@@ -303,31 +390,40 @@ router.post(
               effective_date: moment().endOf('month').startOf('isoweek'),
             }
           }
-        }
+        } else {
+          // set the existing salary object again to the salary field in db until the cron-job runs...
+          salary = {
+            ...user.salary,
+          }
 
-        // now paste the salary initial update code here...
-      } else {
-        // now check if period is weekly
-        let salary_period = user.salary.period
+          console.log('cloned sal', salary)
 
-        // apply cron job here.. in every if else depending on the given period in the req.body
-        if (salary_period === 'weekly') {
-          // check how many days are left in the effective date.
-          console.log(
-            `your changes will be working after the completion of the next effective date.${user.salary.effective_date}`
-          )
-        }
-        if (salary_period === 'bi-weekly') {
-          // check how many days are left in the effective date.
-          console.log(
-            `your changes will be working after the completion of the next effective date.${user.salary.effective_date[1]}`
-          )
-        }
-        if (salary_period === 'monthly') {
-          // check how many days are left in the effective date.
-          console.log(
-            `your changes will be working after the completion of the next effective date.${user.salary.effective_date}`
-          )
+          // if salary is already set then do cron job...
+          // let salary_period = user.salary.period
+
+          // apply cron job here.. in every if else depending on the given period in the req.body
+          if (req.body.salary.period === 'weekly') {
+            // check how many days are left in the effective date.
+            console.log(
+              `your new changes of ${req.body.salary.period} will be working after the completion of the next effective date.${user.salary.effective_date}`
+            )
+
+            // apply cron-job
+          }
+          if (req.body.salary.period === 'bi-weekly') {
+            // check how many days are left in the effective date.
+            console.log(
+              `your new changes of ${req.body.salary.period} will be working after the completion of the next effective date.${user.salary.effective_date[1]}`
+            )
+
+            // apply cron-job
+          }
+          if (req.body.salary.period === 'monthly') {
+            // check how many days are left in the effective date.
+            console.log(
+              `your new changes of ${req.body.salary.period} will be working after the completion of the next effective date.${user.salary.effective_date}`
+            )
+          }
         }
       }
 
